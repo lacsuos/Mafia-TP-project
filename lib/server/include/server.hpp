@@ -27,7 +27,7 @@ namespace net {
         void ListenThread();
         void StartAccepting();
 
-        void CreateRooms();
+        void CreateRoom();
         void JoinPlayers();
 
         void HandleAcception(std::shared_ptr<User> &user);
