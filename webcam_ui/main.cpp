@@ -16,11 +16,11 @@ public:
         QVBoxLayout *layout = new QVBoxLayout(this);
         QMediaPlayer *player = new QMediaPlayer(this);
         QVideoWidget *vw = new QVideoWidget;
-        QUrl url = QUrl("gst-pipeline: videotestsrc ! xvimagesink name=\"qtvideosink\"");
-        //QNetworkRequest rtspRequest(url);
+        QUrl url = QUrl("rtsp://localhost:8554/webcam");
+        QNetworkRequest rtspRequest(url);
         layout->addWidget(vw);
         player->setVideoOutput(vw);
-        player->setMedia(QUrl("gst-pipeline: videotestsrc ! xvimagesink name=\"qtvideosink\""));
+        player->setMedia(rtspRequest);
         player->play();
         qDebug() << player->state();
     }

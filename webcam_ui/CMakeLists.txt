@@ -5,7 +5,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 
-
+set(CMAKE_PREFIX_PATH "~/sw/Qt/Qt_5_4/5.4/gcc_64/") 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5 COMPONENTS Widgets Multimedia MultimediaWidgets Network Gui Core REQUIRED)
 
@@ -15,10 +15,10 @@ endif()
 
 add_executable(main main.cpp)
 target_link_libraries(main
-                      Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::Multimedia
-                      Qt${QT_VERSION_MAJOR}::MultimediaWidgets
-                      Qt${QT_VERSION_MAJOR}::Network
-                      Qt${QT_VERSION_MAJOR}::Gui
-                      Qt${QT_VERSION_MAJOR}::Core
+                      Qt5::Widgets
+                      Qt5::Multimedia
+                      Qt5::MultimediaWidgets
+                      Qt5::Network
+                      Qt5::Gui
+                      Qt5::Core
                       )

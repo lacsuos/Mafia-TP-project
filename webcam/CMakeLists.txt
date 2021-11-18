@@ -1,5 +1,5 @@
 project(WEBCAM)
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.16)
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)

@@ -11,9 +11,11 @@ Broadcaster::~Broadcaster(){
     gst_deinit();
 }
 
+
+std::string Broadcaster::bussCallback() const {}
 int Broadcaster::launchServer() const{
     gst_rtsp_media_factory_set_launch (instances.factory,
-      "( autovideosrc ! x264enc cabac=false tune=zerolatency ! rtph264pay name=pay0 pt=96 ! updsrc)");
+                                        "( autovideosrc ! x264enc cabac=false tune=zerolatency ! rtph264pay name=pay0 pt=96 ! udpsink)");
 
     gst_rtsp_media_factory_set_shared (instances.factory, TRUE);
 
