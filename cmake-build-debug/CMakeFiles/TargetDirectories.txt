@@ -1,8 +1,0 @@
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/CMakeFiles/server_prog.dir
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/lib/CMakeFiles/rebuild_cache.dir
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/lib/CMakeFiles/edit_cache.dir
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/lib/server/CMakeFiles/edit_cache.dir
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/lib/server/CMakeFiles/rebuild_cache.dir
-/home/rinat/technpark_project/Mafia-TP-project/cmake-build-debug/lib/server/CMakeFiles/server_lib.dir
