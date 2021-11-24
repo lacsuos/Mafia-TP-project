@@ -1,15 +1,21 @@
 #pragma once
 
+#include "connection.hpp"
+
+
+#include <string_view>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <boost/shared_ptr.hpp>
+
 
 using boost::asio::ip::tcp;
 using boost::asio::ip::address;
 using boost::asio::io_context;
 
 
-// constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local game
+//constexpr std::string_view SERVER_IP = "127.0.1.0";  // for local game
 constexpr std::string_view SERVER_IP = "0.0.0.0";  // for public game
 
 constexpr uint16_t PORT = 5000;
@@ -18,32 +24,34 @@ namespace net {
     class Server {
     public:
         Server();
+
         Server(Server &other) = delete;
+
         ~Server();
-        void Start();
+
+        void run();
 
     private:
         void StartListen(size_t thread_count);
+
         void ListenThread();
+
         void StartAccepting();
 
-        void CreateRoom();
-        void JoinPlayers();
+        void HandleAcception(std::shared_ptr<Connection> &connection);
 
-        void HandleAcception(std::shared_ptr<User> &user);
-        void AcceptionDone(std::shared_ptr<User> user);
-        void AcceptionFailed();
+        void StartConnection();
 
     private:
         io_context context_;
 
-        std::vector<std::shared_ptr<GameTalker>> gametalkers_;
-        std::mutex gametalkers_mutex_;
-
         tcp::endpoint endpoint_;
         tcp::acceptor acceptor_;
 
+        boost::thread_group threads_;
+
+        std::vector<std::shared_ptr<Connection>> new_connection_;
+        std::mutex connection_mutex_;
     };
 
-}  // namespace network
-
+}
