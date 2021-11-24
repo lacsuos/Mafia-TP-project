@@ -27,6 +27,7 @@ namespace net {
         BOOST_LOG_TRIVIAL(info) << "waiting for acception";
         acceptor_.async_accept(connection->getSocket(), [this, connection](bs::error_code error) {
             if (!error) {
+                connection_mutex_.lock();
                 BOOST_LOG_TRIVIAL(info) << "user accepted";
                 new_connection_.push_back(connection);
 
@@ -34,6 +35,7 @@ namespace net {
                 auto new_user = std::make_shared<Connection>(context_);
                 BOOST_LOG_TRIVIAL(info) << "before new accepting";
                 context_.post(boost::bind(&Server::HandleAcception, this, new_user));
+                connection_mutex_.unlock();
             } else {
                 BOOST_LOG_TRIVIAL(info) << "user not accepted";
                 auto new_user = std::make_shared<Connection>(context_);
