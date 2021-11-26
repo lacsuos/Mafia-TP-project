@@ -20,6 +20,8 @@ namespace net {
         /// Start the first asynchronous operation for the connection.
         void start();
 
+        bool isWorking();
+
         tcp::socket& getSocket() { return socket; }
 
     private:
@@ -47,7 +49,7 @@ namespace net {
 
         std::istream in;
         std::ostream out;
-
+        std::atomic<bool> is_working;
         boost::property_tree::ptree last_msg;
     };
 }

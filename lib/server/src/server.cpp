@@ -47,7 +47,6 @@ namespace net {
     void Server::run() {
         context_.post(boost::bind(&Server::StartAccepting, this));
         context_.post(boost::bind(&Server::StartConnection, this));
-
         const size_t thread_nom = boost::thread::hardware_concurrency();
         BOOST_LOG_TRIVIAL(info) << "threads avaiable: " << thread_nom;
         StartListen(thread_nom);
@@ -59,8 +58,10 @@ namespace net {
         connection_mutex_.lock();
         auto connection = std::make_shared<Connection>(context_);
         for (size_t i = 0; i < new_connection_.size(); ++i) {
-            BOOST_LOG_TRIVIAL(info) << "worker";
-            new_connection_[i]->start();
+            if (!new_connection_[i]->isWorking()){
+                BOOST_LOG_TRIVIAL(info) << "worker";
+                new_connection_[i]->start();
+            }
         }
 
         connection_mutex_.unlock();
