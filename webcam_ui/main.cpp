@@ -7,10 +7,10 @@
 #include <QDebug>
 #include <iostream>
 
-class Widget : public QWidget
+class WebcamWidget : public QWidget
 {
 public:
-    Widget(QWidget *parent = 0)
+    WebcamWidget(QWidget *parent = 0)
         : QWidget(parent)
     {
         QVBoxLayout *layout = new QVBoxLayout(this);
