@@ -22,7 +22,6 @@ namespace net {
                                                      out(&write_buffer) { is_working.store(false); }
 
     void Connection::start() {
-        BOOST_LOG_TRIVIAL(info) << "start connection";
         is_working.store(true);
         boost::asio::post(context, boost::bind(&Connection::handle_read, this));
     }
@@ -32,6 +31,8 @@ namespace net {
     }
     
     void Connection::handle_read() {
+        BOOST_LOG_TRIVIAL(info) << "START READ";
+
         async_read_until(socket, read_buffer, std::string(MSG_END),
                          [this](bs::error_code error, size_t len) {
                              if (!error) {
@@ -43,6 +44,7 @@ namespace net {
     }
 
     void Connection::handle_write() {
+        BOOST_LOG_TRIVIAL(info) << "START SEND";
         async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
             if (!error) {
                 handle_read();
@@ -69,7 +71,7 @@ namespace net {
     }
 
     void Connection::disconnect() {
-        BOOST_LOG_TRIVIAL(info) << "is disconnected";
+        BOOST_LOG_TRIVIAL(info) << "DISCONNECTED";
 
         out << Message::disconnect();
         async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
