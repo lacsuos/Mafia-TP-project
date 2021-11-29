@@ -19,17 +19,19 @@ namespace net {
                                                      read_buffer(),
                                                      write_buffer(),
                                                      in(&read_buffer),
-                                                     out(&write_buffer) { is_working.store(false); }
+                                                     out(&write_buffer) {
+        is_working.store(false);
+    }
 
     void Connection::start() {
         is_working.store(true);
         boost::asio::post(context, boost::bind(&Connection::handle_read, this));
     }
 
-    bool Connection::isWorking(){
+    bool Connection::isWorking() {
         return is_working.load();
     }
-    
+
     void Connection::handle_read() {
         BOOST_LOG_TRIVIAL(info) << "START READ";
 

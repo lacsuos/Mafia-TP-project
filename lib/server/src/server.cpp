@@ -60,7 +60,6 @@ namespace net {
                 new_connection_[i]->start();
             }
         }
-
         connection_mutex_.unlock();
         context_.post(boost::bind(&Server::StartConnection, this));
     }
