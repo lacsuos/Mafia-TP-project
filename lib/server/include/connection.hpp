@@ -1,7 +1,7 @@
 #pragma once
+#include "user.hpp"
 
 #include <string>
-
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
@@ -24,6 +24,7 @@ namespace net {
 
         tcp::socket& getSocket() { return socket; }
 
+        bool isUserWorking() const;
     private:
         /// Handle completion of a read operation.
         void handle_read();
@@ -51,5 +52,7 @@ namespace net {
         std::ostream out;
         std::atomic<bool> is_working;
         boost::property_tree::ptree last_msg;
+
+        std::shared_ptr<User> user_;
     };
 }

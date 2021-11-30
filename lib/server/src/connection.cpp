@@ -1,5 +1,6 @@
 #include "connection.hpp"
 #include "messages.hpp"
+#include "user.hpp"
 
 #include <boost/asio/yield.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -21,10 +22,12 @@ namespace net {
                                                      in(&read_buffer),
                                                      out(&write_buffer) {
         is_working.store(false);
+        user_->is_gaming.store(false);
     }
 
     void Connection::start() {
         is_working.store(true);
+        user_->is_gaming.store(true);
         boost::asio::post(context, boost::bind(&Connection::handle_read, this));
     }
 
@@ -32,8 +35,12 @@ namespace net {
         return is_working.load();
     }
 
+    bool Connection::isUserWorking() const {
+        return user_->is_gaming.load();
+    }
+
     void Connection::handle_read() {
-        BOOST_LOG_TRIVIAL(info) << "START READ";
+        BOOST_LOG_TRIVIAL(info) << "START READING";
 
         async_read_until(socket, read_buffer, std::string(MSG_END),
                          [this](bs::error_code error, size_t len) {
@@ -46,12 +53,12 @@ namespace net {
     }
 
     void Connection::handle_write() {
-        BOOST_LOG_TRIVIAL(info) << "START SEND";
+        BOOST_LOG_TRIVIAL(info) << "START SENDING";
         async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
             if (!error) {
                 handle_read();
             } else {
-                handle_read();
+                disconnect();
             }
         });
     }
@@ -65,6 +72,12 @@ namespace net {
             return;
         }
 
+        if (command_type == "disconnect") {
+            boost::asio::post(context, boost::bind(&Connection::disconnect, this));
+            return;
+        }
+
+
     }
 
     void Connection::handle_message() {
@@ -77,6 +90,7 @@ namespace net {
 
         out << Message::disconnect();
         async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
+            user_->is_gaming.store(false);
             socket.close();
         });
     }

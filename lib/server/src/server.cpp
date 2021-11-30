@@ -53,12 +53,15 @@ namespace net {
     void Server::StartConnection() {
 
         connection_mutex_.lock();
-        auto connection = std::make_shared<Connection>(context_);
         for (size_t i = 0; i < new_connection_.size(); ++i) {
-            if (!new_connection_[i]->isWorking()){
+            if (!new_connection_[i]->isUserWorking()) {
+                BOOST_LOG_TRIVIAL(info) << "DISCONNECTED USER IS REMOVED";
+                new_connection_.erase(new_connection_.begin() + i);
+            } else if (!new_connection_[i]->isWorking()) {
                 BOOST_LOG_TRIVIAL(info) << "START COMMUNICATION";
                 new_connection_[i]->start();
             }
+
         }
         connection_mutex_.unlock();
         context_.post(boost::bind(&Server::StartConnection, this));
