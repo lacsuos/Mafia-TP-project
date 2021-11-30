@@ -1,13 +1,12 @@
 #pragma once
 
 #include "connection.hpp"
-
+#include "base.hpp"
 
 #include <string_view>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
-#include <boost/shared_ptr.hpp>
 
 
 using boost::asio::ip::tcp;
@@ -52,6 +51,8 @@ namespace net {
 
         std::vector<std::shared_ptr<Connection>> new_connection_;
         std::mutex connection_mutex_;
+
+        Base base;
     };
 
 }

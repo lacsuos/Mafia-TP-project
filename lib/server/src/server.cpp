@@ -2,7 +2,6 @@
 #include "connection.hpp"
 
 #include <boost/log/trivial.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace bs = boost::system;
 
@@ -44,6 +43,7 @@ namespace net {
     void Server::run() {
         context_.post(boost::bind(&Server::StartAccepting, this));
         context_.post(boost::bind(&Server::StartConnection, this));
+
         const size_t thread_nom = boost::thread::hardware_concurrency();
         BOOST_LOG_TRIVIAL(info) << "AVAILABLE THREADS ARE  " << thread_nom;
         StartListen(thread_nom);

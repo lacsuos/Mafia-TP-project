@@ -15,7 +15,7 @@ namespace net {
     class Connection {
     public:
         /// Construct a connection with the given io_context.
-        explicit Connection(io_context &in_context);
+        explicit Connection(io_context &in_context, );
 
         /// Start the first asynchronous operation for the connection.
         void start();
@@ -54,5 +54,7 @@ namespace net {
         boost::property_tree::ptree last_msg;
 
         std::shared_ptr<User> user_;
+
+        Base& base;
     };
 }
