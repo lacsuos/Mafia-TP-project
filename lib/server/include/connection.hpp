@@ -1,5 +1,6 @@
 #pragma once
 #include "user.hpp"
+#include "base.hpp"
 
 #include <string>
 #include <boost/bind.hpp>
@@ -15,7 +16,7 @@ namespace net {
     class Connection {
     public:
         /// Construct a connection with the given io_context.
-        explicit Connection(io_context &in_context, );
+        explicit Connection(io_context &in_context, Base& in_base);
 
         /// Start the first asynchronous operation for the connection.
         void start();

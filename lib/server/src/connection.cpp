@@ -15,12 +15,13 @@ namespace bs = boost::system;
 
 namespace net {
 
-    Connection::Connection(io_context &in_context) : context(in_context),
+    Connection::Connection(io_context &in_context, Base& in_base) : context(in_context),
                                                      socket(context),
                                                      read_buffer(),
                                                      write_buffer(),
                                                      in(&read_buffer),
-                                                     out(&write_buffer) {
+                                                     out(&write_buffer),
+                                                     base(in_base) {
         is_working.store(false);
         user_->is_gaming.store(false);
     }
@@ -69,6 +70,11 @@ namespace net {
 
         if (command_type == "message") {
             boost::asio::post(context, boost::bind(&Connection::handle_message, this));
+            return;
+        }
+
+        if (command_type == "disconnect") {
+            boost::asio::post(context, boost::bind(&Connection::disconnect, this));
             return;
         }
 

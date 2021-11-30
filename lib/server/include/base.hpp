@@ -1,10 +1,10 @@
 #pragma once
 
 #include "base_queue.hpp"
-#include "connection.hpp"
+#include "user.hpp"
 
 namespace net {
     struct Base {
-        BaseQueue<std::shared_ptr<Connection>> creating_game;
+        BaseQueue<std::shared_ptr<User>> creating_game;
     };
 }
