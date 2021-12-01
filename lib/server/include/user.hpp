@@ -10,7 +10,9 @@ using boost::asio::ip::tcp;
 namespace net {
     class User {
     public:
-        explicit User(const tcp::socket &socket_, std::string name_) : name(std::move(name_)),
+        explicit User(const tcp::socket &socket_, std::string name_) : is_user_connecting(false),
+                                                                       is_user_gaming(false),
+                                                                       name(std::move(name_)),
                                                                        ip(socket_.remote_endpoint().address().to_string()) {
             user_id = id++;
         };
@@ -25,7 +27,8 @@ namespace net {
 
         size_t getID() const { return user_id; }
 
-        std::atomic<bool> is_gaming{};
+        std::atomic<bool> is_user_connecting;
+        std::atomic<bool> is_user_gaming;
 
     private:
         std::string name;

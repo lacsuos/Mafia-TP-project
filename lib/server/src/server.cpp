@@ -78,10 +78,10 @@ namespace net {
 
         auto user = base.creating_game.Pop();
         BOOST_LOG_TRIVIAL(info) << user->getID() << " START NEW GAME";
-        auto game = std::make_shared<GameC>(context_, board_db_, user_db_, user);
+        auto game = std::make_shared<GameConnection>(context_, base, user);
 
         game_connection_mutex_.lock();
-        new_game_connection_.push_back(gametalker);
+        new_game_connection_.push_back(game);
         game_connection_mutex_.unlock();
         context_.post(boost::bind(&Server::CreateRoom, this));
     }

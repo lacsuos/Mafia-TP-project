@@ -1,6 +1,7 @@
 #pragma once
 
 #include "connection.hpp"
+#include "game_connection.hpp"
 #include "base.hpp"
 
 #include <string_view>
@@ -54,7 +55,7 @@ namespace net {
         std::vector<std::shared_ptr<Connection>> new_connection_;
         std::mutex connection_mutex_;
 
-        std::vector<std::shared_ptr<Connection>> new_game_connection_;
+        std::vector<std::shared_ptr<GameConnection>> new_game_connection_;
         std::mutex game_connection_mutex_;
 
         Base base;

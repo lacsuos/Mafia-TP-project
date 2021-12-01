@@ -6,5 +6,6 @@
 namespace net {
     struct Base {
         BaseQueue<std::shared_ptr<User>> creating_game;
+        BaseQueue<std::shared_ptr<User>> acceptin_game;
     };
 }

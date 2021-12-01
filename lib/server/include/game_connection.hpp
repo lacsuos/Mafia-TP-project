@@ -15,7 +15,6 @@ namespace net {
 
     class GameConnection {
     public:
-        /// Construct a connection with the given io_context.
         explicit GameConnection(io_context &in_context, Base& in_base, const std::shared_ptr<User>& user);
 
         /// Start the first asynchronous operation for the connection.

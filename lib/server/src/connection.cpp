@@ -23,12 +23,12 @@ namespace net {
                                                      out(&write_buffer),
                                                      base(in_base) {
         is_working.store(false);
-        user_->is_gaming.store(false);
+        user_->is_user_connecting.store(false);
     }
 
     void Connection::start() {
         is_working.store(true);
-        user_->is_gaming.store(true);
+        user_->is_user_connecting.store(true);
         boost::asio::post(context, boost::bind(&Connection::handle_read, this));
     }
 
@@ -37,7 +37,7 @@ namespace net {
     }
 
     bool Connection::isUserWorking() const {
-        return user_->is_gaming.load();
+        return user_->is_user_connecting.load();
     }
 
     void Connection::handle_read() {
@@ -107,7 +107,7 @@ namespace net {
 
         out << Message::disconnect();
         async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
-            user_->is_gaming.store(false);
+            user_->is_user_connecting.store(false);
             socket.close();
         });
     }
