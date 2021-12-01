@@ -94,7 +94,7 @@ namespace net {
             } else {
                 disconnect();
             }
-        })
+        });
     }
 
     void Connection::handle_message() {
