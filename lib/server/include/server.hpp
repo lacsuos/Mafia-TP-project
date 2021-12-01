@@ -37,6 +37,8 @@ namespace net {
 
         void StartAccepting();
 
+        void CreateRoom();
+
         void HandleAcception(std::shared_ptr<Connection> &connection);
 
         void StartConnection();
@@ -51,6 +53,9 @@ namespace net {
 
         std::vector<std::shared_ptr<Connection>> new_connection_;
         std::mutex connection_mutex_;
+
+        std::vector<std::shared_ptr<Connection>> new_game_connection_;
+        std::mutex game_connection_mutex_;
 
         Base base;
     };

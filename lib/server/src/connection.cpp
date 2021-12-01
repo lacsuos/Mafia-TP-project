@@ -89,12 +89,12 @@ namespace net {
         out << Message::create_room();
         async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
             if (!error) {
-                BOOST_LOG_TRIVIAL(info) << user_->getID() << "CREATED ROOM";
+                BOOST_LOG_TRIVIAL(info) << user_->getID() << " CREATED ROOM";
                 base.creating_game.Push(user_);
             } else {
                 disconnect();
             }
-        });
+        })
     }
 
     void Connection::handle_message() {

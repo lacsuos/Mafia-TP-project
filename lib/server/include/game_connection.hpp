@@ -1,6 +1,7 @@
 #pragma once
-#include "user.hpp"
+#include "gameroom.hpp"
 #include "base.hpp"
+#include "user.hpp"
 
 #include <string>
 #include <boost/bind.hpp>
@@ -12,10 +13,10 @@ using boost::asio::io_context;
 
 namespace net {
 
-    class Connection {
+    class GameConnection {
     public:
         /// Construct a connection with the given io_context.
-        explicit Connection(io_context &in_context, Base& in_base);
+        explicit GameConnection(io_context &in_context, Base& in_base, const std::shared_ptr<User>& user);
 
         /// Start the first asynchronous operation for the connection.
         void start();
@@ -56,7 +57,7 @@ namespace net {
         std::atomic<bool> is_working;
         boost::property_tree::ptree last_msg;
 
-        std::shared_ptr<User> user_;
+        std::shared_ptr<GameRoom> game_;
 
         Base& base;
     };
