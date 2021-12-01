@@ -40,6 +40,8 @@ namespace net {
 
         void CreateRoom();
 
+        void JoinRoom();
+
         void HandleAcception(std::shared_ptr<Connection> &connection);
 
         void StartConnection();

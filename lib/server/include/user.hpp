@@ -27,6 +27,12 @@ namespace net {
 
         size_t getID() const { return user_id; }
 
+        void setRoom(const size_t& room_id_ ) { room_id = room_id_; }
+
+        size_t getRoom() const { return room_id; }
+
+        std::string getIP() const { return ip; }
+
         std::atomic<bool> is_user_connecting;
         std::atomic<bool> is_user_gaming;
 
@@ -36,6 +42,8 @@ namespace net {
 
         static size_t id;
         size_t user_id;
+
+        size_t room_id;
 
     };
 

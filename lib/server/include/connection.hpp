@@ -41,8 +41,9 @@ namespace net {
         /// Handle out
         void disconnect();
 
-        /// Handle out
         void handle_create_room();
+
+        void handle_join_room();
 
     private:
         io_context &context;

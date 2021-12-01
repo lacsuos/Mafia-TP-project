@@ -15,13 +15,13 @@ namespace bs = boost::system;
 
 namespace net {
 
-    Connection::Connection(io_context &in_context, Base& in_base) : context(in_context),
-                                                     socket(context),
-                                                     read_buffer(),
-                                                     write_buffer(),
-                                                     in(&read_buffer),
-                                                     out(&write_buffer),
-                                                     base(in_base) {
+    Connection::Connection(io_context &in_context, Base &in_base) : context(in_context),
+                                                                    socket(context),
+                                                                    read_buffer(),
+                                                                    write_buffer(),
+                                                                    in(&read_buffer),
+                                                                    out(&write_buffer),
+                                                                    base(in_base) {
         is_working.store(false);
         user_->is_user_connecting.store(false);
     }
@@ -78,11 +78,12 @@ namespace net {
             return;
         }
 
-        if (command_type == "add room") {
+        if (command_type == "add_room") {
             boost::asio::post(context, boost::bind(&Connection::handle_create_room, this));
-            return;
         }
-
+        if (command_type == "join_room") {
+            boost::asio::post(context, boost::bind(&Connection::handle_join_room, this));
+        }
     }
 
     void Connection::handle_create_room() {
@@ -91,6 +92,24 @@ namespace net {
             if (!error) {
                 BOOST_LOG_TRIVIAL(info) << user_->getID() << " CREATED ROOM";
                 base.creating_game.Push(user_);
+            } else {
+                disconnect();
+            }
+        });
+    }
+
+    void Connection::handle_join_room() {
+
+        const pt::ptree &parametrs = last_msg.get_child("parametrs");
+        user_->setRoom(parametrs.get<size_t>("id"));
+
+        out << Message::join_room(user_->getRoom());
+
+        async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
+            if (!error) {
+                BOOST_LOG_TRIVIAL(info) << user_->getID() << " JOINED ROOM ID = "
+                                        << user_->getRoom();
+                base.accepting_game.Push(user_);
             } else {
                 disconnect();
             }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "user.hpp"
+#include <string>
 
 namespace net {
     class GameRoom {
@@ -18,6 +19,12 @@ namespace net {
         void deleteUser(const std::shared_ptr<User> &user);
 
         std::atomic<bool> is_game_connecting;
+
+        size_t getID() const { return game_id; }
+
+        size_t getSize() const { return users.size(); }
+
+        std::shared_ptr<User> getUser(size_t number) const { return users[number]; }
 
     private:
         std::vector<std::shared_ptr<User>> users;

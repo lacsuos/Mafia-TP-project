@@ -19,6 +19,7 @@ namespace net {
         context_.post(boost::bind(&Server::StartAccepting, this));
         context_.post(boost::bind(&Server::StartConnection, this));
         context_.post(boost::bind(&Server::CreateRoom, this));
+        context_.post(boost::bind(&Server::JoinRoom, this));
 
         const size_t thread_nom = boost::thread::hardware_concurrency();
         BOOST_LOG_TRIVIAL(info) << "AVAILABLE THREADS ARE  " << thread_nom;
@@ -80,10 +81,39 @@ namespace net {
         BOOST_LOG_TRIVIAL(info) << user->getID() << " START NEW GAME";
         auto game = std::make_shared<GameConnection>(context_, base, user);
 
+        user->setRoom(game->getGame()->getID());
+
         game_connection_mutex_.lock();
         new_game_connection_.push_back(game);
         game_connection_mutex_.unlock();
         context_.post(boost::bind(&Server::CreateRoom, this));
+    }
+
+    void Server::JoinRoom() {
+        if (base.accepting_game.IsEmpty()) {
+            context_.post(boost::bind(&Server::JoinRoom, this));
+            return;
+        }
+
+        auto user = base.accepting_game.Pop();
+        BOOST_LOG_TRIVIAL(info) << user->getID() << " JOINED GAME";
+
+        auto it = std::find_if(new_game_connection_.begin(), new_game_connection_.end(),
+                               [user](const std::shared_ptr<GameConnection> &current) {
+                                   return current->getGame()->getID() == user->getRoom();
+                               });
+
+        if (it == new_game_connection_.end()) {
+            BOOST_LOG_TRIVIAL(info) << user->getID() << " DOES NOT ACCEPT THE ROOM "
+                                    << user->getRoom();
+            /// добавить сообщение на отправку что не нашлась комната
+            context_.post(boost::bind(&Server::JoinRoom, this));
+            return;
+        }
+
+        it->get()->JoinUserToGame(user);
+
+        context_.post(boost::bind(&Server::JoinRoom, this));
     }
 
     void Server::StartListen(size_t thread_count) {

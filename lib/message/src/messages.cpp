@@ -13,7 +13,7 @@ std::string Message::message_phtee(boost::property_tree::ptree const &request) {
 }
 
 std::string Message::msg() {
-    boost::property_tree::ptree request;
+    pt::ptree request;
 
     request.put("command", "message_from_server");
 
@@ -21,7 +21,7 @@ std::string Message::msg() {
 }
 
 std::string Message::disconnect() {
-    boost::property_tree::ptree request;
+    pt::ptree request;
 
     request.put("command", "disconnected from server");
 
@@ -29,9 +29,48 @@ std::string Message::disconnect() {
 }
 
 std::string Message::create_room() {
-    boost::property_tree::ptree request;
+    pt::ptree request;
 
     request.put("command", "created room");
 
     return message_phtee(request);
+}
+
+std::string Message::join_room(const size_t &room_id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("id", room_id);
+    request.put("command", "joined_room");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string Message::create_room_done(const size_t &id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("id", id);
+    request.put("command", "room_is_created");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string Message::connected(const std::vector<std::vector<std::string>> &users_ip) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    for (const auto &i: users_ip) {
+        parametrs.put("name", i[0]);
+        for (size_t j = 1; j < i.size(); ++j) {
+            parametrs.put("ip", i[j]);
+        }
+    }
+
+    request.put("command", "ips");
+    request.add_child("parametrs", parametrs);
+
+    return std::string();
 }
