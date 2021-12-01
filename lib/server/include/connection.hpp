@@ -42,6 +42,9 @@ namespace net {
         /// Handle out
         void disconnect();
 
+        /// Handle out
+        void handle_create_room();
+
     private:
         io_context &context;
         tcp::socket socket;

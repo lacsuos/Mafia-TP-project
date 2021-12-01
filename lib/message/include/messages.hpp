@@ -12,4 +12,5 @@ public:
     static std::string message_phtee(boost::property_tree::ptree const &request);
     static std::string msg();
     static std::string disconnect();
+    static std::string create_room();
 };

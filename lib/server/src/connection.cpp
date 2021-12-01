@@ -78,12 +78,23 @@ namespace net {
             return;
         }
 
-        if (command_type == "disconnect") {
-            boost::asio::post(context, boost::bind(&Connection::disconnect, this));
+        if (command_type == "add room") {
+            boost::asio::post(context, boost::bind(&Connection::handle_create_room, this));
             return;
         }
 
+    }
 
+    void Connection::handle_create_room() {
+        out << Message::create_room();
+        async_write(socket, write_buffer, [this](bs::error_code error, size_t len) {
+            if (!error) {
+                BOOST_LOG_TRIVIAL(info) << user_->getID() << "CREATED ROOM";
+                base.creating_game.Push(user_);
+            } else {
+                disconnect();
+            }
+        });
     }
 
     void Connection::handle_message() {

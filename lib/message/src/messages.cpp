@@ -27,3 +27,11 @@ std::string Message::disconnect() {
 
     return message_phtee(request);
 }
+
+std::string Message::create_room() {
+    boost::property_tree::ptree request;
+
+    request.put("command", "disconnected from server");
+
+    return message_phtee(request);
+}
