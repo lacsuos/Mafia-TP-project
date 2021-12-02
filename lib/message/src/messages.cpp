@@ -64,9 +64,8 @@ std::string Message::connected(const std::vector<std::vector<std::string>> &user
 
     for (const auto &i: users_ip) {
         parametrs.put("name", i[0]);
-        for (size_t j = 1; j < i.size(); ++j) {
-            parametrs.put("ip", i[j]);
-        }
+        parametrs.put("ip", i[1]);
+
     }
 
     request.put("command", "ips");

@@ -19,7 +19,7 @@ namespace net {
     Connection::Connection(std::shared_ptr<Communication> &communication, Base &in_base)
             : context(communication->context),
               base(in_base),
-              is_working(false){
+              is_working(false) {
         communication->user->is_user_connecting.store(false);
     }
 

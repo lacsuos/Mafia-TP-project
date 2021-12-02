@@ -18,8 +18,10 @@ namespace net {
                                                          read_buffer(),
                                                          write_buffer(),
                                                          in(&read_buffer),
-                                                         out(&write_buffer),
-                                                         user(socket) {};
+                                                         out(&write_buffer) {
+            User temp(socket);
+            user = &temp;
+        };
 
         Communication() = delete;
         ~Communication() = default;
@@ -36,7 +38,7 @@ namespace net {
 
         boost::property_tree::ptree last_msg;
 
-        User* user;
+        User *user;
     };
 
 }

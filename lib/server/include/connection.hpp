@@ -1,4 +1,5 @@
 #pragma once
+
 #include "user.hpp"
 #include "base.hpp"
 #include "communication.hpp"
@@ -16,7 +17,7 @@ namespace net {
     class Connection {
     public:
         /// Construct a connection with the given io_context.
-        explicit Connection(std::shared_ptr<Communication>& communication, Base& in_base);
+        explicit Connection(std::shared_ptr<Communication> &communication, Base &in_base);
 
         Connection() = delete;
 
@@ -28,6 +29,7 @@ namespace net {
         bool isWorking();
 
         bool isUserWorking() const;
+
     private:
         /// Handle completion of a read operation.
         void handle_read();
@@ -52,7 +54,7 @@ namespace net {
         io_context &context;
 
         std::shared_ptr<Communication> communication;
-        Base& base;
+        Base &base;
         std::atomic<bool> is_working;
     };
 }

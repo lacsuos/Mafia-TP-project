@@ -20,6 +20,7 @@ namespace net {
         queue_.pop();
         queue_mutex.unlock();
         return temp;
+
     }
 
     template<class T>

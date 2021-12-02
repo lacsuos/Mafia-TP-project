@@ -5,37 +5,26 @@
 
 class GameRoom {
 public:
-    GameRoom() : is_game_connecting(false) {
-        game_id = id++;
-    };
+    GameRoom(size_t admin_id_) : is_game_connecting(false),
+                                 admin_id(admin_id_) { game_id = id++; }
 
-    ~GameRoom() { users.clear(); }
+    GameRoom() = delete;
 
-    std::atomic<bool> is_full;
-
-    void add_user(User* user) { users.push_back(user); }
-
-    void delete_user(const std::shared_ptr<User> &user);
+    ~GameRoom() = default;
 
     std::atomic<bool> is_game_connecting;
 
     size_t get_id() const { return game_id; }
 
-    size_t get_size() const { return users.size(); }
-
-    User* get_user(size_t number) const { return users[number]; }
+    size_t get_admin_id() const { return admin_id; }
 
 private:
-    std::vector<User *> users;
     static size_t id;
     size_t game_id;
+
+    size_t admin_id;
 };
 
 size_t GameRoom::id = 1;
 
-void GameRoom::delete_user(const std::shared_ptr<User> &user) {
-    auto it = std::find(users.begin(), users.end(), user);
-    if (it != users.end()) {
-        users.erase(it);
-    }
-}
+

@@ -38,7 +38,7 @@ namespace net {
         HandleAcception(communication);
     }
 
-    void Server::HandleAcception(std::shared_ptr<Communication>& communication) {
+    void Server::HandleAcception(std::shared_ptr<Communication> &communication) {
         BOOST_LOG_TRIVIAL(info) << "waiting for acception";
         acceptor_.async_accept(communication->socket, [this, &communication](bs::error_code error) {
             if (!error) {
@@ -80,13 +80,13 @@ namespace net {
         }
 
         auto communication = base.creating_game.Pop();
-        BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " START NEW GAME";
-        auto game = std::make_shared<GameConnection>(communication, base);
+        BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " START NEW GAME";
+        auto game_connection = std::make_shared<GameConnection>(communication);
 
-        communication->user.set_room((game->getGame()->get_id());
+        communication->user->set_room((game_connection->get_game()->get_id()));
 
         game_connection_mutex_.lock();
-        new_game_connection_.push_back(game);
+        new_game_connection_.push_back(game_connection);
         game_connection_mutex_.unlock();
         context_.post(boost::bind(&Server::CreateRoom, this));
     }
@@ -98,22 +98,23 @@ namespace net {
         }
 
         auto communication = base.accepting_game.Pop();
-        BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " JOINED GAME";
+        BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " JOINED GAME";
 
         auto it = std::find_if(new_game_connection_.begin(), new_game_connection_.end(),
                                [communication](const std::shared_ptr<GameConnection> &current) {
-                                   return current->getGame()->get_id() == communication->user.get_room();
+                                   return current->get_game()->get_id() ==
+                                          communication->user->get_room();
                                });
 
         if (it == new_game_connection_.end()) {
-            BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " DOES NOT ACCEPT THE ROOM "
-                                    << communication->user.get_room();
+            BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " DOES NOT ACCEPT THE ROOM "
+                                    << communication->user->get_room();
             /// добавить сообщение на отправку что не нашлась комната
             context_.post(boost::bind(&Server::JoinRoom, this));
             return;
         }
 
-        it->get()->JoinUserToGame(communication);
+        it->get()->join_to_game(communication);
 
         context_.post(boost::bind(&Server::JoinRoom, this));
     }
