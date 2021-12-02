@@ -1,40 +1,40 @@
-cmake_minimum_required(VERSION 3.9.2)
-project(Mafia_TP_project)
+project(Mafia-TP-project)
+cmake_minimum_required(VERSION 3.11)
+include_directories(Player GameRoom)
 
-set(CMAKE_CXX_STANDARD 14)
+add_library(Player SHARED
+        Player/Player.cpp Player/Player.h
+        Player/Citizen.cpp Player/Citizen.h
+        Player/GameHost.cpp Player/GameHost.h
+        Player/Mafia.cpp Player/Mafia.h
+        )
 
-add_compile_options(
-        -Werror
-        -Wall
-        -Wextra
-        -Wpedantic
-)
-if(TEST_SEQUENCE)
-    add_compile_options(--coverage)
-    add_link_options(--coverage)
-endif()
+add_library(GameRoom SHARED
+        GameRoom/GameRoom.cpp GameRoom/GameRoom.h)
 
-add_executable(Mafia_TP_project sources/main.c)
+target_link_libraries(Player GameRoom)
 
-#set(STATIC_LIB_SOURCE_FILES ./sources/readAndCloseFile.c ./sources/findSequence.c sources/findAllSequenceOneProcess.c)
-#add_library(one_process_lib STATIC ${STATIC_LIB_SOURCE_FILES})
-
-#set(DYNAMIC_LIB_SOURCE_FILES ./sources/readAndCloseFile.c ./sources/findSequence.c sources/findAllSequenceMultiProcess.c)
-#add_library(multi_process_lib SHARED ${DYNAMIC_LIB_SOURCE_FILES})
-
-#include_directories(headers)
-
-#add_executable(multi_process.out sources/main.c)
-#target_link_libraries(multi_process.out multi_process_lib)
-
-#add_executable(one_process.out sources/main.c)
-#target_link_libraries(one_process.out one_process_lib)
-
+add_executable(park_AaDS_hw main.cpp)
 #enable_testing()
 #find_package(GTest REQUIRED)
 
-#add_executable(test_oneProcess tests/test_oneProcess.cpp)
-#target_link_libraries(test_oneProcess GTest::Main one_process_lib)
+#include_directories(${GTEST_INCLUDE_DIRS})
+#message(${GTEST_LIBRARIES})
+#message(${GTEST_INCLUDE_DIRS})
 
-#add_executable(test_multiProcess tests/test_multiProcess.cpp)
-#target_link_libraries(test_multiProcess GTest::Main multi_process_lib)
+#add_executable(tests
+        #tests/main.cpp
+       # tests/GameEntities.cpp
+        #tests/Player.cpp
+      #  tests/Utilities.cpp
+      #  )
+
+#target_link_libraries(tests ${GTEST_LIBRARIES} pthread Logger GameEntities Player ConfigurationHandler)
+
+#if(NOT TARGET spdlog)
+    # Stand-alone build
+  #  find_package(spdlog REQUIRED)
+#endif()
+
+#add_library(logic_lib INTERFACE)
+#target_link_libraries(logic_lib INTERFACE spdlog::spdlog Logger GameEntities Player ConfigurationHandler)
