@@ -1,6 +1,7 @@
 #pragma once
 #include "user.hpp"
 #include "base.hpp"
+#include "communication.hpp"
 
 #include <string>
 #include <boost/bind.hpp>
@@ -15,14 +16,16 @@ namespace net {
     class Connection {
     public:
         /// Construct a connection with the given io_context.
-        explicit Connection(io_context &in_context, Base& in_base);
+        explicit Connection(std::shared_ptr<Communication>& communication, Base& in_base);
+
+        Connection() = delete;
+
+        ~Connection() = default;
 
         /// Start the first asynchronous operation for the connection.
         void start();
 
         bool isWorking();
-
-        tcp::socket& getSocket() { return socket; }
 
         bool isUserWorking() const;
     private:
@@ -47,18 +50,9 @@ namespace net {
 
     private:
         io_context &context;
-        tcp::socket socket;
 
-        boost::asio::streambuf read_buffer;
-        boost::asio::streambuf write_buffer;
-
-        std::istream in;
-        std::ostream out;
-        std::atomic<bool> is_working;
-        boost::property_tree::ptree last_msg;
-
-        std::shared_ptr<User> user_;
-
+        std::shared_ptr<Communication> communication;
         Base& base;
+        std::atomic<bool> is_working;
     };
 }

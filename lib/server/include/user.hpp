@@ -7,46 +7,45 @@
 
 using boost::asio::ip::tcp;
 
-namespace net {
-    class User {
-    public:
-        explicit User(const tcp::socket &socket_, std::string name_) : is_user_connecting(false),
-                                                                       is_user_gaming(false),
-                                                                       name(std::move(name_)),
-                                                                       ip(socket_.remote_endpoint().address().to_string()) {
-            user_id = id++;
-        };
-
-        User() = delete;
-
-        ~User() = default;
-
-        std::string getIPclient() const { return ip; }
-
-        std::string getName() const { return name; }
-
-        size_t getID() const { return user_id; }
-
-        void setRoom(const size_t& room_id_ ) { room_id = room_id_; }
-
-        size_t getRoom() const { return room_id; }
-
-        std::string getIP() const { return ip; }
-
-        std::atomic<bool> is_user_connecting;
-        std::atomic<bool> is_user_gaming;
-
-    private:
-        std::string name;
-        std::string ip;
-
-        static size_t id;
-        size_t user_id;
-
-        size_t room_id;
-
+class User {
+public:
+    explicit User(const tcp::socket &socket_) : is_user_connecting(false),
+                                                is_user_gaming(false),
+                                                ip(socket_.remote_endpoint().address().to_string()) {
+        name = ip;
+        user_id = id++;
     };
 
-    size_t User::id = 1;
+    User() = delete;
 
-}
+    ~User() = default;
+
+    void set_name(std::string name_) { name = name_; }
+
+    std::string get_name() const { return name; }
+
+    size_t get_id() const { return user_id; }
+
+    void set_room(const size_t &room_id_) { room_id = room_id_; }
+
+    size_t get_room() const { return room_id; }
+
+    std::string get_IP() const { return ip; }
+
+    std::atomic<bool> is_user_connecting;
+
+    std::atomic<bool> is_user_gaming;
+
+private:
+    std::string name;
+    std::string ip;
+
+    static size_t id;
+    size_t user_id;
+
+    size_t room_id;
+
+};
+
+size_t User::id = 1;
+

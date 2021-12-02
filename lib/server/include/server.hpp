@@ -42,7 +42,7 @@ namespace net {
 
         void JoinRoom();
 
-        void HandleAcception(std::shared_ptr<Connection> &connection);
+        void HandleAcception(std::shared_ptr<Communication>& communication);
 
         void StartConnection();
 

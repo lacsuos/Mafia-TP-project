@@ -23,10 +23,6 @@ namespace net {
 
         bool isWorking();
 
-        tcp::socket &getSocket() { return socket; }
-
-        std::shared_ptr<GameRoom> getGame() const { return game_; }
-
         void JoinUserToGame(std::shared_ptr<User> &user);
 
     private:
@@ -49,17 +45,10 @@ namespace net {
 
     private:
         io_context &context;
-        tcp::socket socket;
 
-        boost::asio::streambuf read_buffer;
-        boost::asio::streambuf write_buffer;
-
-        std::istream in;
-        std::ostream out;
         std::atomic<bool> is_working{};
-        boost::property_tree::ptree last_msg;
 
-        std::shared_ptr<GameRoom> game_;
+        GameRoom* game_;
         std::mutex game_mutex;
 
         Base &base;

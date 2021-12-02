@@ -2,6 +2,7 @@
 #include "connection.hpp"
 #include "base.hpp"
 #include "game_connection.hpp"
+#include "communication.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <boost/shared_ptr.hpp>
@@ -33,14 +34,15 @@ namespace net {
         acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
         acceptor_.bind(endpoint_);
         acceptor_.listen();
-        auto connection = std::make_shared<Connection>(context_, base);
-        HandleAcception(connection);
+        auto communication = std::make_shared<Communication>(context_);
+        HandleAcception(communication);
     }
 
-    void Server::HandleAcception(std::shared_ptr<Connection> &connection) {
+    void Server::HandleAcception(std::shared_ptr<Communication>& communication) {
         BOOST_LOG_TRIVIAL(info) << "waiting for acception";
-        acceptor_.async_accept(connection->getSocket(), [this, connection](bs::error_code error) {
+        acceptor_.async_accept(communication->socket, [this, &communication](bs::error_code error) {
             if (!error) {
+                auto connection = std::make_shared<Connection>(communication, base);
                 BOOST_LOG_TRIVIAL(info) << "CONNECTION ACCEPTS";
                 connection_mutex_.lock();
                 new_connection_.push_back(connection);
@@ -48,8 +50,8 @@ namespace net {
             } else {
                 BOOST_LOG_TRIVIAL(info) << "CONNECTION DOES NOT ACCEPT";
             }
-            auto new_user = std::make_shared<Connection>(context_, base);
-            context_.post(boost::bind(&Server::HandleAcception, this, new_user));
+            auto new_communication = std::make_shared<Communication>(context_);
+            context_.post(boost::bind(&Server::HandleAcception, this, new_communication));
         });
     }
 
@@ -77,11 +79,11 @@ namespace net {
             return;
         }
 
-        auto user = base.creating_game.Pop();
-        BOOST_LOG_TRIVIAL(info) << user->getID() << " START NEW GAME";
-        auto game = std::make_shared<GameConnection>(context_, base, user);
+        auto communication = base.creating_game.Pop();
+        BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " START NEW GAME";
+        auto game = std::make_shared<GameConnection>(communication, base);
 
-        user->setRoom(game->getGame()->getID());
+        communication->user.set_room((game->getGame()->get_id());
 
         game_connection_mutex_.lock();
         new_game_connection_.push_back(game);
@@ -95,23 +97,23 @@ namespace net {
             return;
         }
 
-        auto user = base.accepting_game.Pop();
-        BOOST_LOG_TRIVIAL(info) << user->getID() << " JOINED GAME";
+        auto communication = base.accepting_game.Pop();
+        BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " JOINED GAME";
 
         auto it = std::find_if(new_game_connection_.begin(), new_game_connection_.end(),
-                               [user](const std::shared_ptr<GameConnection> &current) {
-                                   return current->getGame()->getID() == user->getRoom();
+                               [communication](const std::shared_ptr<GameConnection> &current) {
+                                   return current->getGame()->get_id() == communication->user.get_room();
                                });
 
         if (it == new_game_connection_.end()) {
-            BOOST_LOG_TRIVIAL(info) << user->getID() << " DOES NOT ACCEPT THE ROOM "
-                                    << user->getRoom();
+            BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " DOES NOT ACCEPT THE ROOM "
+                                    << communication->user.get_room();
             /// добавить сообщение на отправку что не нашлась комната
             context_.post(boost::bind(&Server::JoinRoom, this));
             return;
         }
 
-        it->get()->JoinUserToGame(user);
+        it->get()->JoinUserToGame(communication);
 
         context_.post(boost::bind(&Server::JoinRoom, this));
     }

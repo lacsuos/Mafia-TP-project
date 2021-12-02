@@ -28,18 +28,18 @@ namespace net {
         user->is_user_gaming.store(true);
 
         game_mutex.lock();
-        game_->addUser(user);
+        game_->add_user(user);
         game_mutex.unlock();
 
         read_until(socket, read_buffer, std::string(MSG_END));
         pt::read_json(in, last_msg);
 
-        out << Message::create_room_done(user->getID());
+        out << Message::create_room_done(user->get_id());
         async_write(socket, write_buffer, [this, user](bs::error_code error, size_t len) {
             if (!error) {
                 handle_read(user);
             } else {
-                BOOST_LOG_TRIVIAL(info) << "CREATED ROOM OF USER " << user->getID() << " FAILED";
+                BOOST_LOG_TRIVIAL(info) << "CREATED ROOM OF USER " << user->get_id() << " FAILED";
                 /// добавить
                 game_->is_game_connecting.store(false);
                 user->is_user_gaming.store(false);
@@ -49,19 +49,19 @@ namespace net {
 
     void GameConnection::JoinUserToGame(std::shared_ptr<User> &user) {
         if (user->is_user_gaming) {
-            BOOST_LOG_TRIVIAL(info) << "JOIN TO ROOM OF USER " << user->getID() << " FAILED";
+            BOOST_LOG_TRIVIAL(info) << "JOIN TO ROOM OF USER " << user->get_id() << " FAILED";
             return;
         }
 
-        if (game_->getSize() >= MAX_USERS) {
-            BOOST_LOG_TRIVIAL(info) << "JOIN USER " << user->getID() << " FAILED";
+        if (game_->get_size() >= MAX_USERS) {
+            BOOST_LOG_TRIVIAL(info) << "JOIN USER " << user->get_id() << " FAILED";
             return;
         }
 
         user->is_user_gaming.store(true);
 
         game_mutex.lock();
-        game_->addUser(user);
+        game_->add_user(user);
         game_mutex.unlock();
 
         boost::asio::post(context, boost::bind(&GameConnection::handle_read, this, user));
@@ -110,13 +110,13 @@ namespace net {
 
     void GameConnection::handle_message(const std::shared_ptr<User>& user) {
         std::vector<std::vector<std::string>> users_ip;
-        users_ip.resize(game_->getSize());
+        users_ip.resize(game_->get_size());
 
         std::vector<std::string> temp;
-        for (size_t i = 0; i < game_->getSize(); ++i) {
-            temp.push_back(game_->getUser(i)->getName());
-            for (size_t j = 1; j < game_->getSize(); ++j) {
-                temp.push_back(game_->getUser(i)->getIP());
+        for (size_t i = 0; i < game_->get_size(); ++i) {
+            temp.push_back(game_->get_user(i)->get_name());
+            for (size_t j = 1; j < game_->get_size(); ++j) {
+                temp.push_back(game_->get_user(i)->get_IP());
             }
             users_ip.push_back(temp);
             temp.clear();
