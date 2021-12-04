@@ -1,5 +1,13 @@
 #include "Mafia.h"
 
+Mafia::Mafia() {
+    role_ = 2;
+}
+
 size_t Mafia::roleAction() {
-    // do smth
+    std::cout << "fff";
+    return 777;
+}
+
+Mafia::~Mafia() noexcept {
 }

@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(): userId(0), alive(true), isSleep(false) {}
+Player::Player(): userId_(0), alive_(true), isSleep_(false), role_(0) {}
 
 
 size_t Player::vote() {
@@ -12,20 +12,34 @@ size_t Player::vote() {
 
 
 void Player::setUserId(size_t newId) {
-    userId = newId;
-}
-
-
-void Player::setUserName(std::string newName) {
-    userName = newName;
+    userId_ = newId;
 }
 
 
 void Player::setAlive(bool newStatus) {
-    alive = newStatus;
+    alive_ = newStatus;
 }
 
 
 void Player::setIsSleep(bool newStatus) {
-    isSleep = newStatus;
+    isSleep_ = newStatus;
 }
+
+
+size_t Player::getUserId() {
+    return userId_;
+}
+
+bool Player::getAlive() {
+    return alive_;
+}
+
+bool Player::getIsSleep() {
+    return isSleep_;
+}
+
+int Player::getRole() {
+    return role_;
+}
+
+Player::~Player() {}

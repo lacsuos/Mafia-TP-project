@@ -3,11 +3,18 @@
 
 int main() {
     GameRoom room; // Получаем инф-ю от сервера, заполняем все поля игроков
-    /*
-     * Возвращаем информацию серверу
-     * Ждем, когда ведущий нажмет на кнопку "начать день"
-     */
-    room.GameLoop(); // запуск игры
+    room.PlayersInfo();
+    for (int i = 0; i < 10; ++i) {
+        std::cout << "день: " << i << std::endl;
+
+        std::cout << room.day() << std::endl;
+        if (room.day())
+            break;
+        std::cout << room.evening() << std::endl;
+        if (room.evening())
+            break;
+        room.night();
+    }
     return 0;
 }
 

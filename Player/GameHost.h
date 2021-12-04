@@ -1,17 +1,11 @@
-#ifndef MAFIA_TP_PROJECT_GAMEHOST_H
-#define MAFIA_TP_PROJECT_GAMEHOST_H
+#pragma once
+
 #include <string>
+#include "Player.h"
 
-
-class GameHost {
-private:
-    size_t userId;
-    std::string userName;
-    std::string role;
+class GameHost : public Player {
 public:
-    void dayStage();
-    void eveningStage();
-    void nightStage();
+    GameHost();
+    size_t roleAction() override;
+    ~GameHost() override;
 };
-
-#endif //MAFIA_TP_PROJECT_GAMEHOST_H

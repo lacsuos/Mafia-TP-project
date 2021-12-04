@@ -2,19 +2,16 @@ project(Mafia-TP-project)
 cmake_minimum_required(VERSION 3.11)
 include_directories(Player GameRoom)
 
-add_library(Player SHARED
+add_library(GAME SHARED
         Player/Player.cpp Player/Player.h
         Player/Citizen.cpp Player/Citizen.h
         Player/GameHost.cpp Player/GameHost.h
         Player/Mafia.cpp Player/Mafia.h
+        GameRoom/GameRoom.cpp GameRoom/GameRoom.h
         )
 
-add_library(GameRoom SHARED
-        GameRoom/GameRoom.cpp GameRoom/GameRoom.h)
-
-target_link_libraries(Player GameRoom)
-
-add_executable(park_AaDS_hw main.cpp)
+add_executable(Mafia-TP-project main.cpp)
+target_link_libraries(Mafia-TP-project GAME)
 #enable_testing()
 #find_package(GTest REQUIRED)
 
