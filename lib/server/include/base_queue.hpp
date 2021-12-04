@@ -3,23 +3,23 @@
 #include <queue>
 #include <mutex>
 
-namespace net {
-    template<class T>
-    class BaseQueue {
-    public:
-        BaseQueue() = default;
 
-        ~BaseQueue();
+template<class T>
+class BaseQueue {
+public:
+    BaseQueue() = default;
 
-        void Push(T &element);
+    ~BaseQueue();
 
-        T Pop();
+    void Push(T &element);
 
-        bool IsEmpty();
+    T Pop();
 
-    private:
-        std::queue<T> queue_;
-        std::mutex queue_mutex;
-    };
-}
+    bool IsEmpty();
+
+private:
+    std::queue<T> queue_;
+    std::mutex queue_mutex;
+};
+
 

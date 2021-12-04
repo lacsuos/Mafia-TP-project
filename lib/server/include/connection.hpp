@@ -3,6 +3,7 @@
 #include "user.hpp"
 #include "base.hpp"
 #include "communication.hpp"
+#include "base_queue.hpp"
 
 #include <string>
 #include <boost/bind.hpp>

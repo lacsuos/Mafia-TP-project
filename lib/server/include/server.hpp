@@ -3,6 +3,7 @@
 #include "connection.hpp"
 #include "game_connection.hpp"
 #include "base.hpp"
+#include "base_queue.hpp"
 
 #include <string_view>
 #include <boost/bind.hpp>

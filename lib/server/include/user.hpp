@@ -7,13 +7,15 @@
 
 using boost::asio::ip::tcp;
 
+static size_t id_user_generate = 1;
+
 class User {
 public:
     explicit User(const tcp::socket &socket_) : is_user_connecting(false),
                                                 is_user_gaming(false),
                                                 ip(socket_.remote_endpoint().address().to_string()) {
         name = ip;
-        user_id = id++;
+        user_id = id_user_generate++;
     };
 
     User() = delete;
@@ -40,12 +42,7 @@ private:
     std::string name;
     std::string ip;
 
-    static size_t id;
     size_t user_id;
-
     size_t room_id;
-
 };
-
-size_t User::id = 1;
 
