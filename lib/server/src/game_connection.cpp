@@ -1,8 +1,5 @@
 #include "game_connection.hpp"
 #include "messages.hpp"
-#include "gameroom.hpp"
-#include "base.hpp"
-#include "communication.hpp"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/log/trivial.hpp>

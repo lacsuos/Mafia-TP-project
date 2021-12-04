@@ -1,8 +1,5 @@
 #include "connection.hpp"
-#include "user.hpp"
-#include "base.hpp"
 #include "base_queue.hpp"
-#include "communication.hpp"
 #include "messages.hpp"
 
 #include <boost/asio/yield.hpp>

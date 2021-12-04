@@ -1,9 +1,5 @@
 #include "server.hpp"
-#include "connection.hpp"
-#include "base.hpp"
 #include "base_queue.hpp"
-#include "game_connection.hpp"
-#include "communication.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <boost/shared_ptr.hpp>
