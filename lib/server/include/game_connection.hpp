@@ -3,6 +3,7 @@
 #include "gameroom.hpp"
 #include "base.hpp"
 #include "communication.hpp"
+#include "PlayRoom.h"
 
 #include <string>
 #include <boost/bind.hpp>
@@ -47,6 +48,8 @@ namespace net {
 
         void handle_admin_request(const std::shared_ptr<Communication> &communication);
 
+        void handle_game_day(const std::shared_ptr<Communication> &communication);
+
 
     private:
         io_context &context;
@@ -55,6 +58,10 @@ namespace net {
         std::vector<std::shared_ptr<Communication>> communications;
 
         GameRoom *game;
+
+        std::vector<int> votes;
+
+        PlayRoom *game_room;
         std::mutex game_mutex;
     };
 }

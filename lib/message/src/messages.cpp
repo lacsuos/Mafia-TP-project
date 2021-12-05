@@ -105,9 +105,13 @@ std::string Message::connected(const std::vector<std::vector<std::string>> &user
 }
 
 
-std::string MessageServer::game_start() {
+std::string MessageServer::game_start(const int role) {
     pt::ptree request;
+    pt::ptree parametrs;
 
     request.put("command", "game_start");
+    parametrs.put("role", role);
+
+    request.add_child("parametrs", parametrs);
     return std::string();
 }

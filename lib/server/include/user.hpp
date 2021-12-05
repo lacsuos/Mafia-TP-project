@@ -42,7 +42,7 @@ private:
     std::string name;
     std::string ip;
 
-    size_t user_id;
-    size_t room_id;
+    int user_id;
+    int room_id;
 };
 

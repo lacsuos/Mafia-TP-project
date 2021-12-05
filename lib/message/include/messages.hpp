@@ -23,5 +23,5 @@ public:
 
 class MessageServer : public Message {
 public:
-    static std::string game_start();
+    static std::string game_start(const int role);
 };
