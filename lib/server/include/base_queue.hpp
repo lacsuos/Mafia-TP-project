@@ -22,6 +22,7 @@ private:
     std::mutex queue_mutex;
 };
 
+
 template<class T>
 BaseQueue<T>::~BaseQueue() {
     queue_mutex.lock();
@@ -50,3 +51,4 @@ bool BaseQueue<T>::IsEmpty() {
     queue_mutex.unlock();
     return result;
 }
+
