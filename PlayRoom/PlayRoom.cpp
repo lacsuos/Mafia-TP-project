@@ -35,7 +35,7 @@ mafiaCounter_(2), citizenCounter_(7), players_(roomSize_) {
 
 
 PlayRoom::~PlayRoom() {
-    for (int i = 0; i < players_.size(); ++i) {
+    for (size_t i = 0; i < players_.size(); ++i) {
         delete players_[i];
     }
 }
@@ -84,7 +84,7 @@ int PlayRoom::globalToRoom(int userId) {
 int PlayRoom::CountingVotes(const std::vector<int> vecOfId) {
     int counterArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int voteArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    for (int i = 0; i < players_.size(); ++i) {
+    for (size_t i = 0; i < players_.size(); ++i) {
         voteArray[i] = globalToRoom(vecOfId[i]);
         if (voteArray[i] == -1)
             throw "BadID";

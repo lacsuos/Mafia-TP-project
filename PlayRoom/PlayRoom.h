@@ -13,11 +13,11 @@ private:
     std::vector<Player*> players_;
 public:
     PlayRoom() = default;
-    explicit PlayRoom(const std::vector<size_t> vecOfId);
-    int CountingVotes(const std::vector<size_t> vecOfId);
+    explicit PlayRoom(const std::vector<int> vecOfId);
+    int CountingVotes(const std::vector<int> vecOfId);
     bool day();
-    bool evening(const std::vector<size_t> vecOfId);
-    void night(const std::vector<size_t> vecOfId);
+    bool evening(const std::vector<int> vecOfId);
+    void night(const std::vector<int> vecOfId);
     void kill(int userId);
     bool IsGameOver();
     void SleepAllCitizen();
