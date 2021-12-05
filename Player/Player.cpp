@@ -1,18 +1,15 @@
 #include "Player.h"
 
-Player::Player(): userId_(0), alive_(true), isSleep_(false), role_(0) {}
+Player::Player(): globalId_(0), roomId_(0), alive_(true), isSleep_(false), role_(0) {}
 
 
-size_t Player::vote() {
-    size_t userVote = 0;
-    std::cout << "Введите id игрока, за которого голосуете: " ;
-    std::cin >> userVote;
-    return userVote;
+void Player::setGlobalId(size_t newId) {
+    globalId_ = newId;
 }
 
 
-void Player::setUserId(size_t newId) {
-    userId_ = newId;
+void Player::setRoomId(size_t newId) {
+    roomId_ = newId;
 }
 
 
@@ -26,9 +23,15 @@ void Player::setIsSleep(bool newStatus) {
 }
 
 
-size_t Player::getUserId() {
-    return userId_;
+size_t Player::getGlobalId() {
+    return globalId_;
 }
+
+
+size_t Player::getRoomId() {
+    return roomId_;
+}
+
 
 bool Player::getAlive() {
     return alive_;

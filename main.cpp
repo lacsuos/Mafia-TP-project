@@ -1,20 +1,8 @@
 #include <iostream>
-#include "GameRoom.h"
+#include "PlayRoom.h"
 
 int main() {
-    GameRoom room; // Получаем инф-ю от сервера, заполняем все поля игроков
-    room.PlayersInfo();
-    for (int i = 0; i < 10; ++i) {
-        std::cout << "день: " << i << std::endl;
-
-        std::cout << room.day() << std::endl;
-        if (room.day())
-            break;
-        std::cout << room.evening() << std::endl;
-        if (room.evening())
-            break;
-        room.night();
-    }
+    PlayRoom room; // Получаем инф-ю от сервера, заполняем все поля игроков
     return 0;
 }
 

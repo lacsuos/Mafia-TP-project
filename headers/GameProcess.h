@@ -1,6 +1,6 @@
 #ifndef MAFIA_TP_PROJECT_GAMEPROCESS_H
 #define MAFIA_TP_PROJECT_GAMEPROCESS_H
-#include "GameRoom.h"
+#include "PlayRoom.h"
 #include "Queue.h"
 #include "Player.h"
 #include "GameHost.h"

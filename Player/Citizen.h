@@ -6,6 +6,5 @@
 class Citizen : public Player {
 public:
     Citizen();
-    size_t roleAction() override;
     ~Citizen() override;
 };

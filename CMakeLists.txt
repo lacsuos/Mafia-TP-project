@@ -1,13 +1,13 @@
 project(Mafia-TP-project)
 cmake_minimum_required(VERSION 3.11)
-include_directories(Player GameRoom)
+include_directories(Player PlayRoom)
 
 add_library(GAME SHARED
         Player/Player.cpp Player/Player.h
         Player/Citizen.cpp Player/Citizen.h
         Player/GameHost.cpp Player/GameHost.h
         Player/Mafia.cpp Player/Mafia.h
-        GameRoom/GameRoom.cpp GameRoom/GameRoom.h
+        PlayRoom/PlayRoom.cpp PlayRoom/PlayRoom.h
         )
 
 add_executable(Mafia-TP-project main.cpp)
