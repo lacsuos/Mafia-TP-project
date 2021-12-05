@@ -6,7 +6,7 @@
 #include "Mafia.h"
 #include "GameHost.h"
 
- PlayRoom::PlayRoom(const std::vector<size_t> vecOfId): roomSize_(10), userCounter_(10),
+ PlayRoom::PlayRoom(const std::vector<int> vecOfId): roomSize_(10), userCounter_(10),
 mafiaCounter_(2), citizenCounter_(7), players_(roomSize_) {
     int pl[] = {1, 1, 777, 0, 0, 0, 0, 0, 0, 0};
     std::random_device r;
@@ -47,7 +47,7 @@ bool PlayRoom::day() {
 }
 
 
-bool PlayRoom::evening(const std::vector<size_t> vecOfId) {
+bool PlayRoom::evening(const std::vector<int> vecOfId) {
     int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
         kill(resultOfVoting);
@@ -55,7 +55,7 @@ bool PlayRoom::evening(const std::vector<size_t> vecOfId) {
 }
 
 
-void PlayRoom::night(const std::vector<size_t> vecOfId) {
+void PlayRoom::night(const std::vector<int> vecOfId) {
     SleepAllCitizen();
     int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
@@ -81,7 +81,7 @@ int PlayRoom::globalToRoom(int userId) {
     return -1;
 }
 
-int PlayRoom::CountingVotes(const std::vector<size_t> vecOfId) {
+int PlayRoom::CountingVotes(const std::vector<int> vecOfId) {
     int counterArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int voteArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < players_.size(); ++i) {
