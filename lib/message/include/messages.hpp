@@ -13,6 +13,9 @@ public:
     static std::string msg();
     static std::string disconnect();
     static std::string create_room();
+    static std::string start_game(const size_t &id);
+    static std::string error();
+    static std::string accept_room_done(const size_t& room_id);
     static std::string join_room(const size_t& room_id);
     static std::string create_room_done(const size_t& id);
     static std::string connected(const std::vector<std::vector<std::string>>& users_ip);
@@ -20,5 +23,5 @@ public:
 
 class MessageServer : public Message {
 public:
-
+    static std::string game_start();
 };

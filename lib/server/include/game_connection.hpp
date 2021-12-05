@@ -12,7 +12,7 @@
 using boost::asio::ip::tcp;
 using boost::asio::io_context;
 
-constexpr size_t MAX_USERS = 2;
+constexpr size_t MAX_USERS = 4;
 
 namespace net {
 
@@ -41,11 +41,17 @@ namespace net {
         /// Handle out
         void disconnect(std::shared_ptr<Communication> &communication);
 
+        void handle_start_game(const std::shared_ptr<Communication> &communication);
+
+        void handle_error(std::shared_ptr<Communication> &communication);
+
+        void handle_admin_request(const std::shared_ptr<Communication> &communication);
+
 
     private:
         io_context &context;
 
-        std::atomic<bool> is_working{};
+        std::atomic<bool> is_gaming{};
         std::vector<std::shared_ptr<Communication>> communications;
 
         GameRoom *game;

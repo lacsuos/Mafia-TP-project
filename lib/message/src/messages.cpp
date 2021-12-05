@@ -58,6 +58,36 @@ std::string Message::create_room_done(const size_t &id) {
     return message_phtee(request);
 }
 
+std::string Message::accept_room_done(const size_t &id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("id", id);
+    request.put("command", "accepted");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string Message::start_game(const size_t &id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("id", id);
+    request.put("command", "start_game");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string Message::error() {
+    pt::ptree request;
+
+    request.put("command", "error");
+
+    return message_phtee(request);
+}
+
 std::string Message::connected(const std::vector<std::vector<std::string>> &users_ip) {
     pt::ptree parametrs;
     pt::ptree request;
@@ -71,5 +101,13 @@ std::string Message::connected(const std::vector<std::vector<std::string>> &user
     request.put("command", "ips");
     request.add_child("parametrs", parametrs);
 
+    return std::string();
+}
+
+
+std::string MessageServer::game_start() {
+    pt::ptree request;
+
+    request.put("command", "game_start");
     return std::string();
 }

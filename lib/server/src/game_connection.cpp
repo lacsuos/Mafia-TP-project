@@ -1,5 +1,6 @@
 #include "game_connection.hpp"
 #include "messages.hpp"
+#include "PlayGame.h"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/log/trivial.hpp>
@@ -15,7 +16,7 @@ namespace net {
 
     GameConnection::GameConnection(std::shared_ptr<Communication> &communication)
             : context(communication->context),
-              is_working(false) {
+              is_gaming(false) {
         GameRoom temp(communication->user->get_id());
         game = &temp;
 
@@ -45,6 +46,12 @@ namespace net {
                     });
     }
 
+    void GameConnection::handle_error(std::shared_ptr<Communication> &communication) {
+        communication->out << Message::error();
+        boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
+        BOOST_LOG_TRIVIAL(info) << communication->user->get_name() << "'s request is unknown";
+    }
+
     void GameConnection::join_to_game(std::shared_ptr<Communication> &communication) {
         if (communication->user->is_user_gaming) {
             BOOST_LOG_TRIVIAL(info) << "JOIN TO ROOM OF USER " << communication->user->get_id()
@@ -62,6 +69,13 @@ namespace net {
         game_mutex.lock();
         communications.push_back(communication);
         game_mutex.unlock();
+
+
+        read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
+        pt::read_json(communication->in, communication->last_msg);
+
+        communication->out << Message::accept_room_done(communication->user->get_id());
+        write(communication->socket, communication->write_buffer);
 
         boost::asio::post(context, boost::bind(&GameConnection::handle_read, this, communication));
     }
@@ -90,6 +104,25 @@ namespace net {
                         }
                     });
     }
+    void GameConnection::handle_admin_request(const std::shared_ptr<Communication> &communication) {
+        BOOST_LOG_TRIVIAL(info) << "GameRoom handleing admin request: ";
+
+        std::string command = communication->last_msg.get<std::string>("command_type");
+
+        if (command == "start-game") {
+            if (communications.size() > 1) {
+                is_gaming.store(true);
+                communication->out << Message::start_game(communication->user->get_id());
+//                boost::asio::post(context, boost::bind(&GameConnection::Start, this));
+            } else {
+                boost::asio::post(context, boost::bind(&GameConnection::handle_error, this, communication));
+            }
+            boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
+            return;
+        }
+
+        boost::asio::post(context, boost::bind(&GameConnection::handle_error, this, communication));
+    }
 
     void GameConnection::handle_request(const std::shared_ptr<Communication> &communication) {
         pt::read_json(communication->in, communication->last_msg);
@@ -101,6 +134,40 @@ namespace net {
             return;
         }
 
+        if (is_gaming) {
+            if (command_type == "game") {
+                boost::asio::post(context,
+                                  boost::bind(&GameConnection::handle_start_game, this, communication));
+            } else {
+                boost::asio::post(context, boost::bind(&GameConnection::handle_error, this, communication));
+            }
+            return;
+        }
+
+        if (command_type == "room-admin") {
+            if (communication->user->get_id() == get_game()->get_admin_id()) {
+                boost::asio::post(context, boost::bind(&GameConnection::handle_admin_request, this,
+                                                       communication));
+            } else {
+                boost::asio::post(context,
+                                  boost::bind(&GameConnection::handle_error, this, communication));
+            }
+            return;
+        }
+    }
+
+    void GameConnection::handle_start_game(const std::shared_ptr<Communication> &communication) {
+//        communication->out << MessageServer::game_start();
+//        std::vector<std::size_t> ids;
+//        for (auto com : communications) {
+//            ids.push_back(com->user->get_id());
+//        }
+//        PlayGame play_game(ids);
+//        for
+//        addUser(player)
+
+
+        boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
     }
 
     void GameConnection::handle_message(const std::shared_ptr<Communication> &communication) {
