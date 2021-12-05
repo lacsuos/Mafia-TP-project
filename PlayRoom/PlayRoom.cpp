@@ -13,7 +13,7 @@ mafiaCounter_(2), citizenCounter_(7), players_(roomSize_) {
     std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
     std::mt19937 eng(seed);
     std::shuffle(std::begin(pl), std::end(pl), eng);
-    for (size_t i = 0; i < userCounter_; ++i) {
+    for (int i = 0; i < userCounter_; ++i) {
         auto Role = [](int a) -> Player * {
             switch (a) {
                 case 0:
@@ -48,7 +48,7 @@ bool PlayRoom::day() {
 
 
 bool PlayRoom::evening(const std::vector<size_t> vecOfId) {
-    size_t resultOfVoting = CountingVotes(vecOfId);
+    int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
         kill(resultOfVoting);
     return  IsGameOver();
@@ -57,13 +57,13 @@ bool PlayRoom::evening(const std::vector<size_t> vecOfId) {
 
 void PlayRoom::night(const std::vector<size_t> vecOfId) {
     SleepAllCitizen();
-    size_t resultOfVoting = CountingVotes(vecOfId);
+    int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
         kill(resultOfVoting);
 }
 
 
-void PlayRoom::kill(size_t userId) {
+void PlayRoom::kill(int userId) {
     players_[userId]->setAlive(false);
     if (players_[userId]->getRole() == 1) {
         citizenCounter_--;
@@ -73,15 +73,15 @@ void PlayRoom::kill(size_t userId) {
     }
 }
 
-size_t PlayRoom::globalToRoom(size_t userId) {
-    for (size_t i = 0; i < roomSize_; ++i) {
+int PlayRoom::globalToRoom(int userId) {
+    for (int i = 0; i < roomSize_; ++i) {
         if (players_[i]->getGlobalId() == userId)
             return players_[i]->getRoomId();
     }
     return -1;
 }
 
-size_t PlayRoom::CountingVotes(const std::vector<size_t> vecOfId) {
+int PlayRoom::CountingVotes(const std::vector<size_t> vecOfId) {
     int counterArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int voteArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < players_.size(); ++i) {
@@ -90,11 +90,11 @@ size_t PlayRoom::CountingVotes(const std::vector<size_t> vecOfId) {
             throw "BadID";
     }
     int max = -1, counterMax = 0;
-    size_t maxIndex = -1;
-    for (size_t i = 0; i < roomSize_; ++i) {
+    int maxIndex = -1;
+    for (int i = 0; i < roomSize_; ++i) {
         counterArray[voteArray[i]]++;
     }
-    for (size_t i = 0; i < roomSize_; ++i) {
+    for (int i = 0; i < roomSize_; ++i) {
         if (max == counterArray[i]) {
             counterMax++;
         }
@@ -123,12 +123,12 @@ bool PlayRoom::IsGameOver() {
 }
 
 
-size_t PlayRoom::GetMafiaCounter() {
+int PlayRoom::GetMafiaCounter() {
     return mafiaCounter_;
 }
 
 
-size_t PlayRoom::GetCitizenCounter() {
+int PlayRoom::GetCitizenCounter() {
     return citizenCounter_;
 }
 

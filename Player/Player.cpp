@@ -3,12 +3,12 @@
 Player::Player(): globalId_(0), roomId_(0), alive_(true), isSleep_(false), role_(0) {}
 
 
-void Player::setGlobalId(size_t newId) {
+void Player::setGlobalId(int newId) {
     globalId_ = newId;
 }
 
 
-void Player::setRoomId(size_t newId) {
+void Player::setRoomId(int newId) {
     roomId_ = newId;
 }
 
@@ -23,12 +23,12 @@ void Player::setIsSleep(bool newStatus) {
 }
 
 
-size_t Player::getGlobalId() {
+int Player::getGlobalId() {
     return globalId_;
 }
 
 
-size_t Player::getRoomId() {
+int Player::getRoomId() {
     return roomId_;
 }
 
