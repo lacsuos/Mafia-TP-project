@@ -1,5 +1,11 @@
 project(Mafia-TP-project)
 cmake_minimum_required(VERSION 3.11)
+add_compile_options(
+        -Werror
+        -Wall
+        -Wextra
+        -Wpedantic
+)
 include_directories(Player PlayRoom)
 
 add_library(GAME SHARED
