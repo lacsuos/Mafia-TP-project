@@ -21,7 +21,7 @@ namespace net {
     public:
         explicit GameConnection(std::shared_ptr<Communication> &communication);
 
-        void join_to_game(std::shared_ptr<Communication> &communication);
+        int join_to_game(std::shared_ptr<Communication> &communication);
 
         const GameRoom *get_game() { return game; }
 
@@ -51,6 +51,12 @@ namespace net {
         void handle_admin_request(const std::shared_ptr<Communication> &communication);
 
         void handle_game_day(const std::shared_ptr<Communication> &communication);
+
+        void join_to_game_failed(const std::shared_ptr<Communication> &communication);
+
+        void game_delete();
+
+        void handle_leave(const std::shared_ptr<Communication> &communication);
 
 
     private:

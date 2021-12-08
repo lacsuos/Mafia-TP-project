@@ -57,12 +57,13 @@ std::string MessageClient::join_room(const size_t &room_id) {
     return message_phtee(request);
 }
 
-std::string MessageServer::create_room_done(const size_t &id) {
+std::string MessageServer::create_room_done(const int &id) {
     pt::ptree parametrs;
     pt::ptree request;
 
     parametrs.put("id", id);
-    request.put("command", "room_is_created");
+    request.put("command-type", "basic");
+    request.put("command", "create_room");
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);
@@ -83,8 +84,23 @@ std::string MessageServer::start_game(const size_t &id) {
     pt::ptree parametrs;
     pt::ptree request;
 
-    parametrs.put("id", id);
-    request.put("command", "start_game");
+    parametrs.put("status", "done");
+
+    request.put("command_type", "room_admin");
+    request.put("command", "start");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::start_game_failed() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+
+    request.put("command-type", "room-room_admin-answer");
+    request.put("command", "start");
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);
@@ -109,23 +125,24 @@ std::string MessageServer::connected(const std::vector<std::vector<std::string>>
 
     }
 
+    request.put("command_type", "basic");
     request.put("command", "ips");
     request.add_child("parametrs", parametrs);
 
-    return std::string();
+    return message_phtee(request);
 }
 
 
-std::string MessageServer::game_start(const int role) {
-    pt::ptree request;
-    pt::ptree parametrs;
-
-    request.put("command", "game_start");
-    parametrs.put("role", role);
-
-    request.add_child("parametrs", parametrs);
-    return std::string();
-}
+//std::string MessageServer::game_start_______________--(const int role) {
+//    pt::ptree request;
+//    pt::ptree parametrs;
+//
+//    request.put("command", "game_start");
+//    parametrs.put("role", role);
+//
+//    request.add_child("parametrs", parametrs);
+//    return std::string();
+//}
 
 std::string MessageServer::join_room_failed(const int &id) {
     pt::ptree parametrs;
@@ -134,8 +151,21 @@ std::string MessageServer::join_room_failed(const int &id) {
     parametrs.put("status", "fail");
     parametrs.put("id", id);
 
-    request.put("command_type", "basic-answer");
-    request.put("command", "join-room");
+    request.put("command_type", "basic");
+    request.put("command", "join_room");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::leave_room_done() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "done");
+
+    request.put("command_type", "basic_room");
+    request.put("command", "leave");
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);
