@@ -121,7 +121,7 @@ namespace net {
         pt::read_json(communication->in, communication->last_msg);
         std::string command_type = communication->last_msg.get<std::string>("command_type");
 
-        if (command_type == "message") {
+        if (command_type == "ping") {
             boost::asio::post(context, boost::bind(&Connection::handle_message, this));
             return;
         }

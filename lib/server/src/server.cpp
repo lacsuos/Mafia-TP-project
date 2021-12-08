@@ -106,6 +106,8 @@ namespace net {
             return;
         }
 
+        const std::lock_guard<std::mutex> lock(game_connection_mutex_);
+
         auto communication = base.accepting_game.Pop();
         BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " JOINED GAME";
 

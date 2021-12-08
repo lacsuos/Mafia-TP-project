@@ -1,7 +1,7 @@
 #include "messages.hpp"
 
 #include <sstream>
-
+#include <string>
 #include <boost/property_tree/json_parser.hpp>
 
 namespace pt = boost::property_tree;
@@ -15,8 +15,8 @@ std::string Message::message_phtee(boost::property_tree::ptree const &request) {
 std::string MessageClient::msg() {
     pt::ptree request;
 
-    request.put("command_type", "message");
-    request.put("command", "message");
+    request.put("command_type", "ping");
+    request.put("command", "ping");
 
     return message_phtee(request);
 }
@@ -119,10 +119,18 @@ std::string MessageServer::connected(const std::vector<std::vector<std::string>>
     pt::ptree parametrs;
     pt::ptree request;
 
+    int count = 0;
     for (const auto &i: users_ip) {
-        parametrs.put("name", i[0]);
-        parametrs.put("ip", i[1]);
+        std::string name = "name";
+        std::string name_number = name + std::to_string(count);
 
+        std::string ip = "ip";
+        std::string ip_number = ip + std::to_string(count);
+
+        parametrs.put(name_number, i[0]);
+        parametrs.put(ip_number, i[1]);
+
+        ++count;
     }
 
     request.put("command_type", "basic");

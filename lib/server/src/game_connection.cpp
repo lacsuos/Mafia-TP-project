@@ -71,6 +71,8 @@ namespace net {
             return -1;
         }
 
+        std::lock_guard<std::mutex> lock(game_mutex);
+
         if (communications.size() > MAX_USERS) {
             BOOST_LOG_TRIVIAL(info) << "JOIN USER " << communication->user->get_id() << " FAILED";
             join_to_game_failed(communication);
@@ -80,10 +82,7 @@ namespace net {
         communication->user->is_user_gaming.store(true);
         is_gaming.store(true);
 
-        game_mutex.lock();
         communications.push_back(communication);
-        game_mutex.unlock();
-
 
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
@@ -92,7 +91,6 @@ namespace net {
         write(communication->socket, communication->write_buffer);
 
         boost::asio::post(context, boost::bind(&GameConnection::handle_read, this, communication));
-
         return 0;
     }
 
@@ -114,7 +112,7 @@ namespace net {
         async_write(communication->socket, communication->write_buffer,
                     [this, &communication](bs::error_code error, size_t len) {
                         if (!error) {
-                            handle_request(communication);
+                            handle_read(communication);
                         } else {
                             disconnect(const_cast<std::shared_ptr<Communication> &>(communication));
                         }
@@ -125,12 +123,13 @@ namespace net {
         BOOST_LOG_TRIVIAL(info) << "GameRoom handleing admin request: ";
 
         std::string command = communication->last_msg.get<std::string>("command");
+        std::lock_guard<std::mutex> lock(game_mutex);
 
         if (command == "start_game") {
             if (communications.size() > 1) {
                 is_gaming.store(true);
                 communication->out << MessageServer::start_game(communication->user->get_id());
-//                boost::asio::post(context, boost::bind(&GameConnection::Start, this)); TODO перенос в старт
+                boost::asio::post(context, boost::bind(&GameConnection::handle_request, this));
             } else {
                 communication->out << MessageServer::start_game_failed();
             }
@@ -154,12 +153,12 @@ namespace net {
         game_mutex.unlock();
 
         communication->out << MessageServer::leave_room_done();
-
         write(communication->socket, communication->write_buffer);
 
         communication->user->is_user_gaming.store(false);
         communication->user->set_room(0);
 
+        std::lock_guard<std::mutex> lock(game_mutex);
         if (communications.size() == 0) {
             boost::asio::post(context, boost::bind(&GameConnection::game_delete, this));
         }
@@ -171,18 +170,26 @@ namespace net {
     }
 
 
-
     void GameConnection::handle_request(const std::shared_ptr<Communication> &communication) {
         if (is_remove) {
-            boost::asio::post(context, boost::bind(&GameConnection::handle_leave, this, communication));
+            boost::asio::post(context,
+                              boost::bind(&GameConnection::handle_leave, this, communication));
             return;
         }
+
         pt::read_json(communication->in, communication->last_msg);
         std::string command_type = communication->last_msg.get<std::string>("command_type");
 
         if (command_type == "message") {
-            boost::asio::post(context,
-                              boost::bind(&GameConnection::handle_message, this, communication));
+            if (is_gaming) {
+                boost::asio::post(context,
+                                  boost::bind(&GameConnection::handle_game_status, this,
+                                              communication));
+            } else {
+                boost::asio::post(context,
+                                  boost::bind(&GameConnection::handle_ping, this,
+                                              communication));
+            }
             return;
         }
 
@@ -320,7 +327,7 @@ namespace net {
 //        }
 //    }
 
-    void GameConnection::handle_message(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_game_status(const std::shared_ptr<Communication> &communication) {
         std::vector<std::vector<std::string>> users_ip;
         users_ip.resize(communications.size());
 
@@ -331,6 +338,7 @@ namespace net {
         communication->out << MessageServer::connected(users_ip);
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
+        return;
     }
 
     void GameConnection::disconnect(std::shared_ptr<Communication> &communication) {
@@ -348,5 +356,9 @@ namespace net {
                         communication->socket.close();
                     });
     }
+    void GameConnection::handle_ping(const std::shared_ptr<Communication> &communication) {
+            communication->out << MessageClient::msg();
+            boost::asio::post(context, boost::bind(&GameConnection::handle_write, this));
+        }
 
 }

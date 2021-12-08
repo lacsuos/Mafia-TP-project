@@ -21,6 +21,6 @@ add_subdirectory(lib)
 
 add_executable(server_prog src/main.cpp)
 
-target_link_libraries(server_prog server_lib messages
+target_link_libraries(server_prog server_lib messages GAME
         ${CMAKE_THREAD_LIBS_INIT}
         ${Boost_LIBRARIES})

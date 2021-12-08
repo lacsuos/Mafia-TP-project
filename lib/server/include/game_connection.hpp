@@ -28,20 +28,14 @@ namespace net {
         boost::atomic<bool> is_gaming;
         boost::atomic<bool> is_remove;
     private:
-
-        /// Handle completion of a read operation.
         void handle_read(const std::shared_ptr<Communication> &communication);
 
-        /// Handle completion of a write operation.
         void handle_write(const std::shared_ptr<Communication> &communication);
 
-        /// Handle completion of commands.
         void handle_request(const std::shared_ptr<Communication> &communication);
 
-        /// Handle message
-        void handle_message(const std::shared_ptr<Communication> &communication);
+        void handle_game_status(const std::shared_ptr<Communication> &communication);
 
-        /// Handle out
         void disconnect(std::shared_ptr<Communication> &communication);
 
         void handle_start_game(const std::shared_ptr<Communication> &communication);
@@ -57,6 +51,8 @@ namespace net {
         void game_delete();
 
         void handle_leave(const std::shared_ptr<Communication> &communication);
+
+        void handle_ping(const std::shared_ptr<Communication> &communication);
 
 
     private:
