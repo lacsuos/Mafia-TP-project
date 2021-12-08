@@ -7,7 +7,7 @@
 
 using boost::asio::ip::tcp;
 
-static size_t id_user_generate = 1;
+static int id_user_generate = 1;
 
 class User {
 public:
@@ -22,15 +22,15 @@ public:
 
     ~User() = default;
 
-    void set_name(std::string name_) { name = name_; }
+    void set_name(const std::string &name_) { name = name_; }
 
     std::string get_name() const { return name; }
 
-    size_t get_id() const { return user_id; }
+    int get_id() const { return user_id; }
 
-    void set_room(const size_t &room_id_) { room_id = room_id_; }
+    void set_room(const int &room_id_) { room_id = room_id_; }
 
-    size_t get_room() const { return room_id; }
+    int get_room() const { return room_id; }
 
     std::string get_IP() const { return ip; }
 

@@ -60,30 +60,15 @@ namespace net {
                     });
     }
 
-    void Connection::handle_request() {
-        pt::read_json(communication->in, communication->last_msg);
-        std::string command_type = communication->last_msg.get<std::string>("command");
+    void Connection::handle_error() {
+        BOOST_LOG_TRIVIAL(info) << communication->user->get_name() << "'s request is unknown";
 
-        if (command_type == "message") {
-            boost::asio::post(context, boost::bind(&Connection::handle_message, this));
-            return;
-        }
-
-        if (command_type == "disconnect") {
-            boost::asio::post(context, boost::bind(&Connection::disconnect, this));
-            return;
-        }
-
-        if (command_type == "add_room") {
-            boost::asio::post(context, boost::bind(&Connection::handle_create_room, this));
-        }
-        if (command_type == "join_room") {
-            boost::asio::post(context, boost::bind(&Connection::handle_join_room, this));
-        }
+        communication->out << MessageClient::error();
+        boost::asio::post(context, boost::bind(&Connection::handle_write, this));
     }
 
     void Connection::handle_create_room() {
-        communication->out << Message::create_room();
+        communication->out << MessageClient::create_room();
         async_write(communication->socket, communication->write_buffer,
                     [this](bs::error_code error, size_t len) {
                         if (!error) {
@@ -99,9 +84,9 @@ namespace net {
     void Connection::handle_join_room() {
 
         const pt::ptree &parametrs = communication->last_msg.get_child("parametrs");
-        communication->user->set_room(parametrs.get<size_t>("id"));
+        communication->user->set_room(parametrs.get<int>("id"));
 
-        communication->out << Message::join_room(communication->user->get_room());
+        communication->out << MessageClient::join_room(communication->user->get_room());
 
         async_write(communication->socket, communication->write_buffer,
                     [this](bs::error_code error, size_t len) {
@@ -117,18 +102,48 @@ namespace net {
     }
 
     void Connection::handle_message() {
-        communication->out << Message::msg();
+        communication->out << MessageClient::msg();
         boost::asio::post(context, boost::bind(&Connection::handle_write, this));
     }
 
     void Connection::disconnect() {
         BOOST_LOG_TRIVIAL(info) << "DISCONNECTED";
 
-        communication->out << Message::disconnect();
+        communication->out << MessageClient::disconnect();
         async_write(communication->socket, communication->write_buffer,
                     [this](bs::error_code error, size_t len) {
                         communication->user->is_user_connecting.store(false);
                         communication->socket.close();
                     });
+    }
+
+    void Connection::handle_request() {
+        pt::read_json(communication->in, communication->last_msg);
+        std::string command_type = communication->last_msg.get<std::string>("command_type");
+
+        if (command_type == "message") {
+            boost::asio::post(context, boost::bind(&Connection::handle_message, this));
+            return;
+        }
+
+        if (command_type == "disconnect") {
+            boost::asio::post(context, boost::bind(&Connection::disconnect, this));
+            return;
+        }
+
+        if (command_type != "basic") {
+            boost::asio::post(context, boost::bind(&Connection::handle_error, this));
+            return;
+        }
+
+        std::string command = communication->last_msg.get<std::string>("command");
+
+        if (command == "add_room") {
+            boost::asio::post(context, boost::bind(&Connection::handle_create_room, this));
+        } else if (command == "join_room") {
+            boost::asio::post(context, boost::bind(&Connection::handle_join_room, this));
+        } else {
+            boost::asio::post(context, boost::bind(&Connection::handle_error, this));
+        }
     }
 }

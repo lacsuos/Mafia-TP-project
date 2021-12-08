@@ -25,6 +25,8 @@ namespace net {
 
         const GameRoom *get_game() { return game; }
 
+        boost::atomic<bool> is_gaming;
+        boost::atomic<bool> is_remove;
     private:
 
         /// Handle completion of a read operation.
@@ -54,7 +56,6 @@ namespace net {
     private:
         io_context &context;
 
-        std::atomic<bool> is_gaming{};
         std::vector<std::shared_ptr<Communication>> communications;
 
         GameRoom *game;

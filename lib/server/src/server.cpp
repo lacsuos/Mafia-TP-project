@@ -1,8 +1,10 @@
 #include "server.hpp"
 #include "base_queue.hpp"
+#include "messages.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace bs = boost::system;
 
@@ -16,6 +18,7 @@ namespace net {
     void Server::run() {
         context_.post(boost::bind(&Server::StartAccepting, this));
         context_.post(boost::bind(&Server::StartConnection, this));
+        context_.post(boost::bind(&Server::CleanRemovedRooms, this));
         context_.post(boost::bind(&Server::CreateRoom, this));
         context_.post(boost::bind(&Server::JoinRoom, this));
 
@@ -69,6 +72,15 @@ namespace net {
         context_.post(boost::bind(&Server::StartConnection, this));
     }
 
+    void Server::CleanRemovedRooms() {
+        game_connection_mutex_.lock();
+        BOOST_LOG_TRIVIAL(info) << " DELETE REMOVED GAME";
+        std::erase_if(new_game_connection_,
+                      [](const std::shared_ptr<GameConnection> &current) { return current->is_remove.load(); });
+        game_connection_mutex_.unlock();
+        context_.post(boost::bind(&Server::CleanRemovedRooms, this));
+    }
+
 
     void Server::CreateRoom() {
         if (base.creating_game.IsEmpty()) {
@@ -106,7 +118,10 @@ namespace net {
         if (it == new_game_connection_.end()) {
             BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " DOES NOT ACCEPT THE ROOM "
                                     << communication->user->get_room();
-            /// добавить сообщение на отправку что не нашлась комната
+            read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
+            boost::property_tree::read_json(communication->in, communication->last_msg);
+            communication->out << MessageServer::join_room_failed(communication->user->get_room());
+            write(communication->socket, communication->write_buffer);
             context_.post(boost::bind(&Server::JoinRoom, this));
             return;
         }

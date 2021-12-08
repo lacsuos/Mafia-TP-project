@@ -12,42 +12,52 @@ std::string Message::message_phtee(boost::property_tree::ptree const &request) {
     return json_request.str() + "\r\n\r";
 }
 
-std::string Message::msg() {
+std::string MessageClient::msg() {
     pt::ptree request;
 
-    request.put("command", "message_from_server");
+    request.put("command_type", "message");
+    request.put("command", "message");
 
     return message_phtee(request);
 }
 
-std::string Message::disconnect() {
+std::string MessageClient::disconnect() {
     pt::ptree request;
 
-    request.put("command", "disconnected from server");
+    request.put("command_type", "basic");
+    request.put("command", "disconnect");
 
     return message_phtee(request);
 }
 
-std::string Message::create_room() {
-    pt::ptree request;
-
-    request.put("command", "created room");
-
-    return message_phtee(request);
-}
-
-std::string Message::join_room(const size_t &room_id) {
+std::string MessageClient::create_room() {
     pt::ptree parametrs;
     pt::ptree request;
 
-    parametrs.put("id", room_id);
-    request.put("command", "joined_room");
+    parametrs.put("status", "on");
+
+    request.put("command_type", "basic");
+    request.put("command", "create_room");
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);
 }
 
-std::string Message::create_room_done(const size_t &id) {
+std::string MessageClient::join_room(const size_t &room_id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "on");
+    parametrs.put("id", room_id);
+
+    request.put("command_type", "basic");
+    request.put("command", "join_room");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::create_room_done(const size_t &id) {
     pt::ptree parametrs;
     pt::ptree request;
 
@@ -58,7 +68,7 @@ std::string Message::create_room_done(const size_t &id) {
     return message_phtee(request);
 }
 
-std::string Message::accept_room_done(const size_t &id) {
+std::string MessageServer::accept_room_done(const size_t &id) {
     pt::ptree parametrs;
     pt::ptree request;
 
@@ -69,7 +79,7 @@ std::string Message::accept_room_done(const size_t &id) {
     return message_phtee(request);
 }
 
-std::string Message::start_game(const size_t &id) {
+std::string MessageServer::start_game(const size_t &id) {
     pt::ptree parametrs;
     pt::ptree request;
 
@@ -80,15 +90,16 @@ std::string Message::start_game(const size_t &id) {
     return message_phtee(request);
 }
 
-std::string Message::error() {
+std::string MessageClient::error() {
     pt::ptree request;
 
+    request.put("command_type", "error");
     request.put("command", "error");
 
     return message_phtee(request);
 }
 
-std::string Message::connected(const std::vector<std::vector<std::string>> &users_ip) {
+std::string MessageServer::connected(const std::vector<std::vector<std::string>> &users_ip) {
     pt::ptree parametrs;
     pt::ptree request;
 
@@ -114,4 +125,18 @@ std::string MessageServer::game_start(const int role) {
 
     request.add_child("parametrs", parametrs);
     return std::string();
+}
+
+std::string MessageServer::join_room_failed(const int &id) {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
+    parametrs.put("id", id);
+
+    request.put("command_type", "basic-answer");
+    request.put("command", "join-room");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
 }

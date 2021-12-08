@@ -17,14 +17,12 @@ namespace net {
 
     class Connection {
     public:
-        /// Construct a connection with the given io_context.
         explicit Connection(std::shared_ptr<Communication> &communication, Base &in_base);
 
         Connection() = delete;
 
         ~Connection() = default;
 
-        /// Start the first asynchronous operation for the connection.
         void start();
 
         bool isWorking();
@@ -32,24 +30,21 @@ namespace net {
         bool isUserWorking() const;
 
     private:
-        /// Handle completion of a read operation.
         void handle_read();
 
-        /// Handle completion of a write operation.
         void handle_write();
 
-        /// Handle completion of commands.
         void handle_request();
 
-        /// Handle message
         void handle_message();
 
-        /// Handle out
         void disconnect();
 
         void handle_create_room();
 
         void handle_join_room();
+
+        void handle_error();
 
     private:
         io_context &context;

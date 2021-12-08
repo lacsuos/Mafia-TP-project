@@ -46,6 +46,8 @@ namespace net {
 
         void StartConnection();
 
+        void CleanRemovedRooms();
+
     private:
         io_context context_;
 
