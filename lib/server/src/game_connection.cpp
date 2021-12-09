@@ -335,6 +335,7 @@ namespace net {
                         if (it != communications.end()) {
                             communications.erase(it);
                         }
+                        is_remove.store(true);
                         communication->user->is_user_gaming.store(false);
                         communication->socket.close();
                     });
