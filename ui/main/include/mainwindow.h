@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "screenfactory.h"
-#include "Base\navigator.h"
+#include "screensfactory.h"
+#include "abstract\include\fragmentnavigator.h"
 
 #include <QMainWindow>
 #include <thread>
@@ -20,7 +20,7 @@ private:
 
     QStackedWidget *container;
     FragmentNavigator *navigator;
-    BaseScreensFactory *factory;
+    AbstractScreensFactory *factory;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

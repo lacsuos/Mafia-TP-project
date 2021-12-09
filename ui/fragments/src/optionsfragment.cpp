@@ -1,8 +1,8 @@
-#include "mainfragment.h"
+#include "fragments\include\optionsfragment.h"
 
-using namespace screens;
+#include <QLabel>
 
-MainFragment::MainFragment() {
+OptionsFragment::OptionsFragment() {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerContainer = new QFrame;
@@ -16,18 +16,12 @@ MainFragment::MainFragment() {
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
 
-    PlayButton = new QPushButton("Play");
-    PlayButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(PlayButton, &QPushButton::clicked, this, &MainFragment::onPlayPressed);
+    BackButton = new QPushButton("Back");
+    BackButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(BackButton, &QPushButton::clicked, this, &OptionsFragment::onBackPressed);
 
-    OptionsButton = new QPushButton("Settings");
-    OptionsButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(OptionsButton, &QPushButton::clicked, this, &MainFragment::onOptionsPressed);
-
-    buttonContainer->addWidget(PlayButton);
-    buttonContainer->addWidget(OptionsButton);
-    loadingButtonContainer->addWidget(PlayButton);
-    loadingButtonContainer->addWidget(OptionsButton);
+    buttonContainer->addWidget(BackButton);
+    loadingButtonContainer->addWidget(BackButton);
 
     buttonContainer->addLayout(loadingButtonContainer);
 
@@ -50,16 +44,11 @@ MainFragment::MainFragment() {
     this->setLayout(mainVLayout);
 }
 
-MainFragment::~MainFragment() {
-    delete PlayButton;
-    delete OptionsButton;
+
+OptionsFragment::~OptionsFragment() {
+    delete BackButton;
 }
 
-void MainFragment::onPlayPressed() {
-    navigateTo(GAME_TAG);
+void OptionsFragment::onBackPressed() {
+    back();
 }
-
-void MainFragment::onOptionsPressed() {
-    navigateTo(OPTIONS_TAG);
-}
-

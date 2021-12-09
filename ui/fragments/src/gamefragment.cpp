@@ -1,4 +1,4 @@
-#include "gamefragment.h"
+#include "fragments\include\gamefragment.h"
 
 #include <QLabel>
 

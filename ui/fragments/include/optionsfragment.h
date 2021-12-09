@@ -1,11 +1,11 @@
 #ifndef OPTIONSFRAGMENT_H
 #define OPTIONSFRAGMENT_H
 
-#include "base\basefragment.h"
+#include "abstract\include\abstractfragment.h"
 
 #include <QPushButton>
 
-class OptionsFragment: public BaseFragment {
+class OptionsFragment: public AbstractFragment {
     Q_OBJECT
 public:
     OptionsFragment();

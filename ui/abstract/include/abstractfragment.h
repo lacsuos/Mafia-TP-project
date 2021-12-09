@@ -1,11 +1,11 @@
-#ifndef BASEFRAGMENT_H
-#define BASEFRAGMENT_H
+#ifndef ABSTRACTFRAGMENT_H
+#define ABSTRACTFRAGMENT_H
 
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QWidget>
 
-class BaseFragment: public QFrame {
+class AbstractFragment: public QFrame {
     Q_OBJECT
 
 signals:
@@ -16,16 +16,16 @@ signals:
     void newRootScreen(QString tag);
     void replace(QString tag);
 
-    BaseFragment* Front();
+    AbstractFragment* Front();
 
 protected:
     void clearList(QLayout *list);
 
 public:
-    BaseFragment();
-    ~BaseFragment();
+    AbstractFragment();
+    ~AbstractFragment();
     virtual void onPause();
     virtual void onResume();
 };
 
-#endif // BASEFRAGMENT_H
+#endif // ABSTRACTFRAGMENT_H

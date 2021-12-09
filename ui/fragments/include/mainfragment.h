@@ -1,12 +1,12 @@
-#ifndef MENUFRAGMENT_H
-#define MENUFRAGMENT_H
+#ifndef MAINFRAGMENT_H
+#define MAINFRAGMENT_H
 
-#include "base\basefragment.h"
-#include "screenfactory.h"
+#include "abstract\include\abstractfragment.h"
+#include "main\include\screensfactory.h"
 
 #include <QPushButton>
 
-class MainFragment: public BaseFragment {
+class MainFragment: public AbstractFragment {
     Q_OBJECT
 
 public:
@@ -21,4 +21,4 @@ private:
     QPushButton *OptionsButton;
 };
 
-#endif // MENUFRAGMENT_H
+#endif // MAINFRAGMENT_H

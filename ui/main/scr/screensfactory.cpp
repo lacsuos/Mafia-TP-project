@@ -1,4 +1,4 @@
-#include "screenfactory.h"
+#include "main/include/screensfactory.h"
 
 
 using namespace screens;
@@ -11,7 +11,7 @@ ScreensFactory::~ScreensFactory() {
 
 }
 
-BaseFragment* ScreensFactory::create(QString tag) {
+AbstractFragment* ScreensFactory::create(QString tag) {
     qDebug("ScreensFactory create");
 
     if (tag == OPTIONS_TAG) {

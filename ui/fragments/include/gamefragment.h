@@ -1,11 +1,11 @@
 #ifndef GAMEFRAGMENT_H
 #define GAMEFRAGMENT_H
 
-#include "base\basefragment.h"
+#include "abstract\include\abstractfragment.h"
 
 #include <QPushButton>
 
-class GameFragment: public BaseFragment {
+class GameFragment: public AbstractFragment {
     Q_OBJECT
 public:
     GameFragment();

@@ -1,12 +1,12 @@
-#include "basefragment.h"
+#include "abstract\include\abstractfragment.h"
 #include <QVBoxLayout>
 
-BaseFragment::BaseFragment() {}
-BaseFragment::~BaseFragment() {}
-void BaseFragment::onPause() {}
-void BaseFragment::onResume() {}
+AbstractFragment::AbstractFragment() {}
+AbstractFragment::~AbstractFragment() {}
+void AbstractFragment::onPause() {}
+void AbstractFragment::onResume() {}
 
-void BaseFragment::clearList(QLayout *list) {
+void AbstractFragment::clearList(QLayout *list) {
     while(list->count()!=0) {
         QLayoutItem* child;
         child = list->takeAt(0);
