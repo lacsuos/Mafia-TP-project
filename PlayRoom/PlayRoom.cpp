@@ -7,8 +7,8 @@
 #include "GameHost.h"
 
  PlayRoom::PlayRoom(const std::vector<int> vecOfId): roomSize_(vecOfId.size()), userCounter_(vecOfId.size()),
-mafiaCounter_(2), citizenCounter_(7), players_(roomSize_) {
-    int pl[] = {2, 2, 777, 1, 1, 1, 1, 1, 1, 1};
+mafiaCounter_(1), citizenCounter_(2), players_(roomSize_) {
+    int pl[] = {2, 1, 777, 1};
     std::random_device r;
     std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
     std::mt19937 eng(seed);
@@ -95,8 +95,8 @@ int PlayRoom::roomToGlobal(int userId) {
 
 
 int PlayRoom::CountingVotes(const std::vector<int> vecOfId) {
-    int counterArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int voteArray[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int counterArray[10] = {0, 0, 0, 0};
+    int voteArray[10] = {0, 0, 0, 0};
     for (size_t i = 0; i < players_.size(); ++i) {
         voteArray[i] = globalToRoom(vecOfId[i]);
         if (voteArray[i] == -1)
