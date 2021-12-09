@@ -30,7 +30,7 @@ public:
 //    static std::string game_start(const int role);
     static std::string accept_room_done(const size_t& room_id);
     static std::string create_room_done(const int &id);
-    static std::string connected(const std::vector<std::vector<std::string>>& users_ip);
+    static std::string connected(const std::vector<std::vector<std::string>> &users_ip, const int &role);
     static std::string join_room_failed(const int &id);
     static std::string leave_room_done();
 };

@@ -126,10 +126,19 @@ namespace net {
         std::lock_guard<std::mutex> lock(game_mutex);
 
         if (command == "start_game") {
-            if (communications.size() > 1) {
+            if (communications.size() == MAX_USERS) {
                 is_gaming.store(true);
+
+                std::vector<int> ids;
+                for (auto &com: communications) {
+                    ids.push_back(com->user->get_id());
+                }
+
+                PlayRoom play_game_temp(ids);
+                game_room = &play_game_temp;
+
                 communication->out << MessageServer::start_game(communication->user->get_id());
-                boost::asio::post(context, boost::bind(&GameConnection::handle_request, this));
+
             } else {
                 communication->out << MessageServer::start_game_failed();
             }
@@ -209,71 +218,37 @@ namespace net {
                 boost::asio::post(context,
                                   boost::bind(&GameConnection::handle_error, this, communication));
             }
-            boost::asio::post(context,
-                              boost::bind(&GameConnection::handle_start_game, this,
-                                          communication));
 
-            std::string command = communication->last_msg.get<std::string>("command");
-
-            if (command == "day") {
-                boost::asio::post(context,
-                                  boost::bind(&GameConnection::handle_game_day, this,
-                                              communication));
-            }
-
-            if (command == "vote") {
-                boost::asio::post(context,
-                                  boost::bind(&GameConnection::handle_vote, this,
-                                              communication));
-            }
-
-            if (command == "nigth") {
-                boost::asio::post(context,
-                                  boost::bind(&GameConnection::handle_nigth, this,
-                                              communication));
-
-            } else {
-                boost::asio::post(context,
-                                  boost::bind(&GameConnection::handle_error, this, communication));
-            }
+//            std::string command = communication->last_msg.get<std::string>("command");
+//
+//            if (command == "day") {
+//                boost::asio::post(context,
+//                                  boost::bind(&GameConnection::handle_game_day, this,
+//                                              communication));
+//            }
+//
+//            if (command == "vote") {
+//                boost::asio::post(context,
+//                                  boost::bind(&GameConnection::handle_vote, this,
+//                                              communication));
+//            }
+//
+//            if (command == "nigth") {
+//                boost::asio::post(context,
+//                                  boost::bind(&GameConnection::handle_nigth, this,
+//                                              communication));
+//
+//            } else {
+//                boost::asio::post(context,
+//                                  boost::bind(&GameConnection::handle_error, this, communication));
+//            }
             return;
         }
 
         //TODO проверку ведущего
 
-
-
-
-
-
     }
 
-//    void GameConnection::handle_start_game(const std::shared_ptr<Communication> &communication) {
-////        pt::read_json(communication->in, communication->last_msg);
-////        std::string command_type = communication->last_msg.get<std::string>("parametrs");
-//        std::vector<int> ids;
-//        for (auto &com: communications) {
-//            ids.push_back(com->user->get_id());
-//        }
-//
-//        PlayRoom play_game_temp(ids);
-//        game_room = &play_game_temp;
-//
-//        std::vector<Player *> players = game_room->getPlayers();
-//
-//        for (auto &player: players) {
-//            if (player->getGlobalId() == communication->user->get_id()) {
-//                communication->out << MessageServer::game_start(player->getRole());
-//            }
-//            //TODO добавить find_if
-//        }
-//
-//        for (auto &comm : communications) {
-//            boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, comm));
-//            return;
-//        }
-//
-//    }
 
 //    void GameConnection::handle_game_day(const std::shared_ptr<Communication> &communication) {
 //        if (!game_room->day()) {
@@ -328,6 +303,15 @@ namespace net {
 //    }
 
     void GameConnection::handle_game_status(const std::shared_ptr<Communication> &communication) {
+        std::vector<Player *> players = game_room->getPlayers();
+
+        int role = 0;
+        for (auto &player: players) {
+            if (player->getGlobalId() == communication->user->get_id()) {
+                role = player->getRole();
+            }
+        }
+
         std::vector<std::vector<std::string>> users_ip;
         users_ip.resize(communications.size());
 
@@ -335,10 +319,9 @@ namespace net {
             users_ip[0].push_back(i->user->get_name());
             users_ip[1].push_back(i->user->get_IP());
         }
-        communication->out << MessageServer::connected(users_ip);
+        communication->out << MessageServer::connected(users_ip, role);
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
-        return;
     }
 
     void GameConnection::disconnect(std::shared_ptr<Communication> &communication) {
@@ -356,9 +339,10 @@ namespace net {
                         communication->socket.close();
                     });
     }
+
     void GameConnection::handle_ping(const std::shared_ptr<Communication> &communication) {
-            communication->out << MessageClient::msg();
-            boost::asio::post(context, boost::bind(&GameConnection::handle_write, this));
-        }
+        communication->out << MessageClient::msg();
+        boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
+    }
 
 }

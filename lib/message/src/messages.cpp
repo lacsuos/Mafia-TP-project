@@ -115,8 +115,10 @@ std::string MessageClient::error() {
     return message_phtee(request);
 }
 
-std::string MessageServer::connected(const std::vector<std::vector<std::string>> &users_ip) {
+std::string MessageServer::connected(const std::vector<std::vector<std::string>> &users_ip, const int &role) {
     pt::ptree parametrs;
+    pt::ptree ips;
+    pt::ptree game;
     pt::ptree request;
 
     int count = 0;
@@ -127,14 +129,20 @@ std::string MessageServer::connected(const std::vector<std::vector<std::string>>
         std::string ip = "ip";
         std::string ip_number = ip + std::to_string(count);
 
-        parametrs.put(name_number, i[0]);
-        parametrs.put(ip_number, i[1]);
+        ips.put(name_number, i[0]);
+        ips.put(ip_number, i[1]);
 
         ++count;
     }
 
+    game.put("role", role);
+    game.put("status", "ON");
+
     request.put("command_type", "basic");
-    request.put("command", "ips");
+    request.put("command", "game");
+
+    parametrs.add_child("ips", ips);
+    parametrs.add_child("game", game);
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);

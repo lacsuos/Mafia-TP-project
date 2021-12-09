@@ -38,13 +38,9 @@ namespace net {
 
         void disconnect(std::shared_ptr<Communication> &communication);
 
-        void handle_start_game(const std::shared_ptr<Communication> &communication);
-
         void handle_error(std::shared_ptr<Communication> &communication);
 
         void handle_admin_request(const std::shared_ptr<Communication> &communication);
-
-        void handle_game_day(const std::shared_ptr<Communication> &communication);
 
         void join_to_game_failed(const std::shared_ptr<Communication> &communication);
 
@@ -53,6 +49,8 @@ namespace net {
         void handle_leave(const std::shared_ptr<Communication> &communication);
 
         void handle_ping(const std::shared_ptr<Communication> &communication);
+
+//        void handle_game_day(const std::shared_ptr<Communication> &communication);
 
 
     private:

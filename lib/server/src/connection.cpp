@@ -2,7 +2,6 @@
 #include "base_queue.hpp"
 #include "messages.hpp"
 
-#include <boost/asio/yield.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/log/trivial.hpp>
 
