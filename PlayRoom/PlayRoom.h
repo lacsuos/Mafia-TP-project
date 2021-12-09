@@ -42,6 +42,8 @@ public:
     int GetMafiaCounter();
     // получить количество мирных
     int GetCitizenCounter();
+    // получить игрока
+    Player GetPlayer(int userID);
     ~PlayRoom();
 };
 

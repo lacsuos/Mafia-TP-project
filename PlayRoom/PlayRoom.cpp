@@ -6,7 +6,7 @@
 #include "Mafia.h"
 #include "GameHost.h"
 
- PlayRoom::PlayRoom(const std::vector<int> vecOfId): roomSize_(10), userCounter_(10),
+ PlayRoom::PlayRoom(const std::vector<int> vecOfId): roomSize_(vecOfId.size()), userCounter_(vecOfId.size()),
 mafiaCounter_(2), citizenCounter_(7), players_(roomSize_) {
     int pl[] = {2, 2, 777, 1, 1, 1, 1, 1, 1, 1};
     std::random_device r;
@@ -125,7 +125,6 @@ int PlayRoom::CountingVotes(const std::vector<int> vecOfId) {
 
 
 bool PlayRoom::IsGameOver() {
-    std::cout << "IsGameOver: " << mafiaCounter_ << " " << citizenCounter_ << std::endl;
     if (mafiaCounter_ == 0) {
         return true;
     }
@@ -161,7 +160,16 @@ std::vector<Player*> PlayRoom::GetPlayers() {
 
 void PlayRoom::WakeUpAll() {
     for (int i = 0; i < roomSize_; ++i) {
-        if (players_[i]->getAlive() == true)
+        if (players_[i]->getAlive())
             players_[i]->setIsSleep(false);
     }
+}
+
+
+Player PlayRoom::GetPlayer(int userID) {
+    for (size_t i = 0; i < players_.size(); ++i) {
+        if (players_[i]->getRoomId() == globalToRoom(userID))
+            return *players_[i];
+    }
+    throw "BadId";
 }
