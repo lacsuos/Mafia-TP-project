@@ -1,18 +1,29 @@
 #include <gtest/gtest.h>
 #include <iostream>
-#include "RoomInfo.h"
+#include "PlayRoom.h"
 
-TEST(RoomInfo, StartGame) {
-    RoomInfo roomInfo;
-    ASSERT_NO_THROW(roomInfo.StartGame(2));
+TEST(PlayRoom, Init) {
+    std::vector<int> vecOfId = {111, 222, 333, 444};
+    ASSERT_NO_THROW(PlayRoom room(vecOfId));
 }
 
-TEST(RoomInfo, giveRoles) {
-    RoomInfo roomInfo;
-    ASSERT_NO_THROW(roomInfo.giveRoles());
+
+TEST(PlayRoom, day) {
+    std::vector<int> vecOfId = {111, 222, 333, 444};
+    PlayRoom room(vecOfId);
+    EXPECT_EQ(room.day(), false);
 }
 
-TEST(RoomInfo, GameOver) {
-    RoomInfo roomInfo;
-    ASSERT_NO_THROW(roomInfo.GameOver());
+TEST(PlayRoom, evening) {
+    std::vector<int> vecOfId = {111, 222, 333, 444};
+    std::vector<int> vecOfVotes = {111, 111, 111, 444};
+    PlayRoom room(vecOfId);
+    EXPECT_EQ(room.evening(vecOfVotes), false);
+}
+
+TEST(PlayRoom, nighy) {
+    std::vector<int> vecOfId = {111, 222, 333, 444};
+    std::vector<int> vecOfVotes = {111, 111, 111, 444};
+    PlayRoom room(vecOfId);
+    EXPECT_EQ(room.night(vecOfVotes), 111);
 }

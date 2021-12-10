@@ -44,6 +44,7 @@ PlayRoom::~PlayRoom() {
 bool PlayRoom::day() {
     WakeUpAll();
     return IsGameOver();
+
 }
 
 
@@ -95,16 +96,16 @@ int PlayRoom::roomToGlobal(int userId) {
 
 
 int PlayRoom::CountingVotes(const std::vector<int> vecOfId) {
-    int counterArray[10] = {0, 0, 0, 0};
-    int voteArray[10] = {0, 0, 0, 0};
-    for (size_t i = 0; i < players_.size(); ++i) {
+    int counterArray[4] = {0, 0, 0, 0};
+    int voteArray[4] = {0, 0, 0, 0};
+    for (size_t i = 0; i < vecOfId.size(); ++i) {
         voteArray[i] = globalToRoom(vecOfId[i]);
         if (voteArray[i] == -1)
             throw "BadID";
     }
     int max = -1, counterMax = 0;
     int maxIndex = -1;
-    for (int i = 0; i < roomSize_; ++i) {
+    for (size_t i = 0; i < vecOfId.size(); ++i) {
         counterArray[voteArray[i]]++;
     }
     for (int i = 0; i < roomSize_; ++i) {
