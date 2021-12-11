@@ -35,7 +35,8 @@ public:
     Client(Client &some) = delete;
     ~Client();
     void operator=(const Client &) = delete;
-
+    void createRoom();
+    void joinRoom(int const &id);
     void run();
     bool connect();
     void disconnect();

@@ -53,6 +53,16 @@ void Client::run(){
     }
 }
 
+void Client::joinRoom(int const &id){
+    auto message = Message::joinRoom(id);
+    requestQ.push(message);
+}
+
+void Client::createRoom(){
+    auto message = Message::createRoom();
+    requestQ.push(message);
+}
+
 void Client::gameVote(){}
 void Client::gameAction(){}
 
