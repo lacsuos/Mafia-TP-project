@@ -43,21 +43,33 @@ namespace net {
 
     void Server::HandleAcception(std::shared_ptr<Communication> &communication) {
         BOOST_LOG_TRIVIAL(info) << "waiting for acception";
-        acceptor_.async_accept(communication->socket, [this, &communication](bs::error_code error) {
+        acceptor_.async_accept(communication->socket, [this, communication](bs::error_code error) {
             if (!error) {
-                auto connection = std::make_shared<Connection>(communication, base);
-                BOOST_LOG_TRIVIAL(info) << "CONNECTION ACCEPTS";
-                connection_mutex_.lock();
-                BOOST_LOG_TRIVIAL(info) << "PUSH TO QUEUE";
-                new_connection_.push_back(connection);
-                connection_mutex_.unlock();
+                AcceptionDone(communication);
             } else {
-                BOOST_LOG_TRIVIAL(info) << "CONNECTION DOES NOT ACCEPT";
+                AcceptingFailed();
             }
-            auto new_communication = std::make_shared<Communication>(context_);
-            context_.post(boost::bind(&Server::HandleAcception, this, new_communication));
         });
     }
+
+    void Server::AcceptionDone(std::shared_ptr<Communication> communication) {
+        BOOST_LOG_TRIVIAL(info) << "accept";
+        auto connection = std::make_shared<Connection>(communication, base);
+        BOOST_LOG_TRIVIAL(info) << "CONNECTION ACCEPTS";
+        connection_mutex_.lock();
+        BOOST_LOG_TRIVIAL(info) << "PUSH TO QUEUE";
+        new_connection_.push_back(connection);
+        connection_mutex_.unlock();
+        auto new_communication = std::make_shared<Communication>(context_);
+        context_.post(boost::bind(&Server::HandleAcception, this, new_communication));
+    }
+
+    void Server::AcceptingFailed() {
+        BOOST_LOG_TRIVIAL(info) << "CONNECTION DOES NOT ACCEPT";
+        auto new_communication = std::make_shared<Communication>(context_);
+        context_.post(boost::bind(&Server::HandleAcception, this, new_communication));
+    }
+
 
     void Server::StartConnection() {
 

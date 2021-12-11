@@ -17,7 +17,7 @@ namespace net {
 
     class Connection {
     public:
-        explicit Connection(std::shared_ptr<Communication> &communication, Base &in_base);
+        explicit Connection(std::shared_ptr<Communication> &communication_, Base &in_base);
 
         Connection() = delete;
 

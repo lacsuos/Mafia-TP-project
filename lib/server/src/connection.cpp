@@ -14,11 +14,11 @@ namespace bs = boost::system;
 
 namespace net {
 
-    Connection::Connection(std::shared_ptr<Communication> &communication, Base &in_base)
+    Connection::Connection(std::shared_ptr<Communication> &communication_, Base &in_base)
             : is_remove(false),
-              context(communication->context),
+              context(communication_->context),
+              communication(communication_),
               base(in_base) {
-//        communication->user->is_user_connecting.store(false);
 //        communication->user->set_ip(communication->socket);
     }
 
@@ -26,6 +26,10 @@ namespace net {
         communication->is_talking.store(true);
         BOOST_LOG_TRIVIAL(info) << "UserTalker start work with connection";
         boost::asio::post(context, boost::bind(&Connection::handle_read, this));
+    }
+
+    bool Connection::is_working() const {
+        return (communication->is_talking.load() || communication->is_gaming.load());
     }
 
     void Connection::handle_read() {
@@ -141,7 +145,4 @@ namespace net {
         }
     }
 
-    bool Connection::is_working() const {
-        return (communication->is_talking.load() || communication->is_gaming.load());
-    }
 }

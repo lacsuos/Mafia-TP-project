@@ -21,7 +21,12 @@ namespace net {
                                                          write_buffer(),
                                                          in(&read_buffer),
                                                          out(&write_buffer),
-                                                         user(User()) {};
+//                                                         is_gaming(false),
+//                                                         is_talking(false),
+                                                         user(User()) {
+            is_gaming.store(false);
+            is_talking.store(false);
+        };
 
         Communication() = delete;
 
@@ -39,8 +44,8 @@ namespace net {
 
         boost::property_tree::ptree last_msg;
 
-        boost::atomic<bool> is_talking;
         boost::atomic<bool> is_gaming;
+        boost::atomic<bool> is_talking;
 
         User user;
     };

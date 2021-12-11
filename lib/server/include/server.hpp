@@ -49,6 +49,10 @@ namespace net {
 
         void CleanRemovedRooms();
 
+        void AcceptingFailed();
+
+        void AcceptionDone(std::shared_ptr<Communication> communication);
+
     private:
         io_context context_;
 
