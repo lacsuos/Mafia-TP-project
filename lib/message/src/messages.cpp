@@ -149,7 +149,7 @@ std::string MessageServer::connected(const std::string& ids, const std::string& 
     request.put("command_type", "basic");
     request.put("command", "game");
 
-    parametrs.add_child("game", game);
+    request.add_child("game", game);
 
     return message_phtee(request);
 }

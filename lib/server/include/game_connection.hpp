@@ -30,29 +30,29 @@ namespace net {
 
     private:
 
-        void handle_read(const std::shared_ptr<Communication> communication);
+        void handle_read(std::shared_ptr<Communication> communication);
 
-        void handle_write(const std::shared_ptr<Communication> communication);
+        void handle_write(std::shared_ptr<Communication> communication);
 
         void handle_request(std::shared_ptr<Communication> communication);
 
-        void handle_game_status(std::shared_ptr<Communication> communication);
+        void handle_game_status(const std::shared_ptr<Communication>& communication);
 
-        void disconnect(std::shared_ptr<Communication> communication);
+        void disconnect(const std::shared_ptr<Communication>& communication);
 
-        void handle_error(std::shared_ptr<Communication> communication);
+        void handle_error(const std::shared_ptr<Communication>& communication);
 
         void handle_admin_request(std::shared_ptr<Communication> communication);
 
-        static void join_to_game_failed(std::shared_ptr<Communication> communication);
+        static void join_to_game_failed(const std::shared_ptr<Communication>& communication);
 
-        static void create_room_failed(std::shared_ptr<Communication> communication);
+        static void create_room_failed(const std::shared_ptr<Communication>& communication);
 
         void game_delete();
 
-        void handle_leave(std::shared_ptr<Communication> communication);
+        void handle_leave(const std::shared_ptr<Communication>& communication);
 
-        void handle_ping(std::shared_ptr<Communication> communication);
+        void handle_ping(const std::shared_ptr<Communication>& communication);
 
 //        void handle_game_day(const std::shared_ptr<Communication> &communication);
 
@@ -64,7 +64,7 @@ namespace net {
 
         std::vector<int> votes;
 
-        PlayRoom *game_room;
+        PlayRoom game_room;
         std::mutex game_mutex;
     };
 }

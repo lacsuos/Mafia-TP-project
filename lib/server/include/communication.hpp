@@ -21,12 +21,9 @@ namespace net {
                                                          write_buffer(),
                                                          in(&read_buffer),
                                                          out(&write_buffer),
-//                                                         is_gaming(false),
-//                                                         is_talking(false),
-                                                         user(User()) {
-            is_gaming.store(false);
-            is_talking.store(false);
-        };
+                                                         is_gaming(false),
+                                                         is_talking(false),
+                                                         user(User()) {};
 
         Communication() = delete;
 
