@@ -2,6 +2,7 @@
 #include "messages.hpp"
 #include "PlayRoom.h"
 
+
 #include <vector>
 #include <algorithm>
 #include <boost/property_tree/json_parser.hpp>
@@ -48,7 +49,7 @@ namespace net {
                     });
     }
 
-    void GameConnection::create_room_failed(const std::shared_ptr<Communication>& communication) {
+    void GameConnection::create_room_failed(const std::shared_ptr<Communication> &communication) {
         BOOST_LOG_TRIVIAL(info) << "creating game failed";
         communication->user.set_room(0);
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
@@ -59,13 +60,13 @@ namespace net {
         communication->is_gaming.store(false);
     }
 
-    void GameConnection::handle_error(const std::shared_ptr<Communication>& communication) {
+    void GameConnection::handle_error(const std::shared_ptr<Communication> &communication) {
         communication->out << MessageClient::error();
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
         BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << "'s request is unknown";
     }
 
-    void GameConnection::join_to_game_failed(const std::shared_ptr<Communication>& communication) {
+    void GameConnection::join_to_game_failed(const std::shared_ptr<Communication> &communication) {
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
         communication->out << MessageServer::join_room_failed(communication->user.get_room());
@@ -144,7 +145,15 @@ namespace net {
                     ids.push_back(com->user.get_id());
                 }
                 BOOST_LOG_TRIVIAL(info) << "GameRoom Created";
-                game_room = PlayRoom(ids);
+                PlayRoom temp(ids);
+                game_room = temp;
+
+
+                std::vector<Player *> players = game_room.GetPlayers();
+                for (auto &player: players) {
+                    BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << player->getRole();
+                }
+
                 BOOST_LOG_TRIVIAL(info) << "message";
                 communication->out << MessageServer::start_game(communication->user.get_id());
 
@@ -154,12 +163,14 @@ namespace net {
             boost::asio::post(context,
                               boost::bind(&GameConnection::handle_write, this, communication));
         } else {
-            boost::asio::post(context, boost::bind(&GameConnection::handle_error, this, communication));
+            boost::asio::post(context,
+                              boost::bind(&GameConnection::handle_error, this, communication)
+            );
         }
 
     }
 
-    void GameConnection::handle_leave(const std::shared_ptr<Communication>& communication) {
+    void GameConnection::handle_leave(const std::shared_ptr<Communication> &communication) {
         BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << " LEAVE ROOM";
         game_mutex.lock();
         for (size_t i = 0; i < communications.size(); ++i) {
@@ -242,7 +253,7 @@ namespace net {
 //                                              communication));
 //            }
 //
-//            if (command == "nigth") {
+                //            if (command == "`nigth`") {
 //                boost::asio::post(context,
 //                                  boost::bind(&GameConnection::handle_nigth, this,
 //                                              communication));
@@ -311,15 +322,19 @@ namespace net {
 //        }
 //    }
 
-    void GameConnection::handle_game_status(const std::shared_ptr<Communication>& communication) {
-        std::vector<Player *> players = game_room.getPlayers();
+    void GameConnection::handle_game_status(const std::shared_ptr<Communication> &communication) {
+        std::vector<Player *> players = game_room.GetPlayers();
 
         int role = 0;
         for (auto &player: players) {
+            BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << player->getRole();
             if (player->getGlobalId() == communication->user.get_id()) {
                 role = player->getRole();
+                break;
             }
         }
+
+        //621 1.3 621 2.3
 
         std::string users_ids;
         std::string users_ips;
@@ -335,7 +350,7 @@ namespace net {
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
 
-    void GameConnection::disconnect(const std::shared_ptr<Communication>& communication) {
+    void GameConnection::disconnect(const std::shared_ptr<Communication> &communication) {
         BOOST_LOG_TRIVIAL(info) << "DISCONNECTED";
 
         communication->out << MessageClient::disconnect();
@@ -352,7 +367,7 @@ namespace net {
                     });
     }
 
-    void GameConnection::handle_ping(const std::shared_ptr<Communication>& communication) {
+    void GameConnection::handle_ping(const std::shared_ptr<Communication> &communication) {
         std::string users_ids;
         std::string users_names;
 
