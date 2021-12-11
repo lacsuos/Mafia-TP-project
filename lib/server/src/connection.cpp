@@ -4,6 +4,7 @@
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/atomic.hpp>
 
 using boost::asio::async_read;
 using boost::asio::async_write;
