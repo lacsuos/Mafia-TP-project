@@ -47,7 +47,7 @@ namespace net {
 
         void StartConnection();
 
-        void CleanRemovedRooms();
+//        void CleanRemovedRooms();
 
         void AcceptingFailed();
 

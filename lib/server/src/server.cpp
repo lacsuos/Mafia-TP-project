@@ -21,7 +21,7 @@ namespace net {
     void Server::run() {
         context_.post(boost::bind(&Server::StartAccepting, this));
         context_.post(boost::bind(&Server::StartConnection, this));
-        context_.post(boost::bind(&Server::CleanRemovedRooms, this));
+//        context_.post(boost::bind(&Server::CleanRemovedRooms, this));
         context_.post(boost::bind(&Server::CreateRoom, this));
         context_.post(boost::bind(&Server::JoinRoom, this));
 
@@ -88,18 +88,18 @@ namespace net {
         context_.post(boost::bind(&Server::StartConnection, this));
     }
 
-    void Server::CleanRemovedRooms() {
-        if (new_game_connection_.empty()) {
-            context_.post(boost::bind(&Server::CleanRemovedRooms, this));
-            return;
-        }
-        game_connection_mutex_.lock();
-        BOOST_LOG_TRIVIAL(info) << "DELETE REMOVED GAME";
-        std::erase_if(new_game_connection_,
-                      [](const std::shared_ptr<GameConnection> &current) { return current->is_remove.load(); });
-        game_connection_mutex_.unlock();
-        context_.post(boost::bind(&Server::CleanRemovedRooms, this));
-    }
+//    void Server::CleanRemovedRooms() {
+//        if (new_game_connection_.empty()) {
+//            context_.post(boost::bind(&Server::CleanRemovedRooms, this));
+//            return;
+//        }
+//        game_connection_mutex_.lock();
+//        BOOST_LOG_TRIVIAL(info) << "DELETE REMOVED GAME";
+//        std::erase_if(new_game_connection_,
+//                      [](const std::shared_ptr<GameConnection> &current) { return current->is_remove.load(); });
+//        game_connection_mutex_.unlock();
+//        context_.post(boost::bind(&Server::CleanRemovedRooms, this));
+//    }
 
 
     void Server::CreateRoom() {

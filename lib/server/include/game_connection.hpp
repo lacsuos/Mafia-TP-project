@@ -29,28 +29,28 @@ namespace net {
         boost::atomic<bool> is_remove;
 
     private:
-        void handle_read(const std::shared_ptr<Communication> &communication);
+        void handle_read(const std::shared_ptr<Communication> communication);
 
-        void handle_write(const std::shared_ptr<Communication> &communication);
+        void handle_write(const std::shared_ptr<Communication> communication);
 
-        void handle_request(const std::shared_ptr<Communication> &communication);
+        void handle_request(const std::shared_ptr<Communication> communication);
 
-        void handle_game_status(std::shared_ptr<Communication> &communication);
+        void handle_game_status(std::shared_ptr<Communication> communication);
 
-        void disconnect(std::shared_ptr<Communication> &communication);
+        void disconnect(std::shared_ptr<Communication> communication);
 
-        void handle_error(std::shared_ptr<Communication> &communication);
+        void handle_error(std::shared_ptr<Communication> communication);
 
-        void handle_admin_request(std::shared_ptr<Communication> &communication);
+        void handle_admin_request(std::shared_ptr<Communication> communication);
 
-        void join_to_game_failed(std::shared_ptr<Communication> &communication);
-        void create_room_failed(std::shared_ptr<Communication> &communication);
+        void join_to_game_failed(std::shared_ptr<Communication> communication);
+        void create_room_failed(std::shared_ptr<Communication> communication);
 
         void game_delete();
 
-        void handle_leave(std::shared_ptr<Communication> &communication);
+        void handle_leave(std::shared_ptr<Communication> communication);
 
-        void handle_ping(std::shared_ptr<Communication> &communication);
+        void handle_ping(std::shared_ptr<Communication> communication);
 
 //        void handle_game_day(const std::shared_ptr<Communication> &communication);
 

@@ -23,7 +23,6 @@ namespace net {
               context(communication->context),
               game_room() {
 
-
         communication->is_gaming.store(true);
         communication->is_talking.store(false);
 
@@ -36,7 +35,7 @@ namespace net {
 
         communication->out << MessageServer::create_room_done(communication->user.get_id());
         async_write(communication->socket, communication->write_buffer,
-                    [this, &communication](bs::error_code error, size_t
+                    [this, communication](bs::error_code error, size_t
                     len) {
                         if (!error) {
                             handle_read(communication);
@@ -49,7 +48,7 @@ namespace net {
                     });
     }
 
-    void GameConnection::create_room_failed(std::shared_ptr<Communication> &communication) {
+    void GameConnection::create_room_failed(std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << "creating game failed";
         communication->user.set_room(0);
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
@@ -60,13 +59,13 @@ namespace net {
         communication->is_gaming.store(false);
     }
 
-    void GameConnection::handle_error(std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_error(std::shared_ptr<Communication> communication) {
         communication->out << MessageClient::error();
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
         BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << "'s request is unknown";
     }
 
-    void GameConnection::join_to_game_failed(std::shared_ptr<Communication> &communication) {
+    void GameConnection::join_to_game_failed(std::shared_ptr<Communication> communication) {
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
         communication->out << MessageServer::join_room_failed(communication->user.get_room());
@@ -105,11 +104,11 @@ namespace net {
         return 0;
     }
 
-    void GameConnection::handle_read(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_read(const std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << "START READING";
 
         async_read_until(communication->socket, communication->read_buffer, std::string(MSG_END),
-                         [this, &communication](bs::error_code error, size_t len) {
+                         [this, communication](bs::error_code error, size_t len) {
                              if (!error) {
                                  handle_request(communication);
                              } else {
@@ -118,10 +117,10 @@ namespace net {
                          });
     }
 
-    void GameConnection::handle_write(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_write(const std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << "START SENDING";
         async_write(communication->socket, communication->write_buffer,
-                    [this, &communication](bs::error_code error, size_t len) {
+                    [this, communication](bs::error_code error, size_t len) {
                         if (!error) {
                             handle_read(communication);
                         } else {
@@ -130,7 +129,7 @@ namespace net {
                     });
     }
 
-    void GameConnection::handle_admin_request(std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_admin_request(std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << "GameRoom handleing admin request: ";
 
         std::string command = communication->last_msg.get<std::string>("command");
@@ -161,7 +160,7 @@ namespace net {
         boost::asio::post(context, boost::bind(&GameConnection::handle_error, this, communication));
     }
 
-    void GameConnection::handle_leave(std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_leave(std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << " LEAVE ROOM";
         game_mutex.lock();
         for (size_t i = 0; i < communications.size(); ++i) {
@@ -190,7 +189,7 @@ namespace net {
     }
 
 
-    void GameConnection::handle_request(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_request(const std::shared_ptr<Communication> communication) {
         if (is_remove) {
             boost::asio::post(context,
                               boost::bind(&GameConnection::handle_leave, this, communication));
@@ -313,7 +312,7 @@ namespace net {
 //        }
 //    }
 
-    void GameConnection::handle_game_status(std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_game_status(std::shared_ptr<Communication> communication) {
         std::vector<Player *> players = game_room->getPlayers();
 
         int role = 0;
@@ -335,7 +334,7 @@ namespace net {
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
 
-    void GameConnection::disconnect(std::shared_ptr<Communication> &communication) {
+    void GameConnection::disconnect(std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << "DISCONNECTED";
 
         communication->out << MessageClient::disconnect();
@@ -352,7 +351,7 @@ namespace net {
                     });
     }
 
-    void GameConnection::handle_ping(std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_ping(std::shared_ptr<Communication> communication) {
         communication->out << MessageClient::msg();
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
     }
