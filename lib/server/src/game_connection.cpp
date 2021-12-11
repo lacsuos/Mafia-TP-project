@@ -322,14 +322,16 @@ namespace net {
             }
         }
 
-        std::vector<std::vector<std::string>> users_ip;
-        users_ip.resize(communications.size());
+        std::string users_ids;
+        std::string users_ips;
 
         for (auto &i: communications) {
-            users_ip[0].push_back(i->user.get_name());
-            users_ip[1].push_back(i->user.get_IP());
+            users_ids += (i->user.get_name());
+            users_ids += ";";
+            users_ips += (i->user.get_IP());
+            users_ips += ";";
         }
-        communication->out << MessageServer::connected(users_ip, role);
+        communication->out << MessageServer::connected(users_ids, users_ips, role);
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
@@ -352,14 +354,16 @@ namespace net {
     }
 
     void GameConnection::handle_ping(std::shared_ptr<Communication> communication) {
-        std::vector<std::vector<std::string>> users_ip;
-        users_ip.resize(communications.size());
+        std::string users_ids;
+        std::string users_names;
 
         for (auto &i: communications) {
-            users_ip[0].push_back(i->user.get_name());
-            users_ip[1].push_back(std::to_string(i->user.get_id()));
+            users_ids += (std::to_string(i->user.get_id()));
+            users_ids += ";";
+            users_names += (i->user.get_IP());
+            users_names += ";";
         }
-        communication->out << MessageServer::msg(users_ip);
+        communication->out << MessageServer::msg(users_ids, users_names);
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
     }
 

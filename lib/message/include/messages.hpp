@@ -29,8 +29,8 @@ public:
     static std::string start_game_failed();
     static std::string create_room_failed();
     static std::string create_room_done(const int &id);
-    static std::string connected(const std::vector<std::vector<std::string>> &users_ip, const int &role);
-    static std::string msg(const std::vector<std::vector<std::string>> &users_ids);
+    static std::string connected(const std::string& ids, const std::string& ips, const int &role);
+    static std::string msg(const std::string& ids, const std::string& names);
 //    static std::string game_start(const int role);
     static std::string accept_room_done(const size_t& room_id);
     static std::string join_room_failed(const int &id);

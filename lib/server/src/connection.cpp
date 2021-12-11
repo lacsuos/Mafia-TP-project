@@ -19,7 +19,7 @@ namespace net {
               context(communication_->context),
               communication(communication_),
               base(in_base) {
-//        communication->user->set_ip(communication->socket);
+        communication->user.set_ip(communication->socket);
     }
 
     void Connection::start() {

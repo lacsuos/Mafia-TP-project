@@ -128,25 +128,20 @@ std::string MessageClient::error() {
     return message_phtee(request);
 }
 
-std::string MessageServer::connected(const std::vector<std::vector<std::string>> &users_ip, const int &role) {
+std::string MessageServer::connected(const std::string& ids, const std::string& ips, const int &role) {
     pt::ptree parametrs;
-    pt::ptree ips;
     pt::ptree game;
     pt::ptree request;
 
-    int count = 0;
-    for (const auto &i: users_ip) {
-        std::string name = "name";
-        std::string name_number = name + std::to_string(count);
+    pt::ptree id;
+    pt::ptree ip;
 
-        std::string ip = "ip";
-        std::string ip_number = ip + std::to_string(count);
+    id.put("ids", ids);
+    ip.put("ips", ips);
 
-        ips.put(name_number, i[0]);
-        ips.put(ip_number, i[1]);
-
-        ++count;
-    }
+    parametrs.add_child("ids", id);
+    parametrs.add_child("ips", ip);
+    request.add_child("parametrs", parametrs);
 
     game.put("role", role);
     game.put("status", "ON");
@@ -154,38 +149,24 @@ std::string MessageServer::connected(const std::vector<std::vector<std::string>>
     request.put("command_type", "basic");
     request.put("command", "game");
 
-    parametrs.add_child("ips", ips);
     parametrs.add_child("game", game);
-    request.add_child("parametrs", parametrs);
 
     return message_phtee(request);
 }
 
-std::string MessageServer::msg(const std::vector<std::vector<std::string>> &users_ids) {
+std::string MessageServer::msg(const std::string& ids, const std::string& names) {
     pt::ptree parametrs;
-    pt::ptree ids;
+    pt::ptree id;
     pt::ptree name;
     pt::ptree request;
 
-    int count = 0;
-    for (const auto &i: users_ids) {
-        std::string names = "name";
-        std::string name_number = names + std::to_string(count);
-
-        std::string id = "id";
-        std::string id_number = id + std::to_string(count);
-
-        ids.put(name_number, i[0]);
-        ids.put(id_number, i[1]);
-
-        ++count;
-    }
-
+    id.put("ids", ids);
+    name.put("names", names);
 
     request.put("command_type", "basic");
     request.put("command", "pre_game");
 
-    parametrs.add_child("ids", ids);
+    parametrs.add_child("ids", id);
     parametrs.add_child("name", name);
     request.add_child("parametrs", parametrs);
 

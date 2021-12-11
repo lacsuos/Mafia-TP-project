@@ -29,11 +29,12 @@ namespace net {
         boost::atomic<bool> is_remove;
 
     private:
+
         void handle_read(const std::shared_ptr<Communication> communication);
 
         void handle_write(const std::shared_ptr<Communication> communication);
 
-        void handle_request(const std::shared_ptr<Communication> communication);
+        void handle_request(std::shared_ptr<Communication> communication);
 
         void handle_game_status(std::shared_ptr<Communication> communication);
 
@@ -44,6 +45,7 @@ namespace net {
         void handle_admin_request(std::shared_ptr<Communication> communication);
 
         static void join_to_game_failed(std::shared_ptr<Communication> communication);
+
         static void create_room_failed(std::shared_ptr<Communication> communication);
 
         void game_delete();
