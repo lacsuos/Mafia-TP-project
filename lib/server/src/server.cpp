@@ -2,6 +2,9 @@
 #include "base_queue.hpp"
 #include "messages.hpp"
 
+#include <vector>
+#include <algorithm>
+
 #include <boost/log/trivial.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -45,6 +48,7 @@ namespace net {
                 auto connection = std::make_shared<Connection>(communication, base);
                 BOOST_LOG_TRIVIAL(info) << "CONNECTION ACCEPTS";
                 connection_mutex_.lock();
+                BOOST_LOG_TRIVIAL(info) << "PUSH TO QUEUE";
                 new_connection_.push_back(connection);
                 connection_mutex_.unlock();
             } else {
@@ -59,10 +63,10 @@ namespace net {
 
         connection_mutex_.lock();
         for (size_t i = 0; i < new_connection_.size(); ++i) {
-            if (!new_connection_[i]->isUserWorking()) {
+            if (new_connection_[i]->is_remove.load()) {
                 BOOST_LOG_TRIVIAL(info) << "DISCONNECTED USER IS REMOVED";
                 new_connection_.erase(new_connection_.begin() + i);
-            } else if (!new_connection_[i]->isWorking()) {
+            } else if (!new_connection_[i]->is_working()) {
                 BOOST_LOG_TRIVIAL(info) << "START COMMUNICATION";
                 new_connection_[i]->start();
             }
@@ -73,8 +77,12 @@ namespace net {
     }
 
     void Server::CleanRemovedRooms() {
+        if (new_game_connection_.empty()) {
+            context_.post(boost::bind(&Server::CleanRemovedRooms, this));
+            return;
+        }
         game_connection_mutex_.lock();
-        BOOST_LOG_TRIVIAL(info) << " DELETE REMOVED GAME";
+        BOOST_LOG_TRIVIAL(info) << "DELETE REMOVED GAME";
         std::erase_if(new_game_connection_,
                       [](const std::shared_ptr<GameConnection> &current) { return current->is_remove.load(); });
         game_connection_mutex_.unlock();
@@ -89,10 +97,10 @@ namespace net {
         }
 
         auto communication = base.creating_game.Pop();
-        BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " START NEW GAME";
+        BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " START NEW GAME";
         auto game_connection = std::make_shared<GameConnection>(communication);
 
-        communication->user->set_room((game_connection->get_game()->get_id()));
+        communication->user.set_room((game_connection->game.get_id()));
 
         game_connection_mutex_.lock();
         new_game_connection_.push_back(game_connection);
@@ -109,20 +117,20 @@ namespace net {
         const std::lock_guard<std::mutex> lock(game_connection_mutex_);
 
         auto communication = base.accepting_game.Pop();
-        BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " JOINED GAME";
+        BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " JOINED GAME";
 
         auto it = std::find_if(new_game_connection_.begin(), new_game_connection_.end(),
                                [communication](const std::shared_ptr<GameConnection> &current) {
-                                   return current->get_game()->get_id() ==
-                                          communication->user->get_room();
+                                   return current->game.get_id() ==
+                                          communication->user.get_room();
                                });
 
         if (it == new_game_connection_.end()) {
-            BOOST_LOG_TRIVIAL(info) << communication->user->get_id() << " DOES NOT ACCEPT THE ROOM "
-                                    << communication->user->get_room();
+            BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " DOES NOT ACCEPT THE ROOM "
+                                    << communication->user.get_room();
             read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
             boost::property_tree::read_json(communication->in, communication->last_msg);
-            communication->out << MessageServer::join_room_failed(communication->user->get_room());
+            communication->out << MessageServer::join_room_failed(communication->user.get_room());
             write(communication->socket, communication->write_buffer);
             context_.post(boost::bind(&Server::JoinRoom, this));
             return;

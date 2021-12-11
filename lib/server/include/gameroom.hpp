@@ -7,7 +7,7 @@ static int id_gameroom_generate = 1;
 
 class GameRoom {
 public:
-    GameRoom(size_t admin_id_) : admin_id(admin_id_) { game_id = id_gameroom_generate++; }
+    explicit GameRoom(int admin_id_) : admin_id(admin_id_) { game_id = id_gameroom_generate++; }
 
     GameRoom() = delete;
 
@@ -19,7 +19,6 @@ public:
 
 private:
     int game_id;
-
     int admin_id;
 };
 

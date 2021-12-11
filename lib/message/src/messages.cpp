@@ -62,6 +62,19 @@ std::string MessageServer::create_room_done(const int &id) {
     pt::ptree request;
 
     parametrs.put("id", id);
+    parametrs.put("status", "on");
+    request.put("command-type", "basic");
+    request.put("command", "create_room");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::create_room_failed() {
+    pt::ptree parametrs;
+    pt::ptree request;
+
+    parametrs.put("status", "fail");
     request.put("command-type", "basic");
     request.put("command", "create_room");
     request.add_child("parametrs", parametrs);

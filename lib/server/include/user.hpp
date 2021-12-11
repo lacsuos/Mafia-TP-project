@@ -11,14 +11,11 @@ static int id_user_generate = 1;
 
 class User {
 public:
-    explicit User(const tcp::socket &socket_) : is_user_connecting(false),
-                                                is_user_gaming(false),
-                                                ip(socket_.remote_endpoint().address().to_string()) {
-        name = ip;
+    User() : name(),
+             ip(),
+             room_id() {
         user_id = id_user_generate++;
     };
-
-    User() = delete;
 
     ~User() = default;
 
@@ -34,9 +31,8 @@ public:
 
     std::string get_IP() const { return ip; }
 
-    std::atomic<bool> is_user_connecting;
-
-    std::atomic<bool> is_user_gaming;
+    void
+    set_ip(const tcp::socket &socket_) { ip = socket_.remote_endpoint().address().to_string(); }
 
 private:
     std::string name;

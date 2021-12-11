@@ -1,5 +1,7 @@
 #pragma once
 
+#include"user.hpp"
+
 #include <string>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -18,12 +20,11 @@ namespace net {
                                                          read_buffer(),
                                                          write_buffer(),
                                                          in(&read_buffer),
-                                                         out(&write_buffer) {
-            User temp(socket);
-            user = &temp;
-        };
+                                                         out(&write_buffer),
+                                                         user(User()) {};
 
         Communication() = delete;
+
         ~Communication() = default;
 
     public:
@@ -38,7 +39,10 @@ namespace net {
 
         boost::property_tree::ptree last_msg;
 
-        User *user;
+        boost::atomic<bool> is_talking;
+        boost::atomic<bool> is_gaming;
+
+        User user;
     };
 
 }

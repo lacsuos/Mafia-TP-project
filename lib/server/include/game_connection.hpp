@@ -23,10 +23,11 @@ namespace net {
 
         int join_to_game(std::shared_ptr<Communication> &communication);
 
-        const GameRoom *get_game() { return game; }
+        GameRoom game;
 
         boost::atomic<bool> is_gaming;
         boost::atomic<bool> is_remove;
+
     private:
         void handle_read(const std::shared_ptr<Communication> &communication);
 
@@ -34,21 +35,22 @@ namespace net {
 
         void handle_request(const std::shared_ptr<Communication> &communication);
 
-        void handle_game_status(const std::shared_ptr<Communication> &communication);
+        void handle_game_status(std::shared_ptr<Communication> &communication);
 
         void disconnect(std::shared_ptr<Communication> &communication);
 
         void handle_error(std::shared_ptr<Communication> &communication);
 
-        void handle_admin_request(const std::shared_ptr<Communication> &communication);
+        void handle_admin_request(std::shared_ptr<Communication> &communication);
 
-        void join_to_game_failed(const std::shared_ptr<Communication> &communication);
+        void join_to_game_failed(std::shared_ptr<Communication> &communication);
+        void create_room_failed(std::shared_ptr<Communication> &communication);
 
         void game_delete();
 
-        void handle_leave(const std::shared_ptr<Communication> &communication);
+        void handle_leave(std::shared_ptr<Communication> &communication);
 
-        void handle_ping(const std::shared_ptr<Communication> &communication);
+        void handle_ping(std::shared_ptr<Communication> &communication);
 
 //        void handle_game_day(const std::shared_ptr<Communication> &communication);
 
@@ -57,8 +59,6 @@ namespace net {
         io_context &context;
 
         std::vector<std::shared_ptr<Communication>> communications;
-
-        GameRoom *game;
 
         std::vector<int> votes;
 

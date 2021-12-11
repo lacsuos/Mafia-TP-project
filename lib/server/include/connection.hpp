@@ -25,9 +25,9 @@ namespace net {
 
         void start();
 
-        bool isWorking();
+        bool is_working() const;
 
-        bool isUserWorking() const;
+        boost::atomic<bool> is_remove;
 
     private:
         void handle_read();
@@ -48,9 +48,7 @@ namespace net {
 
     private:
         io_context &context;
-
         std::shared_ptr<Communication> communication;
         Base &base;
-        std::atomic<bool> is_working;
     };
 }

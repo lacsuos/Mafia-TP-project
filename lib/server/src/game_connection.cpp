@@ -2,6 +2,8 @@
 #include "messages.hpp"
 #include "PlayRoom.h"
 
+#include <vector>
+#include <algorithm>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/log/trivial.hpp>
 
@@ -15,11 +17,15 @@ namespace bs = boost::system;
 namespace net {
 
     GameConnection::GameConnection(std::shared_ptr<Communication> &communication)
-            : is_gaming(false), is_remove(false), context(communication->context) {
-        GameRoom temp(communication->user->get_id());
-        game = &temp;
+            : game(GameRoom(communication->user.get_id())),
+              is_gaming(false),
+              is_remove(false),
+              context(communication->context),
+              game_room() {
 
-        communication->user->is_user_gaming.store(true);
+
+        communication->is_gaming.store(true);
+        communication->is_talking.store(false);
 
         game_mutex.lock();
         communications.push_back(communication);
@@ -28,44 +34,49 @@ namespace net {
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
 
-        communication->out << MessageServer::create_room_done(communication->user->get_id());
+        communication->out << MessageServer::create_room_done(communication->user.get_id());
         async_write(communication->socket, communication->write_buffer,
-                    [this, communication](bs::error_code error, size_t
+                    [this, &communication](bs::error_code error, size_t
                     len) {
                         if (!error) {
                             handle_read(communication);
                         } else {
                             BOOST_LOG_TRIVIAL(info) << "CREATED ROOM OF USER "
-                                                    << communication->user->get_id() << " FAILED";
+                                                    << communication->user.get_id() << " FAILED";
+                            create_room_failed(communication);
                             is_remove.store(true);
-                            communication->user->is_user_gaming.store(false);
                         }
                     });
+    }
+
+    void GameConnection::create_room_failed(std::shared_ptr<Communication> &communication) {
+        BOOST_LOG_TRIVIAL(info) << "creating game failed";
+        communication->user.set_room(0);
+        read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
+        pt::read_json(communication->in, communication->last_msg);
+        communication->out << MessageServer::create_room_failed();
+        write(communication->socket, communication->write_buffer);
+        communication->is_gaming.store(false);
+        communication->is_gaming.store(false);
     }
 
     void GameConnection::handle_error(std::shared_ptr<Communication> &communication) {
         communication->out << MessageClient::error();
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
-        BOOST_LOG_TRIVIAL(info) << communication->user->get_name() << "'s request is unknown";
+        BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << "'s request is unknown";
     }
 
-    void GameConnection::join_to_game_failed(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::join_to_game_failed(std::shared_ptr<Communication> &communication) {
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
-        communication->out << MessageServer::join_room_failed(communication->user->get_room());
+        communication->out << MessageServer::join_room_failed(communication->user.get_room());
         write(communication->socket, communication->write_buffer);
-        communication->user->set_room(0);
-        communication->user->is_user_gaming.store(false);
+        communication->user.set_room(0);
+        communication->is_gaming.store(false);
+        communication->is_talking.store(false);
     }
 
     int GameConnection::join_to_game(std::shared_ptr<Communication> &communication) {
-        if (communication->user->is_user_gaming) {
-            BOOST_LOG_TRIVIAL(info) << "JOIN TO ROOM OF USER " << communication->user->get_id()
-                                    << " FAILED";
-            join_to_game_failed(communication);
-            return -1;
-        }
-
         if (is_gaming || is_remove) {
             join_to_game_failed(communication);
             return -1;
@@ -74,20 +85,20 @@ namespace net {
         std::lock_guard<std::mutex> lock(game_mutex);
 
         if (communications.size() > MAX_USERS) {
-            BOOST_LOG_TRIVIAL(info) << "JOIN USER " << communication->user->get_id() << " FAILED";
+            BOOST_LOG_TRIVIAL(info) << "JOIN USER " << communication->user.get_id() << " FAILED";
             join_to_game_failed(communication);
             return -1;
         }
 
-        communication->user->is_user_gaming.store(true);
-        is_gaming.store(true);
+        communication->is_gaming.store(true);
+        communication->is_talking.store(false);
 
         communications.push_back(communication);
 
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
 
-        communication->out << MessageServer::accept_room_done(communication->user->get_id());
+        communication->out << MessageServer::accept_room_done(communication->user.get_id());
         write(communication->socket, communication->write_buffer);
 
         boost::asio::post(context, boost::bind(&GameConnection::handle_read, this, communication));
@@ -119,7 +130,7 @@ namespace net {
                     });
     }
 
-    void GameConnection::handle_admin_request(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_admin_request(std::shared_ptr<Communication> &communication) {
         BOOST_LOG_TRIVIAL(info) << "GameRoom handleing admin request: ";
 
         std::string command = communication->last_msg.get<std::string>("command");
@@ -131,13 +142,13 @@ namespace net {
 
                 std::vector<int> ids;
                 for (auto &com: communications) {
-                    ids.push_back(com->user->get_id());
+                    ids.push_back(com->user.get_id());
                 }
 
                 PlayRoom play_game_temp(ids);
                 game_room = &play_game_temp;
 
-                communication->out << MessageServer::start_game(communication->user->get_id());
+                communication->out << MessageServer::start_game(communication->user.get_id());
 
             } else {
                 communication->out << MessageServer::start_game_failed();
@@ -150,11 +161,11 @@ namespace net {
         boost::asio::post(context, boost::bind(&GameConnection::handle_error, this, communication));
     }
 
-    void GameConnection::handle_leave(const std::shared_ptr<Communication> &communication) {
-        BOOST_LOG_TRIVIAL(info) << communication->user->get_name() << " LEAVE ROOM";
+    void GameConnection::handle_leave(std::shared_ptr<Communication> &communication) {
+        BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << " LEAVE ROOM";
         game_mutex.lock();
         for (size_t i = 0; i < communications.size(); ++i) {
-            if (communications[i]->user->get_name() == communication->user->get_name()) {
+            if (communications[i]->user.get_name() == communication->user.get_name()) {
                 communications.erase(communications.begin() + i);
                 break;
             }
@@ -164,18 +175,18 @@ namespace net {
         communication->out << MessageServer::leave_room_done();
         write(communication->socket, communication->write_buffer);
 
-        communication->user->is_user_gaming.store(false);
-        communication->user->set_room(0);
+        communication->is_gaming.store(false);
+        communication->user.set_room(0);
 
         std::lock_guard<std::mutex> lock(game_mutex);
-        if (communications.size() == 0) {
+        if (communications.empty()) {
             boost::asio::post(context, boost::bind(&GameConnection::game_delete, this));
         }
     }
 
     void GameConnection::game_delete() {
         is_remove.store(true);
-        BOOST_LOG_TRIVIAL(info) << "ROOM " << get_game()->get_id() << " DELETED";
+        BOOST_LOG_TRIVIAL(info) << "ROOM " << game.get_id() << " DELETED";
     }
 
 
@@ -189,7 +200,7 @@ namespace net {
         pt::read_json(communication->in, communication->last_msg);
         std::string command_type = communication->last_msg.get<std::string>("command_type");
 
-        if (command_type == "message") {
+        if (command_type == "ping") {
             if (is_gaming) {
                 boost::asio::post(context,
                                   boost::bind(&GameConnection::handle_game_status, this,
@@ -203,7 +214,7 @@ namespace net {
         }
 
         if (command_type == "room_admin") {
-            if (communication->user->get_id() == get_game()->get_admin_id()) {
+            if (communication->user.get_id() == game.get_admin_id()) {
                 boost::asio::post(context, boost::bind(&GameConnection::handle_admin_request, this,
                                                        communication));
             } else {
@@ -302,12 +313,12 @@ namespace net {
 //        }
 //    }
 
-    void GameConnection::handle_game_status(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_game_status(std::shared_ptr<Communication> &communication) {
         std::vector<Player *> players = game_room->getPlayers();
 
         int role = 0;
         for (auto &player: players) {
-            if (player->getGlobalId() == communication->user->get_id()) {
+            if (player->getGlobalId() == communication->user.get_id()) {
                 role = player->getRole();
             }
         }
@@ -316,8 +327,8 @@ namespace net {
         users_ip.resize(communications.size());
 
         for (auto &i: communications) {
-            users_ip[0].push_back(i->user->get_name());
-            users_ip[1].push_back(i->user->get_IP());
+            users_ip[0].push_back(i->user.get_name());
+            users_ip[1].push_back(i->user.get_IP());
         }
         communication->out << MessageServer::connected(users_ip, role);
         boost::asio::post(context,
@@ -336,12 +347,12 @@ namespace net {
                             communications.erase(it);
                         }
                         is_remove.store(true);
-                        communication->user->is_user_gaming.store(false);
+                        //
                         communication->socket.close();
                     });
     }
 
-    void GameConnection::handle_ping(const std::shared_ptr<Communication> &communication) {
+    void GameConnection::handle_ping(std::shared_ptr<Communication> &communication) {
         communication->out << MessageClient::msg();
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
     }

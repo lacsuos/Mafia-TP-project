@@ -14,24 +14,17 @@ namespace bs = boost::system;
 namespace net {
 
     Connection::Connection(std::shared_ptr<Communication> &communication, Base &in_base)
-            : context(communication->context),
-              base(in_base),
-              is_working(false) {
-        communication->user->is_user_connecting.store(false);
+            : is_remove(false),
+              context(communication->context),
+              base(in_base) {
+//        communication->user->is_user_connecting.store(false);
+//        communication->user->set_ip(communication->socket);
     }
 
     void Connection::start() {
-        is_working.store(true);
-        communication->user->is_user_connecting.store(true);
+        communication->is_talking.store(true);
+        BOOST_LOG_TRIVIAL(info) << "UserTalker start work with connection";
         boost::asio::post(context, boost::bind(&Connection::handle_read, this));
-    }
-
-    bool Connection::isWorking() {
-        return is_working.load();
-    }
-
-    bool Connection::isUserWorking() const {
-        return communication->user->is_user_connecting.load();
     }
 
     void Connection::handle_read() {
@@ -42,6 +35,7 @@ namespace net {
                              if (!error) {
                                  handle_request();
                              } else {
+                                 //todo timer
                                  handle_read();
                              }
                          });
@@ -60,7 +54,7 @@ namespace net {
     }
 
     void Connection::handle_error() {
-        BOOST_LOG_TRIVIAL(info) << communication->user->get_name() << "'s request is unknown";
+        BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << "'s request is unknown";
 
         communication->out << MessageClient::error();
         boost::asio::post(context, boost::bind(&Connection::handle_write, this));
@@ -71,7 +65,7 @@ namespace net {
         async_write(communication->socket, communication->write_buffer,
                     [this](bs::error_code error, size_t len) {
                         if (!error) {
-                            BOOST_LOG_TRIVIAL(info) << communication->user->get_id()
+                            BOOST_LOG_TRIVIAL(info) << communication->user.get_id()
                                                     << " CREATED ROOM";
                             base.creating_game.Push(communication);
                         } else {
@@ -83,16 +77,16 @@ namespace net {
     void Connection::handle_join_room() {
 
         const pt::ptree &parametrs = communication->last_msg.get_child("parametrs");
-        communication->user->set_room(parametrs.get<int>("id"));
+        communication->user.set_room(parametrs.get<int>("id"));
 
-        communication->out << MessageClient::join_room(communication->user->get_room());
+        communication->out << MessageClient::join_room(communication->user.get_room());
 
         async_write(communication->socket, communication->write_buffer,
                     [this](bs::error_code error, size_t len) {
                         if (!error) {
-                            BOOST_LOG_TRIVIAL(info) << communication->user->get_id()
+                            BOOST_LOG_TRIVIAL(info) << communication->user.get_id()
                                                     << " JOINED ROOM ID = "
-                                                    << communication->user->get_room();
+                                                    << communication->user.get_room();
                             base.accepting_game.Push(communication);
                         } else {
                             disconnect();
@@ -111,8 +105,8 @@ namespace net {
         communication->out << MessageClient::disconnect();
         async_write(communication->socket, communication->write_buffer,
                     [this](bs::error_code error, size_t len) {
-                        communication->user->is_user_connecting.store(false);
                         communication->socket.close();
+                        is_remove.store(true);
                     });
     }
 
@@ -144,5 +138,9 @@ namespace net {
         } else {
             boost::asio::post(context, boost::bind(&Connection::handle_error, this));
         }
+    }
+
+    bool Connection::is_working() const {
+        return (communication->is_talking.load() || communication->is_gaming.load());
     }
 }
