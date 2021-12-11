@@ -43,8 +43,8 @@ namespace net {
 
         void handle_admin_request(std::shared_ptr<Communication> communication);
 
-        void join_to_game_failed(std::shared_ptr<Communication> communication);
-        void create_room_failed(std::shared_ptr<Communication> communication);
+        static void join_to_game_failed(std::shared_ptr<Communication> communication);
+        static void create_room_failed(std::shared_ptr<Communication> communication);
 
         void game_delete();
 

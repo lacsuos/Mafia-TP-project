@@ -352,7 +352,14 @@ namespace net {
     }
 
     void GameConnection::handle_ping(std::shared_ptr<Communication> communication) {
-        communication->out << MessageClient::msg();
+        std::vector<std::vector<std::string>> users_ip;
+        users_ip.resize(communications.size());
+
+        for (auto &i: communications) {
+            users_ip[0].push_back(i->user.get_name());
+            users_ip[1].push_back(std::to_string(i->user.get_id()));
+        }
+        communication->out << MessageServer::msg(users_ip);
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
     }
 

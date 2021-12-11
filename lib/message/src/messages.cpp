@@ -161,6 +161,37 @@ std::string MessageServer::connected(const std::vector<std::vector<std::string>>
     return message_phtee(request);
 }
 
+std::string MessageServer::msg(const std::vector<std::vector<std::string>> &users_ids) {
+    pt::ptree parametrs;
+    pt::ptree ids;
+    pt::ptree name;
+    pt::ptree request;
+
+    int count = 0;
+    for (const auto &i: users_ids) {
+        std::string names = "name";
+        std::string name_number = names + std::to_string(count);
+
+        std::string id = "id";
+        std::string id_number = id + std::to_string(count);
+
+        ids.put(name_number, i[0]);
+        ids.put(id_number, i[1]);
+
+        ++count;
+    }
+
+
+    request.put("command_type", "basic");
+    request.put("command", "pre_game");
+
+    parametrs.add_child("ids", ids);
+    parametrs.add_child("name", name);
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
 
 //std::string MessageServer::game_start_______________--(const int role) {
 //    pt::ptree request;
