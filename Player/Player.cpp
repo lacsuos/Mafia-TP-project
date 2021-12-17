@@ -1,6 +1,11 @@
 #include "Player.h"
 
-Player::Player(): globalId_(0), roomId_(0), alive_(true), isSleep_(false), role_(0) {}
+Player::Player()
+: globalId_(0)
+, roomId_(0)
+, isAlive_(true)
+, isSleep_(false)
+, role_(Role::NO_ROLE) {}
 
 
 void Player::setGlobalId(int newId) {
@@ -13,13 +18,13 @@ void Player::setRoomId(int newId) {
 }
 
 
-void Player::setAlive(bool newStatus) {
-    alive_ = newStatus;
+void Player::setIsAlive(bool isAlive) {
+    isAlive_ = isAlive;
 }
 
 
-void Player::setIsSleep(bool newStatus) {
-    isSleep_ = newStatus;
+void Player::setIsSleep(bool isSleep) {
+    isSleep_ = isSleep;
 }
 
 
@@ -33,15 +38,15 @@ int Player::getRoomId() {
 }
 
 
-bool Player::getAlive() {
-    return alive_;
+bool Player::getIsAlive() {
+    return isAlive_;
 }
 
 bool Player::getIsSleep() {
     return isSleep_;
 }
 
-int Player::getRole() {
+Role Player::getRole() {
     return role_;
 }
 

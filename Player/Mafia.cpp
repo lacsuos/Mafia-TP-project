@@ -1,7 +1,7 @@
 #include "Mafia.h"
 
 Mafia::Mafia() {
-    role_ = 2;
+    role_ = Role::MAFIA;
 }
 
 Mafia::~Mafia() noexcept {

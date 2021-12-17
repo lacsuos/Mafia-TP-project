@@ -6,37 +6,37 @@
 #include "Mafia.h"
 #include "GameHost.h"
 
- PlayRoom::PlayRoom(const std::vector<int> vecOfId): roomSize_(vecOfId.size()), userCounter_(vecOfId.size()),
-mafiaCounter_(1), citizenCounter_(2), players_(roomSize_) {
+ static std::unique_ptr<Player> ChooseRole(int a) {
+    switch (a) {
+        case 1:
+            return std::make_unique<Citizen> ();
+        case 2:
+            return std::make_unique<Mafia> ();
+        case 777:
+            return std::make_unique<GameHost> ();
+        default:
+            throw "BadRole";
+    }
+}
+
+
+ PlayRoom::PlayRoom(const std::vector<int>& vecOfId)
+ : roomSize_(vecOfId.size())
+ , userCounter_(vecOfId.size())
+ , mafiaCounter_(1)
+ , citizenCounter_(2)
+ , players_(roomSize_)
+ {
     int pl[] = {2, 1, 777, 1};
     std::random_device r;
     std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
     std::mt19937 eng(seed);
     std::shuffle(std::begin(pl), std::end(pl), eng);
-    for (int i = 0; i < userCounter_; ++i) {
-        auto Role = [](int a) -> Player * {
-            switch (a) {
-                case 1:
-                    return new Citizen();
-                case 2:
-                    return new Mafia();
-                case 777:
-                    return new GameHost();
-                default:
-                    throw "BadRole";
-            }
-        };
 
-        players_[i] = Role(pl[i]);
+    for (int i = 0; i < userCounter_; ++i) {
+        players_[i] = ChooseRole(pl[i]);
         players_[i]->setGlobalId(vecOfId[i]);
         players_[i]->setRoomId(i);
-    }
-}
-
-
-PlayRoom::~PlayRoom() {
-    for (size_t i = 0; i < players_.size(); ++i) {
-        delete players_[i];
     }
 }
 
@@ -44,11 +44,10 @@ PlayRoom::~PlayRoom() {
 bool PlayRoom::day() {
     WakeUpAll();
     return IsGameOver();
-
 }
 
 
-bool PlayRoom::evening(const std::vector<int> vecOfId) {
+bool PlayRoom::evening(const std::vector<int>& vecOfId) {
     int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
         kill(resultOfVoting);
@@ -56,7 +55,7 @@ bool PlayRoom::evening(const std::vector<int> vecOfId) {
 }
 
 
-int PlayRoom::night(const std::vector<int> vecOfId) {
+int PlayRoom::night(const std::vector<int>& vecOfId) {
     SleepAllCitizen();
     int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
@@ -67,11 +66,13 @@ int PlayRoom::night(const std::vector<int> vecOfId) {
 
 void PlayRoom::kill(int userId) {
     int roomId = globalToRoom(userId);
-    players_[roomId]->setAlive(false);
-    if (players_[roomId]->getRole() == 1) {
+    players_[roomId]->setIsAlive(false);
+
+    if (players_[roomId]->getRole() == Role::CITIZEN) {
         citizenCounter_--;
     }
-    if (players_[roomId]->getRole() == 2) {
+
+    if (players_[roomId]->getRole() == Role::MAFIA) {
         mafiaCounter_--;
     }
 }
@@ -95,19 +96,23 @@ int PlayRoom::roomToGlobal(int userId) {
 }
 
 
-int PlayRoom::CountingVotes(const std::vector<int> vecOfId) {
+int PlayRoom::CountingVotes(const std::vector<int>& vecOfId) {
     int counterArray[4] = {0, 0, 0, 0};
     int voteArray[4] = {0, 0, 0, 0};
+
     for (size_t i = 0; i < vecOfId.size(); ++i) {
         voteArray[i] = globalToRoom(vecOfId[i]);
         if (voteArray[i] == -1)
             throw "BadID";
     }
+
     int max = -1, counterMax = 0;
     int maxIndex = -1;
+
     for (size_t i = 0; i < vecOfId.size(); ++i) {
         counterArray[voteArray[i]]++;
     }
+
     for (int i = 0; i < roomSize_; ++i) {
         if (max == counterArray[i]) {
             counterMax++;
@@ -118,6 +123,7 @@ int PlayRoom::CountingVotes(const std::vector<int> vecOfId) {
             counterMax = 1;
         }
     }
+
     if (counterMax > 1)
         return -1; // голосование неопределенное
     else
@@ -148,20 +154,20 @@ int PlayRoom::GetCitizenCounter() {
 
 void PlayRoom::SleepAllCitizen() {
     for (int i = 0; i < roomSize_; ++i) {
-        if ( players_[i]->getRole() == 1)
+        if ( players_[i]->getRole() == Role::CITIZEN)
             players_[i]->setIsSleep(true);
     }
 }
 
 
-std::vector<Player*> PlayRoom::GetPlayers() {
+std::vector<std::unique_ptr<Player>> PlayRoom::GetPlayers() {
     return players_;
 }
 
 
 void PlayRoom::WakeUpAll() {
     for (int i = 0; i < roomSize_; ++i) {
-        if (players_[i]->getAlive())
+        if (players_[i]->getIsAlive())
             players_[i]->setIsSleep(false);
     }
 }

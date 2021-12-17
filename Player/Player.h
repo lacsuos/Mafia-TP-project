@@ -3,34 +3,55 @@
 #include <string>
 #include <iostream>
 
+enum class Role {
+    MAFIA,
+    CITIZEN,
+    HOST,
+    NO_ROLE
+};
+
 class Player {
 private:
     int globalId_;
+
     int roomId_;
-    bool alive_;
+
+    bool isAlive_;
+
     bool isSleep_;
+
 protected:
-    int role_;
+    Role role_;
 public:
     Player();
+
     // установить глобальный id
     void setGlobalId(int newId);
+
     // установить комнатный id
     void setRoomId(int newId);
+
     // установить статус Жив/Мертв
-    void setAlive(bool newStatus);
+    void setIsAlive(bool isAlive);
+
     // установить статус Спит/Не спит
-    void setIsSleep(bool newStatus);
+    void setIsSleep(bool isSleep);
+
     // получить глобальный id
     int getGlobalId();
+
     // получить комнатный id
     int getRoomId();
+
     // получить статус Жив/Мертв
-    bool getAlive();
+    bool getIsAlive();
+
     // получить статус Спит/Не спит
     bool getIsSleep();
+
     // получить роль
-    int getRole();
+    Role getRole();
+
     virtual ~Player();
 };
 
