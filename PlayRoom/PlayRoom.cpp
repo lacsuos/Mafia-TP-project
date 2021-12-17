@@ -160,7 +160,7 @@ void PlayRoom::SleepAllCitizen() {
 }
 
 
-std::vector<std::unique_ptr<Player>> PlayRoom::GetPlayers() {
+const std::vector<std::unique_ptr<Player>>& PlayRoom::GetPlayers() {
     return players_;
 }
 

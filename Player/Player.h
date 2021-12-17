@@ -4,10 +4,10 @@
 #include <iostream>
 
 enum class Role {
-    MAFIA,
-    CITIZEN,
-    HOST,
-    NO_ROLE
+    NO_ROLE = 0,
+    CITIZEN = 1,
+    MAFIA = 2,
+    HOST = 777
 };
 
 class Player {

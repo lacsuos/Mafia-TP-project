@@ -25,7 +25,7 @@ public:
     PlayRoom& operator=(const PlayRoom& room) = default;
 
     // возвращаем вектор всех игроков
-    std::vector<std::unique_ptr<Player>> GetPlayers();
+    const std::vector<std::unique_ptr<Player>>& GetPlayers();
 
     // создаем комнату на N человек, раздаем каждому роль
     explicit PlayRoom(const std::vector<int>& vecOfId);

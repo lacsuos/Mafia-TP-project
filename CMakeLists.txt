@@ -6,10 +6,10 @@ add_compile_options(
         -Wextra
         -Wpedantic
 )
-if(TEST_SEQUENCE)
-    add_compile_options(--coverage)
-    add_link_options(--coverage)
-endif()
+#if(TEST_SEQUENCE)
+ #   add_compile_options(--coverage)
+ #   add_link_options(--coverage)
+#endif()
 include_directories(Player PlayRoom)
 
 add_library(GAME SHARED
