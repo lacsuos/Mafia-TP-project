@@ -53,13 +53,13 @@ PlayRoom& PlayRoom::operator=(PlayRoom&& room) {
 
 
 
-bool PlayRoom::day() {
+Winner PlayRoom::day() {
     WakeUpAll();
     return IsGameOver();
 }
 
 
-bool PlayRoom::evening(const std::vector<int>& vecOfId) {
+Winner PlayRoom::evening(const std::vector<int>& vecOfId) {
     int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
         kill(resultOfVoting);
@@ -143,14 +143,14 @@ int PlayRoom::CountingVotes(const std::vector<int>& vecOfId) {
 }
 
 
-bool PlayRoom::IsGameOver() {
+Winner PlayRoom::IsGameOver() {
     if (mafiaCounter_ == 0) {
-        return true;
+        return Winner::CITIZEN;
     }
     if (mafiaCounter_ >= citizenCounter_) {
-        return true;
+        return Winner::MAFIA;
     }
-    return false;
+    return Winner::NO_WINNER;
 }
 
 

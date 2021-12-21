@@ -4,6 +4,12 @@
 #include <vector>
 #include "Player.h"
 
+enum class Winner {
+    NO_WINNER = 0,
+    CITIZEN = 1,
+    MAFIA = 2
+};
+
 
 class PlayRoom {
 private:
@@ -35,10 +41,10 @@ public:
     int CountingVotes(const std::vector<int>& vecOfId);
 
     // вернет false, если игра продолжается, и true, если игра закончена
-    bool day();
+    Winner day();
 
     // вернет false, если игра продолжается, и true, если игра закончена
-    bool evening(const std::vector<int>& vecOfId);
+    Winner evening(const std::vector<int>& vecOfId);
 
     // вернет id игрока, которого убили
     int night(const std::vector<int>& vecOfId);
@@ -47,7 +53,7 @@ public:
     void kill(int userId);
 
     // вернет false, если игра продолжается, и true, если игра закончена
-    bool IsGameOver();
+    Winner IsGameOver();
 
     // переводит статус всех мирных в сон
     void SleepAllCitizen();
