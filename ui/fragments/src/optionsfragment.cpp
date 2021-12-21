@@ -1,7 +1,5 @@
 #include "fragments\include\optionsfragment.h"
 
-#include <QLabel>
-
 OptionsFragment::OptionsFragment() {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;

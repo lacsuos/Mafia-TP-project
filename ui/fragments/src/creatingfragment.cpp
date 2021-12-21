@@ -1,6 +1,6 @@
-#include "fragments\include\gamefragment.h"
+#include "fragments\include\creatingfragment.h"
 
-GameFragment::GameFragment() {
+CreatingFragment::CreatingFragment() {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerContainer = new QFrame;
@@ -16,15 +16,11 @@ GameFragment::GameFragment() {
 
     BackButton = new QPushButton("Back");
     BackButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(BackButton, &QPushButton::clicked, this, &GameFragment::onBackPressed);
+    connect(BackButton, &QPushButton::clicked, this, &CreatingFragment::onBackPressed);
 
     buttonContainer->addWidget(BackButton);
     loadingButtonContainer->addWidget(BackButton);
 
-    StateLabel = new QLabel("Начало игры");
-    StateLabel->setStyleSheet("QLabel { color : grey; }");
-
-    startMainLayout->addWidget(StateLabel);
     buttonContainer->addLayout(loadingButtonContainer);
 
     startMainLayout->addLayout(buttonContainer);
@@ -47,28 +43,10 @@ GameFragment::GameFragment() {
 }
 
 
-GameFragment::~GameFragment() {
+CreatingFragment::~CreatingFragment() {
     delete BackButton;
 }
 
-void GameFragment::onBackPressed() {
+void CreatingFragment::onBackPressed() {
     back();
 }
-
-void GameFragment::setDayState() {
-    StateLabel->setText("День");
-    StateLabel->setStyleSheet("QLabel { color : blue; }");
-}
-
-
-void GameFragment::setNightState() {
-    StateLabel->setText("Ночь");
-    StateLabel->setStyleSheet("QLabel { color : black; }");
-}
-
-
-void GameFragment::setCustomState(const QString state) {
-    StateLabel->setText(state);
-}
-
-

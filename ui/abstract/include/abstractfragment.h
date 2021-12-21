@@ -1,4 +1,4 @@
-#ifndef ABSTRACTFRAGMENT_H
+    #ifndef ABSTRACTFRAGMENT_H
 #define ABSTRACTFRAGMENT_H
 
 #include <QFrame>

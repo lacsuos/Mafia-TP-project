@@ -23,6 +23,12 @@ AbstractFragment* ScreensFactory::create(QString tag) {
     if (tag == MAIN_TAG) {
         return new MainFragment;
     }
+    if (tag == WAITING_TAG) {
+        return new WaitingFragment;
+    }
+    if (tag == CREATING_TAG) {
+        return new CreatingFragment;
+    }
     return nullptr;
 }
 

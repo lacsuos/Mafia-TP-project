@@ -15,6 +15,9 @@ MainFragment::MainFragment() {
     QVBoxLayout *buttonContainer = new QVBoxLayout;
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
+    CreateButton = new QPushButton("Create room");
+    CreateButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(CreateButton, &QPushButton::clicked, this, &MainFragment::onCreatePressed);
 
     PlayButton = new QPushButton("Play");
     PlayButton->setStyleSheet("color:#242424;font-size:24px");
@@ -24,9 +27,13 @@ MainFragment::MainFragment() {
     OptionsButton->setStyleSheet("color:#242424;font-size:24px");
     connect(OptionsButton, &QPushButton::clicked, this, &MainFragment::onOptionsPressed);
 
+    buttonContainer->addWidget(CreateButton);
+    loadingButtonContainer->addWidget(CreateButton);
+
     buttonContainer->addWidget(PlayButton);
-    buttonContainer->addWidget(OptionsButton);
     loadingButtonContainer->addWidget(PlayButton);
+
+    buttonContainer->addWidget(OptionsButton);
     loadingButtonContainer->addWidget(OptionsButton);
 
     buttonContainer->addLayout(loadingButtonContainer);
@@ -54,12 +61,22 @@ MainFragment::~MainFragment() {
     delete PlayButton;
     delete OptionsButton;
 }
-
+void MainFragment::onCreatePressed() {
+    navigateTo(CREATING_TAG);
+}
 void MainFragment::onPlayPressed() {
-    navigateTo(GAME_TAG);
+
+    bool ok = false;
+    int id = QInputDialog::getInt(this, "Подключение к игре", "Введите ID игры",0,0, 2147483647, 1, &ok);
+    if (ok/* && ...*/) {
+        //connect
+        navigateTo(WAITING_TAG);
+    }
+
 }
 
 void MainFragment::onOptionsPressed() {
     navigateTo(OPTIONS_TAG);
 }
+
 

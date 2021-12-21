@@ -1,15 +1,16 @@
-#ifndef OPTIONSFRAGMENT_H
-#define OPTIONSFRAGMENT_H
+#ifndef CREATINGFRAGMENT_H
+#define CREATINGFRAGMENT_H
 
 #include "abstract\include\abstractfragment.h"
 #include "main\include\screensfactory.h"
+
 #include <QPushButton>
 
-class OptionsFragment: public AbstractFragment {
+class CreatingFragment: public AbstractFragment {
     Q_OBJECT
 public:
-    OptionsFragment();
-    ~OptionsFragment();
+    CreatingFragment();
+    ~CreatingFragment();
 
 public slots:
     void onBackPressed();
@@ -18,4 +19,5 @@ private:
     QPushButton *BackButton;
 };
 
-#endif // SETTINGSFRAGMENT_H
+
+#endif // CREATINGFRAGMENT_H

@@ -1,6 +1,8 @@
-#include "fragments\include\gamefragment.h"
+#include "fragments\include\waitingfragment.h"
 
-GameFragment::GameFragment() {
+using namespace screens;
+
+WaitingFragment::WaitingFragment() {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerContainer = new QFrame;
@@ -16,15 +18,18 @@ GameFragment::GameFragment() {
 
     BackButton = new QPushButton("Back");
     BackButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(BackButton, &QPushButton::clicked, this, &GameFragment::onBackPressed);
+    connect(BackButton, &QPushButton::clicked, this, &WaitingFragment::onBackPressed);
+
+    ContinueButton = new QPushButton("Continue");
+    ContinueButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(ContinueButton, &QPushButton::clicked, this, &WaitingFragment::onContinuePressed);
 
     buttonContainer->addWidget(BackButton);
     loadingButtonContainer->addWidget(BackButton);
 
-    StateLabel = new QLabel("Начало игры");
-    StateLabel->setStyleSheet("QLabel { color : grey; }");
+    buttonContainer->addWidget(ContinueButton);
+    loadingButtonContainer->addWidget(BackButton);
 
-    startMainLayout->addWidget(StateLabel);
     buttonContainer->addLayout(loadingButtonContainer);
 
     startMainLayout->addLayout(buttonContainer);
@@ -47,28 +52,14 @@ GameFragment::GameFragment() {
 }
 
 
-GameFragment::~GameFragment() {
+WaitingFragment::~WaitingFragment() {
     delete BackButton;
 }
 
-void GameFragment::onBackPressed() {
+void WaitingFragment::onBackPressed() {
     back();
 }
 
-void GameFragment::setDayState() {
-    StateLabel->setText("День");
-    StateLabel->setStyleSheet("QLabel { color : blue; }");
+void WaitingFragment::onContinuePressed() {
+    navigateTo(GAME_TAG);
 }
-
-
-void GameFragment::setNightState() {
-    StateLabel->setText("Ночь");
-    StateLabel->setStyleSheet("QLabel { color : black; }");
-}
-
-
-void GameFragment::setCustomState(const QString state) {
-    StateLabel->setText(state);
-}
-
-
