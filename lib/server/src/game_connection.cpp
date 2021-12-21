@@ -145,13 +145,14 @@ namespace net {
                     ids.push_back(com->user.get_id());
                 }
                 BOOST_LOG_TRIVIAL(info) << "GameRoom Created";
-                game_room(ids);
+                PlayRoom temp(ids);
+                game_room = std::move(temp);
 
-//                const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
-//                for (auto &player: players) {
-//                    int role = static_cast<int>(player->getRole());
-//                    BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
-//                }
+                const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
+                for (auto &player: players) {
+                    int role = static_cast<int>(player->getRole());
+                    BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
+                }
 
                 communication->out << MessageServer::start_game(communication->user.get_id());
 
@@ -321,16 +322,16 @@ namespace net {
 
     void GameConnection::handle_game_status(std::shared_ptr<Communication> communication) {
         int role = 0;
-//        const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
-//        for (auto &player: players) {
-//            if (player->getGlobalId() == communication->user.get_id()) {
-//                role = static_cast<int> (player->getRole());
-//
-////                BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
-//                BOOST_LOG_TRIVIAL(info) << communication->user.get_id();
-//                break;
-//            }
-//        }
+        const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
+        for (auto &player: players) {
+            if (player->getGlobalId() == communication->user.get_id()) {
+                role = static_cast<int> (player->getRole());
+
+                BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
+                BOOST_LOG_TRIVIAL(info) << communication->user.get_id();
+                break;
+            }
+        }
 //        std::cout << "plr[i]->getAlive() " << plr[i]->getIsAlive() << std::endl;
 //        std::cout << "plr[i]->getGlobalId() " << plr[i]->getGlobalId() << std::endl;
 //        std::cout << "plr[i]->getRole() " << static_cast<int> (plr[i]->getRole()) << std::endl;

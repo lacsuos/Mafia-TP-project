@@ -175,3 +175,12 @@ Player PlayRoom::GetPlayer(int userID) {
     }
     throw "BadId";
 }
+
+PlayRoom &PlayRoom::operator=(PlayRoom &&room) {
+    roomSize_ = room.roomSize_;
+    userCounter_ = room.userCounter_;
+    mafiaCounter_ = room.mafiaCounter_;
+    citizenCounter_ = room.citizenCounter_;
+    players_ = std::move(room.players_);
+    return *this;
+}
