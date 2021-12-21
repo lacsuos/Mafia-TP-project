@@ -302,13 +302,9 @@ namespace net {
     }
 
     void GameConnection::handle_nigth(std::shared_ptr<Communication> communication) {
-        if (!game_room.night()) {
-            // игра продолжается
-            communication->out << MessageServer::;
-        } else {
-            // игра закончена
-            communication->out << MessageServer::;
-        }
+        int killed_id = 0;
+        killed_id = game_room.night();
+        communication->out << MessageServer::;
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
