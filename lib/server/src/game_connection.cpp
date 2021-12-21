@@ -2,7 +2,6 @@
 #include "messages.hpp"
 #include "PlayRoom.h"
 
-
 #include <vector>
 #include <algorithm>
 #include <boost/property_tree/json_parser.hpp>
@@ -23,8 +22,7 @@ namespace net {
             : game(GameRoom(communication->user.get_id())),
               is_gaming(false),
               is_remove(false),
-              context(communication->context),
-              game_room() {
+              context(communication->context) {
 
         communication->is_gaming.store(true);
         communication->is_talking.store(false);
@@ -147,15 +145,13 @@ namespace net {
                     ids.push_back(com->user.get_id());
                 }
                 BOOST_LOG_TRIVIAL(info) << "GameRoom Created";
-                PlayRoom temp(ids);
-                game_room = temp;
+                game_room(ids);
 
-
-                std::vector<Player *> players = game_room.GetPlayers();
-                for (auto &player: players) {
-                    BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      "
-                                            << player->getRole();
-                }
+//                const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
+//                for (auto &player: players) {
+//                    int role = static_cast<int>(player->getRole());
+//                    BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
+//                }
 
                 communication->out << MessageServer::start_game(communication->user.get_id());
 
@@ -324,20 +320,22 @@ namespace net {
 //    }
 
     void GameConnection::handle_game_status(std::shared_ptr<Communication> communication) {
-        std::vector<Player *> players = game_room.GetPlayers();
-
         int role = 0;
-        for (auto &player: players) {
-            BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << player->getRole();
-            BOOST_LOG_TRIVIAL(info) << communication->user.get_id();
+//        const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
+//        for (auto &player: players) {
+//            if (player->getGlobalId() == communication->user.get_id()) {
+//                role = static_cast<int> (player->getRole());
+//
+////                BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
+//                BOOST_LOG_TRIVIAL(info) << communication->user.get_id();
+//                break;
+//            }
+//        }
+//        std::cout << "plr[i]->getAlive() " << plr[i]->getIsAlive() << std::endl;
+//        std::cout << "plr[i]->getGlobalId() " << plr[i]->getGlobalId() << std::endl;
+//        std::cout << "plr[i]->getRole() " << static_cast<int> (plr[i]->getRole()) << std::endl;
+//        std::cout << "plr[i]->getIsSleep() " << plr[i]->getIsSleep() << std::endl;
 
-            if (player->getGlobalId() == communication->user.get_id()) {
-                role = player->getRole();
-                break;
-            }
-        }
-
-        //621 1.3 621 2.3
 
         std::string users_ids;
         std::string users_ips;

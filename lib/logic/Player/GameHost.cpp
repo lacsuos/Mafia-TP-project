@@ -1,7 +1,7 @@
 #include "GameHost.h"
 
 GameHost::GameHost() {
-    role_ = 777;
+    role_ = Role::HOST;
 }
 
 

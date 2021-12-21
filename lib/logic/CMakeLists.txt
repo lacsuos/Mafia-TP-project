@@ -6,7 +6,7 @@ add_library(GAME SHARED
         PlayRoom/PlayRoom.cpp PlayRoom/PlayRoom.h
         )
 target_include_directories(GAME PUBLIC Player
-                                PUBLIC PlayRoom)
+        PUBLIC PlayRoom)
 
-
-
+add_executable(red main.cpp)
+target_link_libraries(red GAME)

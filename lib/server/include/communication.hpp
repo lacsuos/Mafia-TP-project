@@ -8,14 +8,11 @@
 #include <boost/atomic.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-using boost::asio::ip::tcp;
-using boost::asio::io_context;
-
 namespace net {
 
     class Communication {
     public:
-        explicit Communication(io_context &in_context) : context(in_context),
+        explicit Communication(boost::asio::io_context &in_context) : context(in_context),
                                                          socket(context),
                                                          read_buffer(),
                                                          write_buffer(),
@@ -30,8 +27,8 @@ namespace net {
         ~Communication() = default;
 
     public:
-        io_context &context;
-        tcp::socket socket;
+        boost::asio::io_context &context;
+        boost::asio::ip::tcp::socket socket;
 
         boost::asio::streambuf read_buffer;
         boost::asio::streambuf write_buffer;

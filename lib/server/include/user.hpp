@@ -5,8 +5,6 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <utility>
 
-using boost::asio::ip::tcp;
-
 static int id_user_generate = 1;
 
 class User {
@@ -31,8 +29,7 @@ public:
 
     std::string get_IP() const { return ip; }
 
-    void
-    set_ip(const tcp::socket &socket_) { ip = socket_.remote_endpoint().address().to_string(); }
+    void set_ip(const boost::asio::ip::tcp::socket &socket_) { ip = socket_.remote_endpoint().address().to_string(); }
 
 private:
     std::string name;

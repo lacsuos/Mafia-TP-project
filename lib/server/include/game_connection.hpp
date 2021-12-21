@@ -55,7 +55,7 @@ namespace net {
 
 
     private:
-        boost::asio::ip::io_context &context;
+        boost::asio::io_context &context;
 
         std::vector<std::shared_ptr<Communication>> communications;
 

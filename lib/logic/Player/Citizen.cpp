@@ -1,7 +1,7 @@
 #include "Citizen.h"
 
 Citizen::Citizen() {
-    role_ = 1;
+    role_ = Role::CITIZEN;
 }
 
 Citizen::~Citizen() noexcept {
