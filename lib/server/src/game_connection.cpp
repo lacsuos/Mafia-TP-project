@@ -145,6 +145,13 @@ namespace net {
                 PlayRoom temp(ids);
                 game_room = std::move(temp);
 
+                const std::vector<std::shared_ptr<Player>> &players = game_room.GetPlayers();
+                for (auto player: players) {
+                    for (auto i: communications) {
+                        i->user.set_role(static_cast<int> (player->getRole()));
+                    }
+                }
+
                 communication->out << MessageServer::start_game(communication->user.get_id());
 
             } else {
@@ -161,14 +168,13 @@ namespace net {
 
     void GameConnection::handle_leave(std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << " LEAVE ROOM";
-        game_mutex.lock();
+        std::lock_guard<std::mutex> lock(game_mutex);
         for (size_t i = 0; i < communications.size(); ++i) {
             if (communications[i]->user.get_name() == communication->user.get_name()) {
                 communications.erase(communications.begin() + i);
                 break;
             }
         }
-        game_mutex.unlock();
 
         communication->out << MessageServer::leave_room_done();
         write(communication->socket, communication->write_buffer);
@@ -176,7 +182,6 @@ namespace net {
         communication->is_gaming.store(false);
         communication->user.set_room(0);
 
-        std::lock_guard<std::mutex> lock(game_mutex);
         if (communications.empty()) {
             boost::asio::post(context, boost::bind(&GameConnection::game_delete, this));
         }
@@ -228,94 +233,96 @@ namespace net {
                                   boost::bind(&GameConnection::handle_error, this, communication));
             }
 
-//            std::string command = communication->last_msg.get<std::string>("command");
-//
-//            if (command == "day") {
-//                boost::asio::post(context,
-//                                  boost::bind(&GameConnection::handle_game_day, this,
-//                                              communication));
-//            }
-//
-//            if (command == "vote") {
-//                boost::asio::post(context,
-//                                  boost::bind(&GameConnection::handle_vote, this,
-//                                              communication));
-//            }
-//
-            //            if (command == "`nigth`") {
-//                boost::asio::post(context,
-//                                  boost::bind(&GameConnection::handle_nigth, this,
-//                                              communication));
-//
-//            } else {
-//                boost::asio::post(context,
-//                                  boost::bind(&GameConnection::handle_error, this, communication));
-//            }
+            std::string command = communication->last_msg.get<std::string>("command");
+
+            if (communication->user.get_role() == 777) {
+                if (command == "day") {
+                    boost::asio::post(context,
+                                      boost::bind(&GameConnection::handle_game_day, this,
+                                                  communication));
+                } else if (command == "nigth") {
+                    boost::asio::post(context,
+                                      boost::bind(&GameConnection::handle_game_nigth, this,
+                                                  communication));
+
+                } else {
+                    boost::asio::post(context,
+                                      boost::bind(&GameConnection::handle_error, this,
+                                                  communication));
+                }
+            } else {
+                if (command == "vote") {
+                    boost::asio::post(context,
+                                      boost::bind(&GameConnection::handle_vote, this,
+                                                  communication));
+
+                } else {
+                    boost::asio::post(context,
+                                      boost::bind(&GameConnection::handle_error, this,
+                                                  communication));
+                }
+            }
             return;
         }
-
-        //TODO проверку ведущего
-
     }
 
 
-//    void GameConnection::handle_game_day(const std::shared_ptr<Communication> &communication) {
-//        if (!game_room->day()) {
-//            // игра продолжается
-//        } else {
-//            // игра закончена
-//        }
-//
-//        for (auto &comm : communications) {
-//            boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, comm));
-//            return;
-//        }
-//    }
+    void GameConnection::handle_game_day(std::shared_ptr<Communication> communication) {
+        if (!game_room.day()) {
+            // игра продолжается
+            communication->out << MessageServer::;
+        } else {
+            // игра закончена
+            communication->out << MessageServer::;
+        }
+        boost::asio::post(context,
+                          boost::bind(&GameConnection::handle_write, this, communication));
+    }
 
-//    void GameConnection::handle_vote(const std::shared_ptr<Communication> &communication) {
-//        pt::read_json(communication->in, communication->last_msg);
-//        int id = communication->last_msg.get<int>("id");
-//
-//        game_mutex.lock();
-//        votes.push_back(id);
-//        game_mutex.unlock();
-//
-//
-//        if (votes.size() == MAX_USERS) {
-//            if (!game_room->evening(votes)) {
-//                int killed_id = game_room->CountingVotes(votes);
-//                // игра продолжается
-//            } else {
-//                // игра закончена
-//            }
-//        }
-//
-//        // TODO нужно получить все голоса вначале, а потом уже вызвать метод handle_write
-//        for (auto &comm : communications) {
-//            boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, comm));
-//            return;
-//        }
-//    }
+    void GameConnection::handle_vote(std::shared_ptr<Communication> communication) {
+        const pt::ptree &parametrs = communication->last_msg.get_child("parametrs");
+        auto id = parametrs.get<int>("id");
 
-//    void GameConnection::handle_nigth(const std::shared_ptr<Communication> &communication) {
-//        pt::read_json(communication->in, communication->last_msg);
-//        int id = communication->last_msg.get<int>("id");
-//
-//        int killed_id = 0;
-//        killed_id = game_room->night(votes)
-//
-//        // TODO нужно получить все голоса вначале мафии, а потом уже вызвать метод handle_write
-//        for (auto &comm: communications) {
-//            boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, comm));
-//            return;
-//        }
-//    }
+        std::lock_guard<std::mutex> lock(game_mutex);
+        votes.push_back(id);
+
+        if (votes.size() == MAX_USERS) {
+            if (!game_room.evening(votes)) {
+                // игра продолжается
+                communication->out << MessageServer::;
+            } else {
+                // игра закончена
+                communication->out << MessageServer::;
+            }
+        } else {
+            communication->out << MessageServer::;
+        }
+        boost::asio::post(context,
+                          boost::bind(&GameConnection::handle_write, this, communication));
+    }
+
+    void GameConnection::handle_nigth(std::shared_ptr<Communication> communication) {
+        if (!game_room.night()) {
+            // игра продолжается
+            communication->out << MessageServer::;
+        } else {
+            // игра закончена
+            communication->out << MessageServer::;
+        }
+        boost::asio::post(context,
+                          boost::bind(&GameConnection::handle_write, this, communication));
+    }
 
     void GameConnection::handle_game_status(std::shared_ptr<Communication> communication) {
         int role = 0;
         bool is_alive, is_sleep;
+        std::string who_is_alive;
         const std::vector<std::shared_ptr<Player>> &players = game_room.GetPlayers();
-        for (auto &player: players) {
+        for (auto player: players) {
+            who_is_alive += std::to_string(player->getGlobalId());
+            who_is_alive += "-";
+            who_is_alive += (player->getIsAlive()) ? "ON" : "OFF";
+            who_is_alive += ";";
             if (player->getGlobalId() == communication->user.get_id()) {
                 role = static_cast<int> (player->getRole());
                 is_alive = player->getIsAlive();
@@ -324,17 +331,16 @@ namespace net {
             }
         }
 
-        std::string users_ids;
+        bool is_over = game_room.IsGameOver();
+
         std::string users_ips;
 
-        for (auto &i: communications) {
-            users_ids += std::to_string(i->user.get_id());
-            users_ids += ";";
+        for (auto i: communications) {
             users_ips += (i->user.get_IP());
             users_ips += ";";
         }
         communication->out
-                << MessageServer::connected(users_ids, users_ips, role, is_alive, is_sleep);
+                << MessageServer::connected(who_is_alive, users_ips, role, is_alive, is_sleep, is_over);
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }

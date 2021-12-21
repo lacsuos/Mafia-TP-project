@@ -130,7 +130,7 @@ std::string MessageClient::error() {
 
 std::string
 MessageServer::connected(const std::string &ids, const std::string &ips, const int &role,
-                         const bool &is_alive, const bool &is_sleep) {
+                         const bool &is_alive, const bool &is_sleep, const bool &is_over) {
     pt::ptree parametrs;
     pt::ptree game;
     pt::ptree request;
@@ -155,6 +155,11 @@ MessageServer::connected(const std::string &ids, const std::string &ips, const i
         game.put("status_is_sleep", "ON");
     } else {
         game.put("status_is_sleep", "OFF");
+    }
+    if (is_over) {
+        game.put("status", "OFF");
+    } else {
+        game.put("status", "ON");
     }
 
     request.put("command_type", "basic");

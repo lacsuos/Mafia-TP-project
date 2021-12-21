@@ -11,7 +11,8 @@ class User {
 public:
     User() : name(),
              ip(),
-             room_id() {
+             room_id(),
+             role() {
         user_id = id_user_generate++;
     };
 
@@ -31,11 +32,16 @@ public:
 
     void set_ip(const boost::asio::ip::tcp::socket &socket_) { ip = socket_.remote_endpoint().address().to_string(); }
 
+    void set_role(const int &role_) { role = role_; }
+
+    int get_role() { return role; }
+
 private:
     std::string name;
     std::string ip;
 
     int user_id;
     int room_id;
+    int role;
 };
 

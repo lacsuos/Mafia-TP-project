@@ -51,8 +51,11 @@ namespace net {
 
         void handle_ping(std::shared_ptr<Communication> communication);
 
-//        void handle_game_day(const std::shared_ptr<Communication> &communication);
+        void handle_game_day(std::shared_ptr<Communication> communication);
 
+        void handle_vote(std::shared_ptr<Communication> communication);
+
+        void handle_nigth(std::shared_ptr<Communication> communication);
 
     private:
         boost::asio::io_context &context;

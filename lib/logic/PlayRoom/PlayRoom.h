@@ -20,28 +20,28 @@ private:
 public:
     PlayRoom() = default;
 
-    PlayRoom(const PlayRoom& room) = default;
+    PlayRoom(const PlayRoom &room) = default;
 
-    PlayRoom& operator=(PlayRoom&& room);
+    PlayRoom &operator=(PlayRoom &&room) noexcept ;
 
     // возвращаем вектор всех игроков
-    const std::vector<std::shared_ptr<Player>>& GetPlayers();
+    const std::vector<std::shared_ptr<Player>> &GetPlayers();
 
     // создаем комнату на N человек, раздаем каждому роль
-    explicit PlayRoom(const std::vector<int>& vecOfId);
+    explicit PlayRoom(const std::vector<int> &vecOfId);
 
     // подсчет голосов: вернет id игрока, за которого проголосовало большинство
     // если нет такого игрока - вернет -1
-    int CountingVotes(const std::vector<int>& vecOfId);
+    int CountingVotes(const std::vector<int> &vecOfId);
 
     // вернет false, если игра продолжается, и true, если игра закончена
     bool day();
 
     // вернет false, если игра продолжается, и true, если игра закончена
-    bool evening(const std::vector<int>& vecOfId);
+    bool evening(const std::vector<int> &vecOfId);
 
     // вернет id игрока, которого убили
-    int night(const std::vector<int>& vecOfId);
+    int night(const std::vector<int> &vecOfId);
 
     // меняет статус игрока, которого убили, на мертвого
     void kill(int userId);
@@ -68,7 +68,7 @@ public:
     int GetCitizenCounter();
 
     // получить игрока
-    const std::shared_ptr<Player>& GetPlayer(int userID);
+    const std::shared_ptr<Player> &GetPlayer(int userID);
 
     ~PlayRoom() = default;
 };

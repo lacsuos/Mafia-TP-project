@@ -7,6 +7,3 @@ add_library(GAME SHARED
         )
 target_include_directories(GAME PUBLIC Player
         PUBLIC PlayRoom)
-
-add_executable(red main.cpp)
-target_link_libraries(red GAME)
