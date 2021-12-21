@@ -250,6 +250,17 @@ namespace net {
                                       boost::bind(&GameConnection::handle_error, this,
                                                   communication));
                 }
+            } else if (communication->user.get_role() == 2) {
+                if (command == "vote") {
+                    boost::asio::post(context,
+                                      boost::bind(&GameConnection::handle_vote_mafia, this,
+                                                  communication));
+
+                } else {
+                    boost::asio::post(context,
+                                      boost::bind(&GameConnection::handle_error, this,
+                                                  communication));
+                }
             } else {
                 if (command == "vote") {
                     boost::asio::post(context,
@@ -268,12 +279,12 @@ namespace net {
 
 
     void GameConnection::handle_game_day(std::shared_ptr<Communication> communication) {
-        if (!game_room.day()) {
+        if (static_cast<int>(game_room.day()) == 0) {
             // игра продолжается
-            communication->out << MessageServer::;
+            communication->out << MessageServer::day_accepted();
         } else {
             // игра закончена
-            communication->out << MessageServer::;
+            communication->out << MessageServer::finish_game();
         }
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
@@ -287,24 +298,41 @@ namespace net {
         votes.push_back(id);
 
         if (votes.size() == MAX_USERS) {
-            if (!game_room.evening(votes)) {
+            if (static_cast<int>(game_room.evening(votes)) == 0) {
                 // игра продолжается
-                communication->out << MessageServer::;
+                communication->out << MessageServer::vote_accepted(id);
             } else {
                 // игра закончена
-                communication->out << MessageServer::;
+                communication->out << MessageServer::finish_game();
             }
         } else {
-            communication->out << MessageServer::;
+            communication->out << MessageServer::vote_accepted(id);
         }
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
 
-    void GameConnection::handle_nigth(std::shared_ptr<Communication> communication) {
+    void GameConnection::handle_vote_mafia(std::shared_ptr<Communication> communication) {
+        const pt::ptree &parametrs = communication->last_msg.get_child("parametrs");
+        auto id = parametrs.get<int>("id");
+
+        std::lock_guard<std::mutex> lock(game_mutex);
+        votes_mafia.push_back(id);
+
+        communication->out << MessageServer::vote_accepted(id);
+        boost::asio::post(context,
+                          boost::bind(&GameConnection::handle_write, this, communication));
+
+    }
+
+    void GameConnection::handle_game_nigth(std::shared_ptr<Communication> communication) {
         int killed_id = 0;
-        killed_id = game_room.night();
-        communication->out << MessageServer::;
+        if (votes_mafia.size() == 1) {
+            killed_id = game_room.night(votes_mafia);
+            communication->out << MessageServer::nigth_accepted(killed_id);
+        } else {
+            communication->out << MessageClient::error(); // добавить пинг
+        }
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
@@ -327,7 +355,21 @@ namespace net {
             }
         }
 
-        bool is_over = game_room.IsGameOver();
+        int sts = static_cast<int>(game_room.IsGameOver());
+        std::string status;
+        switch (sts) {
+            case 0:
+                status = "GAMING";
+                break;
+            case 1:
+                status = "CITIZEN_WIN";
+                break;
+            case 2:
+                status = "MAFIA_WIN";
+                break;
+            default:
+                break;
+        }
 
         std::string users_ips;
 
@@ -336,7 +378,8 @@ namespace net {
             users_ips += ";";
         }
         communication->out
-                << MessageServer::connected(who_is_alive, users_ips, role, is_alive, is_sleep, is_over);
+                << MessageServer::connected(who_is_alive, users_ips, role, is_alive, is_sleep,
+                                            status);
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }

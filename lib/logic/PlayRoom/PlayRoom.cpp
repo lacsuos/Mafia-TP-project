@@ -9,20 +9,24 @@
 static std::shared_ptr<Player> ChooseRole(int a) {
     switch (a) {
         case 1:
-            return std::make_unique<Citizen>();
+            return std::make_unique<Citizen> ();
         case 2:
-            return std::make_unique<Mafia>();
+            return std::make_unique<Mafia> ();
         case 777:
-            return std::make_unique<GameHost>();
+            return std::make_unique<GameHost> ();
         default:
             throw "BadRole";
     }
 }
 
 
-PlayRoom::PlayRoom(const std::vector<int> &vecOfId)
-        : roomSize_(vecOfId.size()), userCounter_(vecOfId.size()), mafiaCounter_(1),
-          citizenCounter_(2), players_(roomSize_) {
+PlayRoom::PlayRoom(const std::vector<int>& vecOfId)
+        : roomSize_(vecOfId.size())
+        , userCounter_(vecOfId.size())
+        , mafiaCounter_(1)
+        , citizenCounter_(2)
+        , players_(roomSize_)
+{
     int pl[] = {2, 1, 777, 1};
     std::random_device r;
     std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()};
@@ -37,7 +41,7 @@ PlayRoom::PlayRoom(const std::vector<int> &vecOfId)
 }
 
 
-PlayRoom &PlayRoom::operator=(PlayRoom &&room) {
+PlayRoom& PlayRoom::operator=(PlayRoom&& room) {
     roomSize_ = room.roomSize_;
     userCounter_ = room.userCounter_;
     mafiaCounter_ = room.mafiaCounter_;
@@ -48,21 +52,22 @@ PlayRoom &PlayRoom::operator=(PlayRoom &&room) {
 }
 
 
-bool PlayRoom::day() {
+
+Winner PlayRoom::day() {
     WakeUpAll();
     return IsGameOver();
 }
 
 
-bool PlayRoom::evening(const std::vector<int> &vecOfId) {
+Winner PlayRoom::evening(const std::vector<int>& vecOfId) {
     int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
         kill(resultOfVoting);
-    return IsGameOver();
+    return  IsGameOver();
 }
 
 
-int PlayRoom::night(const std::vector<int> &vecOfId) {
+int PlayRoom::night(const std::vector<int>& vecOfId) {
     SleepAllCitizen();
     int resultOfVoting = CountingVotes(vecOfId);
     if (resultOfVoting != -1)
@@ -103,7 +108,7 @@ int PlayRoom::roomToGlobal(int userId) {
 }
 
 
-int PlayRoom::CountingVotes(const std::vector<int> &vecOfId) {
+int PlayRoom::CountingVotes(const std::vector<int>& vecOfId) {
     int counterArray[4] = {0, 0, 0, 0};
     int voteArray[4] = {0, 0, 0, 0};
 
@@ -138,14 +143,14 @@ int PlayRoom::CountingVotes(const std::vector<int> &vecOfId) {
 }
 
 
-bool PlayRoom::IsGameOver() {
+Winner PlayRoom::IsGameOver() {
     if (mafiaCounter_ == 0) {
-        return true;
+        return Winner::CITIZEN;
     }
     if (mafiaCounter_ >= citizenCounter_) {
-        return true;
+        return Winner::MAFIA;
     }
-    return false;
+    return Winner::NO_WINNER;
 }
 
 
@@ -161,13 +166,13 @@ int PlayRoom::GetCitizenCounter() {
 
 void PlayRoom::SleepAllCitizen() {
     for (int i = 0; i < roomSize_; ++i) {
-        if (players_[i]->getRole() == Role::CITIZEN)
+        if ( players_[i]->getRole() == Role::CITIZEN)
             players_[i]->setIsSleep(true);
     }
 }
 
 
-const std::vector<std::shared_ptr<Player>> &PlayRoom::GetPlayers() {
+const std::vector<std::shared_ptr<Player>>& PlayRoom::GetPlayers() {
     return players_;
 }
 
@@ -180,8 +185,8 @@ void PlayRoom::WakeUpAll() {
 }
 
 
-const std::shared_ptr<Player> &PlayRoom::GetPlayer(int userID) {
-    for (const auto &player: players_) {
+const std::shared_ptr<Player>& PlayRoom::GetPlayer(int userID) {
+    for (const auto& player : players_) {
         if (player->getRoomId() == globalToRoom(userID))
             return player;
     }

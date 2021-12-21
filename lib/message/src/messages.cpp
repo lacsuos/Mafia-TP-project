@@ -130,7 +130,7 @@ std::string MessageClient::error() {
 
 std::string
 MessageServer::connected(const std::string &ids, const std::string &ips, const int &role,
-                         const bool &is_alive, const bool &is_sleep, const bool &is_over) {
+                         const bool &is_alive, const bool &is_sleep, const std::string &status) {
     pt::ptree parametrs;
     pt::ptree game;
     pt::ptree request;
@@ -156,11 +156,8 @@ MessageServer::connected(const std::string &ids, const std::string &ips, const i
     } else {
         game.put("status_is_sleep", "OFF");
     }
-    if (is_over) {
-        game.put("status", "OFF");
-    } else {
-        game.put("status", "ON");
-    }
+
+    game.put("status", status);
 
     request.put("command_type", "basic");
     request.put("command", "game");
@@ -223,6 +220,53 @@ std::string MessageServer::leave_room_done() {
 
     request.put("command_type", "basic_room");
     request.put("command", "leave");
+    request.add_child("parametrs", parametrs);
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::finish_game() {
+    pt::ptree request;
+
+    request.put("command_type", "basic_room");
+    request.put("command", "finish_game");
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::day_accepted() {
+    pt::ptree request;
+
+    request.put("command_type", "basic_room");
+    request.put("command", "day_accepted");
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::nigth_accepted(const int &killed_id) {
+    pt::ptree request;
+    pt::ptree parametrs;
+
+
+    parametrs.put("vote_id", killed_id);
+
+    request.put("command_type", "basic_room");
+    request.put("command", "day_accepted");
+    request.add_child("parametrs", parametrs);
+
+
+    return message_phtee(request);
+}
+
+std::string MessageServer::vote_accepted(const int &id) {
+    pt::ptree request;
+    pt::ptree parametrs;
+
+    parametrs.put("vote_id", id);
+
+    request.put("command_type", "basic_room");
+    request.put("command", "day_accepted");
+
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);

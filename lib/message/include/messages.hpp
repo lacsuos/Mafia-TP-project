@@ -16,24 +16,45 @@ public:
 class MessageClient : public Message {
 public:
     static std::string msg();
+
     static std::string disconnect();
+
     static std::string create_room();
+
     static std::string error();
-    static std::string join_room(const size_t& room_id);
+
+    static std::string join_room(const size_t &room_id);
 
 };
 
 class MessageServer : public Message {
 public:
     static std::string start_game(const size_t &id);
+
     static std::string start_game_failed();
+
     static std::string create_room_failed();
+
     static std::string create_room_done(const int &id);
+
     static std::string connected(const std::string &ids, const std::string &ips, const int &role,
-                                 const bool &is_alive, const bool &is_sleep, const bool &is_over);
-    static std::string msg(const std::string& ids, const std::string& names);
+                                 const bool &is_alive, const bool &is_sleep,
+                                 const std::string &status);
+
+    static std::string msg(const std::string &ids, const std::string &names);
+
 //    static std::string game_start(const int role);
-    static std::string accept_room_done(const size_t& room_id);
+    static std::string accept_room_done(const size_t &room_id);
+
     static std::string join_room_failed(const int &id);
+
     static std::string leave_room_done();
+
+    static std::string finish_game();
+
+    static std::string day_accepted();
+
+    static std::string nigth_accepted(const int &killed_id);
+
+    static std::string vote_accepted(const int &id);
 };

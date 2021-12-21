@@ -55,7 +55,9 @@ namespace net {
 
         void handle_vote(std::shared_ptr<Communication> communication);
 
-        void handle_nigth(std::shared_ptr<Communication> communication);
+        void handle_vote_mafia(std::shared_ptr<Communication> communication);
+
+        void handle_game_nigth(std::shared_ptr<Communication> communication);
 
     private:
         boost::asio::io_context &context;
@@ -63,6 +65,7 @@ namespace net {
         std::vector<std::shared_ptr<Communication>> communications;
 
         std::vector<int> votes;
+        std::vector<int> votes_mafia;
 
         PlayRoom game_room;
         std::mutex game_mutex;
