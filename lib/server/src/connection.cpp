@@ -26,7 +26,6 @@ namespace net {
 
     void Connection::start() {
         communication->is_talking.store(true);
-        BOOST_LOG_TRIVIAL(info) << "UserTalker start work with connection";
         boost::asio::post(context, boost::bind(&Connection::handle_read, this));
     }
 
@@ -35,8 +34,6 @@ namespace net {
     }
 
     void Connection::handle_read() {
-        BOOST_LOG_TRIVIAL(info) << "START READING";
-
         async_read_until(communication->socket, communication->read_buffer, std::string(MSG_END),
                          [this](bs::error_code error, size_t len) {
                              if (!error) {
@@ -49,7 +46,6 @@ namespace net {
     }
 
     void Connection::handle_write() {
-        BOOST_LOG_TRIVIAL(info) << "START SENDING";
         async_write(communication->socket, communication->write_buffer,
                     [this](bs::error_code error, size_t len) {
                         if (!error) {

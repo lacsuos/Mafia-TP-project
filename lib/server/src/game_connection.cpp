@@ -106,8 +106,6 @@ namespace net {
     }
 
     void GameConnection::handle_read(std::shared_ptr<Communication> communication) {
-//        BOOST_LOG_TRIVIAL(info) << "START READING";
-
         async_read_until(communication->socket, communication->read_buffer, std::string(MSG_END),
                          [this, communication](bs::error_code error, size_t len) {
                              if (!error) {
@@ -119,7 +117,6 @@ namespace net {
     }
 
     void GameConnection::handle_write(std::shared_ptr<Communication> communication) {
-//        BOOST_LOG_TRIVIAL(info) << "START SENDING";
         async_write(communication->socket, communication->write_buffer,
                     [this, communication](bs::error_code error, size_t len) {
                         if (!error) {
@@ -147,12 +144,6 @@ namespace net {
                 BOOST_LOG_TRIVIAL(info) << "GameRoom Created";
                 PlayRoom temp(ids);
                 game_room = std::move(temp);
-
-                const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
-                for (auto &player: players) {
-                    int role = static_cast<int>(player->getRole());
-                    BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
-                }
 
                 communication->out << MessageServer::start_game(communication->user.get_id());
 
@@ -322,32 +313,28 @@ namespace net {
 
     void GameConnection::handle_game_status(std::shared_ptr<Communication> communication) {
         int role = 0;
-        const std::vector<std::unique_ptr<Player>> &players = game_room.GetPlayers();
+        bool is_alive, is_sleep;
+        const std::vector<std::shared_ptr<Player>> &players = game_room.GetPlayers();
         for (auto &player: players) {
             if (player->getGlobalId() == communication->user.get_id()) {
                 role = static_cast<int> (player->getRole());
-
-                BOOST_LOG_TRIVIAL(info) << player->getGlobalId() << "      " << role;
-                BOOST_LOG_TRIVIAL(info) << communication->user.get_id();
+                is_alive = player->getIsAlive();
+                is_sleep = player->getIsSleep();
                 break;
             }
         }
-//        std::cout << "plr[i]->getAlive() " << plr[i]->getIsAlive() << std::endl;
-//        std::cout << "plr[i]->getGlobalId() " << plr[i]->getGlobalId() << std::endl;
-//        std::cout << "plr[i]->getRole() " << static_cast<int> (plr[i]->getRole()) << std::endl;
-//        std::cout << "plr[i]->getIsSleep() " << plr[i]->getIsSleep() << std::endl;
-
 
         std::string users_ids;
         std::string users_ips;
 
         for (auto &i: communications) {
-            users_ids += (i->user.get_name());
+            users_ids += std::to_string(i->user.get_id());
             users_ids += ";";
             users_ips += (i->user.get_IP());
             users_ips += ";";
         }
-        communication->out << MessageServer::connected(users_ids, users_ips, role);
+        communication->out
+                << MessageServer::connected(users_ids, users_ips, role, is_alive, is_sleep);
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
@@ -376,7 +363,7 @@ namespace net {
         for (auto &i: communications) {
             users_ids += (std::to_string(i->user.get_id()));
             users_ids += ";";
-            users_names += (i->user.get_name());
+            users_names += std::to_string(i->user.get_id());
             users_names += ";";
         }
         communication->out << MessageServer::msg(users_ids, users_names);

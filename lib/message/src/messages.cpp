@@ -128,7 +128,9 @@ std::string MessageClient::error() {
     return message_phtee(request);
 }
 
-std::string MessageServer::connected(const std::string& ids, const std::string& ips, const int &role) {
+std::string
+MessageServer::connected(const std::string &ids, const std::string &ips, const int &role,
+                         const bool &is_alive, const bool &is_sleep) {
     pt::ptree parametrs;
     pt::ptree game;
     pt::ptree request;
@@ -144,7 +146,16 @@ std::string MessageServer::connected(const std::string& ids, const std::string& 
     request.add_child("parametrs", parametrs);
 
     game.put("role", role);
-    game.put("status", "ON");
+    if (is_alive) {
+        game.put("status_is_alive", "ON");
+    } else {
+        game.put("status_is_alive", "OFF");
+    }
+    if (is_sleep) {
+        game.put("status_is_sleep", "ON");
+    } else {
+        game.put("status_is_sleep", "OFF");
+    }
 
     request.put("command_type", "basic");
     request.put("command", "game");
@@ -154,7 +165,7 @@ std::string MessageServer::connected(const std::string& ids, const std::string& 
     return message_phtee(request);
 }
 
-std::string MessageServer::msg(const std::string& ids, const std::string& names) {
+std::string MessageServer::msg(const std::string &ids, const std::string &names) {
     pt::ptree parametrs;
     pt::ptree id;
     pt::ptree name;

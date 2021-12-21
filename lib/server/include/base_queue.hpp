@@ -25,7 +25,7 @@ private:
 
 template<class T>
 BaseQueue<T>::~BaseQueue() {
-    queue_mutex.lock();
+//    queue_mutex.lock();
 }
 
 template<class T>
