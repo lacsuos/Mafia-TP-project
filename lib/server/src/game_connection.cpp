@@ -11,6 +11,8 @@
 
 using boost::asio::async_read;
 using boost::asio::async_write;
+using boost::asio::ip::tcp;
+using boost::asio::io_context;
 
 namespace pt = boost::property_tree;
 namespace bs = boost::system;

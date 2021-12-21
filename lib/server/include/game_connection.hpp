@@ -10,9 +10,6 @@
 #include <boost/asio.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-using boost::asio::ip::tcp;
-using boost::asio::io_context;
-
 constexpr size_t MAX_USERS = 4;
 
 namespace net {
@@ -58,7 +55,7 @@ namespace net {
 
 
     private:
-        io_context &context;
+        boost::asio::ip::io_context &context;
 
         std::vector<std::shared_ptr<Communication>> communications;
 

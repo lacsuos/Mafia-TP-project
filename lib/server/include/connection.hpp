@@ -10,9 +10,6 @@
 #include <boost/asio.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-using boost::asio::ip::tcp;
-using boost::asio::io_context;
-
 namespace net {
 
     class Connection {
@@ -47,7 +44,7 @@ namespace net {
         void handle_error();
 
     private:
-        io_context &context;
+        boost::asio::io_context &context;
         std::shared_ptr<Communication> communication;
         Base &base;
     };

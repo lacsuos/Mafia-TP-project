@@ -10,23 +10,14 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
-
-using boost::asio::ip::tcp;
-using boost::asio::ip::address;
-using boost::asio::io_context;
-
-
-constexpr std::string_view SERVER_IP = "127.0.0.1";  // for local game
-//constexpr std::string_view SERVER_IP = "0.0.0.0";  // for public game
-
 constexpr uint16_t PORT = 5000;
 
 namespace net {
     class Server {
     public:
-        Server();
+        explicit Server(std::string_view SERVER_IP);
 
-        Server(Server &other) = delete;
+        Server() = delete;
 
         ~Server();
 
@@ -43,7 +34,7 @@ namespace net {
 
         void JoinRoom();
 
-        void HandleAcception(std::shared_ptr<Communication> &communication);
+        void HandleAcception(std::shared_ptr<Communication> communication);
 
         void StartConnection();
 
@@ -54,10 +45,10 @@ namespace net {
         void AcceptionDone(std::shared_ptr<Communication> communication);
 
     private:
-        io_context context_;
+        boost::asio::io_context context_;
 
-        tcp::endpoint endpoint_;
-        tcp::acceptor acceptor_;
+        boost::asio::ip::tcp::endpoint endpoint_;
+        boost::asio::ip::tcp::acceptor acceptor_;
 
         boost::thread_group threads_;
 

@@ -11,8 +11,12 @@
 
 namespace bs = boost::system;
 
+using boost::asio::ip::tcp;
+using boost::asio::ip::address;
+using boost::asio::io_context;
+
 namespace net {
-    Server::Server() : context_(),
+    Server::Server(std::string_view SERVER_IP) : context_(),
                        endpoint_(address::from_string(std::string(SERVER_IP)), PORT),
                        acceptor_(context_) {}
 
@@ -41,7 +45,7 @@ namespace net {
         HandleAcception(communication);
     }
 
-    void Server::HandleAcception(std::shared_ptr<Communication> &communication) {
+    void Server::HandleAcception(std::shared_ptr<Communication> communication) {
         BOOST_LOG_TRIVIAL(info) << "waiting for acception";
         acceptor_.async_accept(communication->socket, [this, communication](bs::error_code error) {
             if (!error) {
@@ -56,10 +60,9 @@ namespace net {
         BOOST_LOG_TRIVIAL(info) << "accept";
         auto connection = std::make_shared<Connection>(communication, base);
         BOOST_LOG_TRIVIAL(info) << "CONNECTION ACCEPTS";
-        connection_mutex_.lock();
+        std::lock_guard<std::mutex> lock(connection_mutex_);
         BOOST_LOG_TRIVIAL(info) << "PUSH TO QUEUE";
         new_connection_.push_back(connection);
-        connection_mutex_.unlock();
         auto new_communication = std::make_shared<Communication>(context_);
         context_.post(boost::bind(&Server::HandleAcception, this, new_communication));
     }
@@ -73,7 +76,7 @@ namespace net {
 
     void Server::StartConnection() {
 
-        connection_mutex_.lock();
+        std::lock_guard<std::mutex> lock(connection_mutex_);
         for (size_t i = 0; i < new_connection_.size(); ++i) {
             if (new_connection_[i]->is_remove.load()) {
                 BOOST_LOG_TRIVIAL(info) << "DISCONNECTED USER IS REMOVED";
@@ -84,7 +87,6 @@ namespace net {
             }
 
         }
-        connection_mutex_.unlock();
         context_.post(boost::bind(&Server::StartConnection, this));
     }
 
@@ -114,9 +116,9 @@ namespace net {
 
         communication->user.set_room((game_connection->game.get_id()));
 
-        game_connection_mutex_.lock();
+        std::lock_guard<std::mutex> lock(game_connection_mutex_);
+
         new_game_connection_.push_back(game_connection);
-        game_connection_mutex_.unlock();
         context_.post(boost::bind(&Server::CreateRoom, this));
     }
 
@@ -126,7 +128,7 @@ namespace net {
             return;
         }
 
-        const std::lock_guard<std::mutex> lock(game_connection_mutex_);
+        std::lock_guard<std::mutex> lock(game_connection_mutex_);
 
         auto communication = base.accepting_game.Pop();
         BOOST_LOG_TRIVIAL(info) << communication->user.get_id() << " JOINED GAME";
