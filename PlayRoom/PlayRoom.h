@@ -15,17 +15,17 @@ private:
 
     int citizenCounter_;
 
-    std::vector<std::unique_ptr<Player>> players_;
+    std::vector<std::shared_ptr<Player>> players_;
 
 public:
     PlayRoom() = default;
 
     PlayRoom(const PlayRoom& room) = default;
 
-    PlayRoom& operator=(const PlayRoom& room) = default;
+    PlayRoom& operator=(PlayRoom&& room);
 
     // возвращаем вектор всех игроков
-    const std::vector<std::unique_ptr<Player>>& GetPlayers();
+    const std::vector<std::shared_ptr<Player>>& GetPlayers();
 
     // создаем комнату на N человек, раздаем каждому роль
     explicit PlayRoom(const std::vector<int>& vecOfId);
@@ -68,7 +68,7 @@ public:
     int GetCitizenCounter();
 
     // получить игрока
-    Player GetPlayer(int userID);
+    const std::shared_ptr<Player>& GetPlayer(int userID);
 
     ~PlayRoom() = default;
 };

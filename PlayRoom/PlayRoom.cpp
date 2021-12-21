@@ -6,7 +6,7 @@
 #include "Mafia.h"
 #include "GameHost.h"
 
- static std::unique_ptr<Player> ChooseRole(int a) {
+ static std::shared_ptr<Player> ChooseRole(int a) {
     switch (a) {
         case 1:
             return std::make_unique<Citizen> ();
@@ -39,6 +39,18 @@
         players_[i]->setRoomId(i);
     }
 }
+
+
+PlayRoom& PlayRoom::operator=(PlayRoom&& room) {
+    roomSize_ = room.roomSize_;
+    userCounter_ = room.userCounter_;
+    mafiaCounter_ = room.mafiaCounter_;
+    citizenCounter_ = room.citizenCounter_;
+    players_ = std::move(room.players_);
+
+    return *this;
+}
+
 
 
 bool PlayRoom::day() {
@@ -160,7 +172,7 @@ void PlayRoom::SleepAllCitizen() {
 }
 
 
-const std::vector<std::unique_ptr<Player>>& PlayRoom::GetPlayers() {
+const std::vector<std::shared_ptr<Player>>& PlayRoom::GetPlayers() {
     return players_;
 }
 
@@ -173,10 +185,10 @@ void PlayRoom::WakeUpAll() {
 }
 
 
-Player PlayRoom::GetPlayer(int userID) {
-    for (size_t i = 0; i < players_.size(); ++i) {
-        if (players_[i]->getRoomId() == globalToRoom(userID))
-            return *players_[i];
+const std::shared_ptr<Player>& PlayRoom::GetPlayer(int userID) {
+    for (const auto& player : players_) {
+        if (player->getRoomId() == globalToRoom(userID))
+            return player;
     }
     throw "BadId";
 }

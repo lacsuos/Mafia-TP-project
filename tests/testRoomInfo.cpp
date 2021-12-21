@@ -17,7 +17,7 @@ TEST(PlayRoom, day) {
 TEST(PlayRoom, evening) {
     std::vector<int> vecOfId = {111, 222, 333, 444};
     PlayRoom room(vecOfId);
-    const std::vector<std::unique_ptr<Player>>& plr = room.GetPlayers();
+    const std::vector<std::shared_ptr<Player>>& plr = room.GetPlayers();
     std::vector<int> vecOfVotes = {0, 0, 0, 0};
     if (plr[0]->getRole() == Role::CITIZEN || plr[0]->getRole() == Role::MAFIA)
         vecOfVotes = {111, 111, 111, 444};
