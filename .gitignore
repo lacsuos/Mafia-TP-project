@@ -1,5 +1,6 @@
 .idea/
 server/cmake-build-debug/
+cmake-build-debug/
 cl1/
 cl2/
 client/
