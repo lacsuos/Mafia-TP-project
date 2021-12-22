@@ -1,4 +1,4 @@
-.idea/
+../.idea/
 server/cmake-build-debug/
 cmake-build-debug/
 cl1/
