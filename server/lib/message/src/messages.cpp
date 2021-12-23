@@ -34,7 +34,7 @@ std::string MessageClient::create_room() {
     pt::ptree parametrs;
     pt::ptree request;
 
-    parametrs.put("status", "on");
+    parametrs.put("status", "in_process");
 
     request.put("command_type", "basic");
     request.put("command", "create_room");
@@ -47,7 +47,7 @@ std::string MessageClient::join_room(const size_t &room_id) {
     pt::ptree parametrs;
     pt::ptree request;
 
-    parametrs.put("status", "on");
+    parametrs.put("status", "in_process");
     parametrs.put("id", room_id);
 
     request.put("command_type", "basic");
@@ -62,8 +62,9 @@ std::string MessageServer::create_room_done(const int &id) {
     pt::ptree request;
 
     parametrs.put("id", id);
-    parametrs.put("status", "on");
-    request.put("command-type", "basic");
+    parametrs.put("status", "done");
+
+    request.put("command_type", "basic");
     request.put("command", "create_room");
     request.add_child("parametrs", parametrs);
 
@@ -75,19 +76,22 @@ std::string MessageServer::create_room_failed() {
     pt::ptree request;
 
     parametrs.put("status", "fail");
-    request.put("command-type", "basic");
+
+    request.put("command_type", "basic");
     request.put("command", "create_room");
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);
 }
 
-std::string MessageServer::accept_room_done(const size_t &id) {
+std::string MessageServer::join_room_done(const size_t &id) {
     pt::ptree parametrs;
     pt::ptree request;
 
+    parametrs.put("status", "done");
     parametrs.put("id", id);
-    request.put("command", "accepted");
+
+    request.put("command", "join_room");
     request.add_child("parametrs", parametrs);
 
     return message_phtee(request);
@@ -112,7 +116,7 @@ std::string MessageServer::start_game_failed() {
 
     parametrs.put("status", "fail");
 
-    request.put("command-type", "room-room_admin-answer");
+    request.put("command_type", "room_room_admin_answer");
     request.put("command", "start");
     request.add_child("parametrs", parametrs);
 

@@ -43,8 +43,7 @@ public:
 
     static std::string msg(const std::string &ids, const std::string &names);
 
-//    static std::string game_start(const int role);
-    static std::string accept_room_done(const size_t &room_id);
+    static std::string join_room_done(const size_t &id);
 
     static std::string join_room_failed(const int &id);
 

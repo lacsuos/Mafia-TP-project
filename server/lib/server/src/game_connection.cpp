@@ -98,7 +98,7 @@ namespace net {
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
 
-        communication->out << MessageServer::accept_room_done(communication->user.get_id());
+        communication->out << MessageServer::join_room_done(communication->user.get_id());
         write(communication->socket, communication->write_buffer);
 
         boost::asio::post(context, boost::bind(&GameConnection::handle_read, this, communication));
