@@ -146,8 +146,8 @@ namespace net {
                 game_room = std::move(temp);
 
                 const std::vector<std::shared_ptr<Player>> &players = game_room.GetPlayers();
-                for (auto player: players) {
-                    for (auto i: communications) {
+                for (auto &player: players) {
+                    for (const auto &i: communications) {
                         i->user.set_role(static_cast<int> (player->getRole()));
                     }
                 }
@@ -201,7 +201,7 @@ namespace net {
         }
 
         pt::read_json(communication->in, communication->last_msg);
-        std::string command_type = communication->last_msg.get<std::string>("command_type");
+        auto command_type = communication->last_msg.get<std::string>("command_type");
 
         if (command_type == "ping") {
             if (is_gaming) {
@@ -233,7 +233,7 @@ namespace net {
                                   boost::bind(&GameConnection::handle_error, this, communication));
             }
 
-            std::string command = communication->last_msg.get<std::string>("command");
+            auto command = communication->last_msg.get<std::string>("command");
 
             if (communication->user.get_role() == 777) {
                 if (command == "day") {
@@ -351,7 +351,6 @@ namespace net {
                 role = static_cast<int> (player->getRole());
                 is_alive = player->getIsAlive();
                 is_sleep = player->getIsSleep();
-                break;
             }
         }
 
@@ -373,7 +372,7 @@ namespace net {
 
         std::string users_ips;
 
-        for (auto &i: communications) {
+        for (const auto &i: communications) {
             users_ips += (i->user.get_IP());
             users_ips += ";";
         }
@@ -389,7 +388,7 @@ namespace net {
 
         communication->out << MessageClient::disconnect();
         async_write(communication->socket, communication->write_buffer,
-                    [this, &communication](bs::error_code error, size_t len) {
+                    [this, communication](bs::error_code error, size_t len) {
                         auto it = std::find(communications.begin(), communications.end(),
                                             communication);
                         if (it != communications.end()) {
@@ -405,7 +404,7 @@ namespace net {
         std::string users_ids;
         std::string users_names;
 
-        for (auto &i: communications) {
+        for (const auto &i: communications) {
             users_ids += (std::to_string(i->user.get_id()));
             users_ids += ";";
             users_names += std::to_string(i->user.get_id());

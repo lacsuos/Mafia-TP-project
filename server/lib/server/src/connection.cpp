@@ -115,7 +115,7 @@ namespace net {
 
     void Connection::handle_request() {
         pt::read_json(communication->in, communication->last_msg);
-        std::string command_type = communication->last_msg.get<std::string>("command_type");
+        auto command_type = communication->last_msg.get<std::string>("command_type");
 
         if (command_type == "ping") {
             boost::asio::post(context, boost::bind(&Connection::handle_message, this));
@@ -132,7 +132,7 @@ namespace net {
             return;
         }
 
-        std::string command = communication->last_msg.get<std::string>("command");
+        auto command = communication->last_msg.get<std::string>("command");
 
         if (command == "add_room") {
             boost::asio::post(context, boost::bind(&Connection::handle_create_room, this));

@@ -15,7 +15,7 @@ constexpr uint16_t PORT = 5000;
 namespace net {
     class Server {
     public:
-        explicit Server(std::string_view SERVER_IP);
+        explicit Server(const std::string_view &SERVER_IP);
 
         Server() = delete;
 

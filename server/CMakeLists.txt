@@ -18,7 +18,7 @@ endif ()
 
 add_subdirectory(lib)
 
-add_executable(server_prog src/main.cpp)
+add_executable(server_prog main.cpp)
 
 target_link_libraries(server_prog server_lib messages
         ${CMAKE_THREAD_LIBS_INIT}

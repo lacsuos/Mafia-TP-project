@@ -6,7 +6,7 @@
 
 namespace pt = boost::property_tree;
 
-std::string Message::message_phtee(boost::property_tree::ptree const &request) {
+std::string Message::message_ptree(boost::property_tree::ptree const &request) {
     std::stringstream json_request;
     pt::write_json(json_request, request);
     return json_request.str() + "\r\n\r";
@@ -18,7 +18,7 @@ std::string MessageClient::msg() {
     request.put("command_type", "ping");
     request.put("command", "ping");
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageClient::disconnect() {
@@ -27,7 +27,7 @@ std::string MessageClient::disconnect() {
     request.put("command_type", "basic");
     request.put("command", "disconnect");
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageClient::create_room() {
@@ -40,7 +40,7 @@ std::string MessageClient::create_room() {
     request.put("command", "create_room");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageClient::join_room(const size_t &room_id) {
@@ -54,7 +54,7 @@ std::string MessageClient::join_room(const size_t &room_id) {
     request.put("command", "join_room");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::create_room_done(const int &id) {
@@ -68,7 +68,7 @@ std::string MessageServer::create_room_done(const int &id) {
     request.put("command", "create_room");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::create_room_failed() {
@@ -81,7 +81,7 @@ std::string MessageServer::create_room_failed() {
     request.put("command", "create_room");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::join_room_done(const size_t &id) {
@@ -91,10 +91,11 @@ std::string MessageServer::join_room_done(const size_t &id) {
     parametrs.put("status", "done");
     parametrs.put("id", id);
 
+    request.put("command_type", "basic");
     request.put("command", "join_room");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::start_game(const size_t &id) {
@@ -107,7 +108,7 @@ std::string MessageServer::start_game(const size_t &id) {
     request.put("command", "start");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::start_game_failed() {
@@ -116,11 +117,11 @@ std::string MessageServer::start_game_failed() {
 
     parametrs.put("status", "fail");
 
-    request.put("command_type", "room_room_admin_answer");
+    request.put("command_type", "room_admin");
     request.put("command", "start");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageClient::error() {
@@ -129,7 +130,7 @@ std::string MessageClient::error() {
     request.put("command_type", "error");
     request.put("command", "error");
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string
@@ -168,7 +169,7 @@ MessageServer::connected(const std::string &ids, const std::string &ips, const i
 
     request.add_child("game", game);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::msg(const std::string &ids, const std::string &names) {
@@ -187,20 +188,9 @@ std::string MessageServer::msg(const std::string &ids, const std::string &names)
     parametrs.add_child("name", name);
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
-
-//std::string MessageServer::game_start_______________--(const int role) {
-//    pt::ptree request;
-//    pt::ptree parametrs;
-//
-//    request.put("command", "game_start");
-//    parametrs.put("role", role);
-//
-//    request.add_child("parametrs", parametrs);
-//    return std::string();
-//}
 
 std::string MessageServer::join_room_failed(const int &id) {
     pt::ptree parametrs;
@@ -213,7 +203,7 @@ std::string MessageServer::join_room_failed(const int &id) {
     request.put("command", "join_room");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::leave_room_done() {
@@ -226,7 +216,7 @@ std::string MessageServer::leave_room_done() {
     request.put("command", "leave");
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::finish_game() {
@@ -235,7 +225,7 @@ std::string MessageServer::finish_game() {
     request.put("command_type", "basic_room");
     request.put("command", "finish_game");
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::day_accepted() {
@@ -244,7 +234,7 @@ std::string MessageServer::day_accepted() {
     request.put("command_type", "basic_room");
     request.put("command", "day_accepted");
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::nigth_accepted(const int &killed_id) {
@@ -259,7 +249,7 @@ std::string MessageServer::nigth_accepted(const int &killed_id) {
     request.add_child("parametrs", parametrs);
 
 
-    return message_phtee(request);
+    return message_ptree(request);
 }
 
 std::string MessageServer::vote_accepted(const int &id) {
@@ -273,5 +263,5 @@ std::string MessageServer::vote_accepted(const int &id) {
 
     request.add_child("parametrs", parametrs);
 
-    return message_phtee(request);
+    return message_ptree(request);
 }

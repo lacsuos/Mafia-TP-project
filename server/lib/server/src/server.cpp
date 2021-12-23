@@ -16,10 +16,10 @@ using boost::asio::ip::address;
 using boost::asio::io_context;
 
 namespace net {
-    Server::Server(std::string_view SERVER_IP) : context_(),
-                                                 endpoint_(address::from_string(
-                                                         std::string(SERVER_IP)), PORT),
-                                                 acceptor_(context_) {}
+    Server::Server(const std::string_view &SERVER_IP) : context_(),
+                                                        endpoint_(address::from_string(
+                                                                std::string(SERVER_IP)), PORT),
+                                                        acceptor_(context_) {}
 
     Server::~Server() = default;
 

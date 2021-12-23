@@ -10,7 +10,7 @@ class Message {
 public:
     virtual ~Message() = 0;
 
-    static std::string message_phtee(boost::property_tree::ptree const &request);
+    static std::string message_ptree(boost::property_tree::ptree const &request);
 };
 
 class MessageClient : public Message {
