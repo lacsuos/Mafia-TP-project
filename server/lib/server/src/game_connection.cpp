@@ -342,7 +342,7 @@ namespace net {
         bool is_alive, is_sleep;
         std::string who_is_alive;
         const std::vector<std::shared_ptr<Player>> &players = game_room.GetPlayers();
-        for (auto player: players) {
+        for (auto &player: players) {
             who_is_alive += std::to_string(player->getGlobalId());
             who_is_alive += "-";
             who_is_alive += (player->getIsAlive()) ? "ON" : "OFF";
@@ -373,7 +373,7 @@ namespace net {
 
         std::string users_ips;
 
-        for (auto i: communications) {
+        for (auto &i: communications) {
             users_ips += (i->user.get_IP());
             users_ips += ";";
         }
