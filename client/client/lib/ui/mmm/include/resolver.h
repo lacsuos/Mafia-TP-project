@@ -3,7 +3,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <QMessageBox>
 
-#include "screenfactory.h"
+#include "screensfactory.h"
 #include "gamefragment.h"
 
 namespace pt = boost::property_tree;
@@ -35,7 +35,7 @@ public:
 
 private:
     void ParseAnswer(pt::ptree const &answer);
-    void BaseAnswer(pt::ptree const &answer);
+    void base_answer(pt::ptree const &answer);
 
     void CreateRoomAnswer(pt::ptree const &answer);
     void JoinRoomAnswer(pt::ptree const &answer);

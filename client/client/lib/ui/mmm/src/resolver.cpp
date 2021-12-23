@@ -1,10 +1,11 @@
 #include "resolver.h"
+#include "client.h"
 
 #include <algorithm>
 #include <QDebug>
 #include <QApplication>
 
-#include "client_impl.h"
+inline std::unique_ptr<net::Client> Client;
 
 using namespace screens;
 
@@ -25,7 +26,7 @@ void Resolver::ParseAnswer(pt::ptree const &answer) {
     }
 
     if (command_type == "disconnect") {
-        disconnect_answer(answer);
+//        disconnect(answer);
         return;
     }
 
@@ -87,22 +88,22 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
 }
 
 void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
-    for (size_t i = 0; i < players_.size(); ++i) {
-        auto cit = players_.cbegin() + i;
+    for (size_t i = 0; i < players.size(); ++i) {
+        auto cit = players.cbegin() + i;
         auto res = std::find_if(new_players.begin(), new_players.end(),
                                 [cit](const resolver::Player &current) { return current.id == cit->id; });
         if (res == new_players.end()) {
-            emit DeletePlayer(cit->position);
-            players_.erase(cit);
+//            emit DeletePlayer(cit->position);
+            players.erase(cit);
         }
     }
 
     for (auto &it : new_players) {
-        auto res = std::find_if(players_.begin(), players_.end(),
+        auto res = std::find_if(players.begin(), players.end(),
                                 [it](const resolver::Player &current) { return current.id == it.id; });
-        if (res == players_.end()) {
-            players_.push_back(it);
-            emit DrawPlayer(it.position, it.name, it.money);
+        if (res == players.end()) {
+            players.push_back(it);
+//            emit DrawPlayer();
         }
     }
 }
