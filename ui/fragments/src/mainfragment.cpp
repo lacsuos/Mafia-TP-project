@@ -1,4 +1,4 @@
-#include "fragments\include\mainfragment.h"
+#include "mainfragment.h"
 
 using namespace screens;
 

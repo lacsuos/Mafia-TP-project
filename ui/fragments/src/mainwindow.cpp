@@ -1,5 +1,5 @@
-#include "main/include/mainwindow.h"
-#include "main/include/screensfactory.h"
+#include "mainwindow.h"
+#include "screensfactory.h"
 
 #include <QScreen>
 #include <QApplication>

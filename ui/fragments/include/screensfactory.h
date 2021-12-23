@@ -1,13 +1,13 @@
 #ifndef SCREENSFACTORY_H
 #define SCREENSFACTORY_H
 
-#include "abstract\include\abstractscreensfactory.h"
+#include "abstractscreensfactory.h"
 
-#include "fragments\include\optionsfragment.h"
-#include "fragments\include\gamefragment.h"
-#include "fragments\include\mainfragment.h"
-#include "fragments\include\waitingfragment.h"
-#include "fragments\include\creatingfragment.h"
+#include "optionsfragment.h"
+#include "gamefragment.h"
+#include "mainfragment.h"
+#include "waitingfragment.h"
+#include "creatingfragment.h"
 
 
 namespace screens {

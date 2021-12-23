@@ -44,6 +44,8 @@ Thumbs.db
 # Vim temporary files
 .*.swp
 
+.idea
+
 # Visual Studio generated files
 *.ib_pdb_index
 *.idb
@@ -58,6 +60,8 @@ Thumbs.db
 *.opensdf
 *.vcxproj
 *vcxproj.*
+
+build-ui-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/
 
 # MinGW generated files
 *.Debug

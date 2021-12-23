@@ -1,8 +1,8 @@
 #ifndef WAITINGFRAGMENT_H
 #define WAITINGFRAGMENT_H
 
-#include "abstract\include\abstractfragment.h"
-#include "main\include\screensfactory.h"
+#include "abstractfragment.h"
+#include "screensfactory.h"
 
 #include <QPushButton>
 
@@ -15,10 +15,13 @@ public:
 public slots:
     void onBackPressed();
     void onContinuePressed();
+    void onDisconnectPressed();
 
 private:
     QPushButton *BackButton;
-     QPushButton *ContinueButton;
+    QPushButton *ContinueButton;
+    //QLabel *Players;
+    //QPushButton *DisconnectButton;
 };
 
 #endif // WAITINGFRAGMENT_H

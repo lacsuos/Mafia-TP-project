@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include "screensfactory.h"
-#include "abstract\include\fragmentnavigator.h"
+#include "fragmentnavigator.h"
 
 #include <QMainWindow>
 #include <thread>

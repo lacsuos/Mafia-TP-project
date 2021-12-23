@@ -1,4 +1,4 @@
-#include "abstract\include\abstractfragment.h"
+#include "abstractfragment.h"
 #include <QVBoxLayout>
 
 AbstractFragment::AbstractFragment() {}

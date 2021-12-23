@@ -1,8 +1,8 @@
 #ifndef OPTIONSFRAGMENT_H
 #define OPTIONSFRAGMENT_H
 
-#include "abstract\include\abstractfragment.h"
-#include "main\include\screensfactory.h"
+#include "abstractfragment.h"
+#include "screensfactory.h"
 #include <QPushButton>
 
 class OptionsFragment: public AbstractFragment {

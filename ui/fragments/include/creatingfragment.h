@@ -1,8 +1,8 @@
 #ifndef CREATINGFRAGMENT_H
 #define CREATINGFRAGMENT_H
 
-#include "abstract\include\abstractfragment.h"
-#include "main\include\screensfactory.h"
+#include "abstractfragment.h"
+#include "screensfactory.h"
 
 #include <QPushButton>
 
@@ -14,9 +14,14 @@ public:
 
 public slots:
     void onBackPressed();
+    void onStartPressed();
+    void onCancelPressed();
 
 private:
     QPushButton *BackButton;
+    //QLabel *Players;
+    //QPushButton *StartButton
+    //QPushButton *CancelButton
 };
 
 

@@ -1,4 +1,6 @@
-#include "fragments\include\gamefragment.h"
+#include "gamefragment.h"
+
+using namespace screens;
 
 GameFragment::GameFragment() {
     QVBoxLayout *mainVLayout = new QVBoxLayout;

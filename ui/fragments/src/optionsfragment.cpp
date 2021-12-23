@@ -1,4 +1,6 @@
-#include "fragments\include\optionsfragment.h"
+#include "optionsfragment.h"
+
+using namespace screens;
 
 OptionsFragment::OptionsFragment() {
     QVBoxLayout *mainVLayout = new QVBoxLayout;

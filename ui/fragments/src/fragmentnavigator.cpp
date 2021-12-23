@@ -1,5 +1,5 @@
-#include "abstract\include\fragmentnavigator.h"
-#include "main\include\screensfactory.h"
+#include "fragmentnavigator.h"
+#include "screensfactory.h"
 
 using namespace screens;
 

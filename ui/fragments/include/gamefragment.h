@@ -1,8 +1,8 @@
 #ifndef GAMEFRAGMENT_H
 #define GAMEFRAGMENT_H
 
-#include "abstract\include\abstractfragment.h"
-#include "main\include\screensfactory.h"
+#include "abstractfragment.h"
+#include "screensfactory.h"
 
 #include <QPushButton>
 #include <QLabel>

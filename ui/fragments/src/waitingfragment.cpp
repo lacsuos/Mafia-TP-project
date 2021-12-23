@@ -1,4 +1,4 @@
-#include "fragments\include\waitingfragment.h"
+#include "waitingfragment.h"
 
 using namespace screens;
 

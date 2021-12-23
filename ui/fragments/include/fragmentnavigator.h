@@ -1,4 +1,4 @@
-#ifndef FRAGMENTNAVIGATOR_H
+   #ifndef FRAGMENTNAVIGATOR_H
 #define FRAGMENTNAVIGATOR_H
 
 #include "abstractfragment.h"

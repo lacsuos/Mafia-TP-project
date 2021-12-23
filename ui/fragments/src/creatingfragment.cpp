@@ -1,4 +1,6 @@
-#include "fragments\include\creatingfragment.h"
+#include "creatingfragment.h"
+
+using namespace screens;
 
 CreatingFragment::CreatingFragment() {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
