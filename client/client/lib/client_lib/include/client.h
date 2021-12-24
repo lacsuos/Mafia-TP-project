@@ -43,7 +43,15 @@ namespace net {
 
         bool isConnected();
 
+        void createGame();
+
         void startGame();
+
+        void day();
+
+        void nigth();
+
+        void vote(const int &voted_id);
 
         void joinGame(const int &room_id);
 

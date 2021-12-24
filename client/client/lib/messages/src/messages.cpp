@@ -49,3 +49,43 @@ std::string MessageClient::join_room(const int &room_id) {
 
     return message_ptree(request);
 }
+
+std::string MessageClient::start_game() {
+    pt::ptree request;
+
+    request.put("command_type", "room_admin");
+    request.put("command", "start_game");
+
+    return message_ptree(request);
+}
+
+std::string MessageServer::day() {
+    pt::ptree request;
+
+    request.put("command_type", "game");
+    request.put("command", "day");
+
+    return message_ptree(request);
+}
+
+std::string MessageServer::nigth() {
+    pt::ptree request;
+
+    request.put("command_type", "game");
+    request.put("command", "nigth");
+
+    return message_ptree(request);
+}
+
+std::string MessageServer::vote(const int &voted_id) {
+    pt::ptree request;
+    pt::ptree parametrs;
+
+    parametrs.put("id", voted_id);
+
+    request.put("command_type", "game");
+    request.put("command", "vote");
+    request.add_child("parametrs", parametrs);
+
+    return message_ptree(request);
+}

@@ -1,5 +1,4 @@
 #include "resolver.h"
-#include "client.h"
 #include "client_impl.h"
 
 #include <algorithm>
