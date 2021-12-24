@@ -164,8 +164,8 @@ MessageServer::connected(const std::string &ids, const std::string &ips, const i
 
     game.put("status", status);
 
-    request.put("command_type", "basic");
-    request.put("command", "game");
+    request.put("command_type", "basic_room");
+    request.put("command", "game_room");
 
     request.add_child("game", game);
 
@@ -232,7 +232,7 @@ std::string MessageServer::day_accepted() {
     pt::ptree request;
 
     request.put("command_type", "basic_room");
-    request.put("command", "day_accepted");
+    request.put("command", "day");
 
     return message_ptree(request);
 }
@@ -245,7 +245,7 @@ std::string MessageServer::nigth_accepted(const int &killed_id) {
     parametrs.put("vote_id", killed_id);
 
     request.put("command_type", "basic_room");
-    request.put("command", "day_accepted");
+    request.put("command", "nigth");
     request.add_child("parametrs", parametrs);
 
 
@@ -259,7 +259,7 @@ std::string MessageServer::vote_accepted(const int &id) {
     parametrs.put("vote_id", id);
 
     request.put("command_type", "basic_room");
-    request.put("command", "day_accepted");
+    request.put("command", "vote");
 
     request.add_child("parametrs", parametrs);
 

@@ -301,6 +301,7 @@ namespace net {
             if (static_cast<int>(game_room.evening(votes)) == 0) {
                 // игра продолжается
                 communication->out << MessageServer::vote_accepted(id);
+                votes.clear()
             } else {
                 // игра закончена
                 communication->out << MessageServer::finish_game();
@@ -330,6 +331,7 @@ namespace net {
         if (votes_mafia.size() == 1) {
             killed_id = game_room.night(votes_mafia);
             communication->out << MessageServer::nigth_accepted(killed_id);
+            votes_mafia.clear()
         } else {
             communication->out << MessageClient::error(); // добавить пинг
         }
