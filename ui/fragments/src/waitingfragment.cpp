@@ -1,5 +1,5 @@
 #include "waitingfragment.h"
-
+#include "screensfactory.h"
 using namespace screens;
 
 WaitingFragment::WaitingFragment() {
@@ -63,3 +63,5 @@ void WaitingFragment::onBackPressed() {
 void WaitingFragment::onContinuePressed() {
     navigateTo(GAME_TAG);
 }
+
+#include "moc_waitingfragment.cpp"

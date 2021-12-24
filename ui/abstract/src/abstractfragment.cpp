@@ -21,3 +21,5 @@ void AbstractFragment::clearList(QLayout *list) {
         delete child;
     }
 }
+
+#include "moc_abstractfragment.cpp"

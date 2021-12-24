@@ -1,5 +1,5 @@
 #include "mainfragment.h"
-
+#include "screensfactory.h"
 using namespace screens;
 
 MainFragment::MainFragment() {
@@ -79,4 +79,4 @@ void MainFragment::onOptionsPressed() {
     navigateTo(OPTIONS_TAG);
 }
 
-
+#include "moc_mainfragment.cpp"

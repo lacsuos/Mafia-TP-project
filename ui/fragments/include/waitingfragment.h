@@ -2,7 +2,7 @@
 #define WAITINGFRAGMENT_H
 
 #include "abstractfragment.h"
-#include "screensfactory.h"
+
 
 #include <QPushButton>
 
@@ -15,7 +15,7 @@ public:
 public slots:
     void onBackPressed();
     void onContinuePressed();
-    void onDisconnectPressed();
+    //void onDisconnectPressed();
 
 private:
     QPushButton *BackButton;
