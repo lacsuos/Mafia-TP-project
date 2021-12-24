@@ -21,5 +21,8 @@ add_executable(client_prog main.cpp)
 
 add_subdirectory(lib)
 
-target_link_libraries(client_prog client_lib messages
-        ${CMAKE_THREAD_LIBS_INIT} fragments Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(client_prog PUBLIC client_lib
+        PUBLIC messages
+        PUBLIC ${CMAKE_THREAD_LIBS_INIT}
+        PUBLIC fragments
+        PUBLIC Qt${QT_VERSION_MAJOR}::Widgets)
