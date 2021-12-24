@@ -14,12 +14,12 @@ public:
 
 public slots:
     void onBackPressed();
-    void onContinuePressed();
+    //void onContinuePressed();
     //void onDisconnectPressed();
 
 private:
-    QPushButton *BackButton;
-    QPushButton *ContinueButton;
+    QPushButton *backButton;
+    //QPushButton *continueButton;
     //QLabel *Players;
     //QPushButton *DisconnectButton;
 };

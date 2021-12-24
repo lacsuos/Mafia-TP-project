@@ -19,9 +19,9 @@ public slots:
     void onOptionsPressed();
 
 private:
-    QPushButton *CreateButton;
-    QPushButton *PlayButton;
-    QPushButton *OptionsButton;
+    QPushButton *createButton;
+    QPushButton *playButton;
+    QPushButton *optionsButton;
 };
 
 #endif // MAINFRAGMENT_H

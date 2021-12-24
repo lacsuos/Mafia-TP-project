@@ -23,8 +23,8 @@ public slots:
 
 
 private:
-    QPushButton *BackButton;
-    QLabel *StateLabel;
+    QPushButton *backButton;
+    QLabel *stateLabel;
 };
 
 #endif // GAMEFRAGMENT_H

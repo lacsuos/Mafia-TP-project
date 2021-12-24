@@ -15,26 +15,26 @@ MainFragment::MainFragment() {
     QVBoxLayout *buttonContainer = new QVBoxLayout;
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
-    CreateButton = new QPushButton("Create room");
-    CreateButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(CreateButton, &QPushButton::clicked, this, &MainFragment::onCreatePressed);
+    createButton = new QPushButton("Create room");
+    createButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(createButton, &QPushButton::clicked, this, &MainFragment::onCreatePressed);
 
-    PlayButton = new QPushButton("Play");
-    PlayButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(PlayButton, &QPushButton::clicked, this, &MainFragment::onPlayPressed);
+    playButton = new QPushButton("Play");
+    playButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(playButton, &QPushButton::clicked, this, &MainFragment::onPlayPressed);
 
-    OptionsButton = new QPushButton("Settings");
-    OptionsButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(OptionsButton, &QPushButton::clicked, this, &MainFragment::onOptionsPressed);
+    optionsButton = new QPushButton("Settings");
+    optionsButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(optionsButton, &QPushButton::clicked, this, &MainFragment::onOptionsPressed);
 
-    buttonContainer->addWidget(CreateButton);
-    loadingButtonContainer->addWidget(CreateButton);
+    buttonContainer->addWidget(createButton);
+    loadingButtonContainer->addWidget(createButton);
 
-    buttonContainer->addWidget(PlayButton);
-    loadingButtonContainer->addWidget(PlayButton);
+    buttonContainer->addWidget(playButton);
+    loadingButtonContainer->addWidget(playButton);
 
-    buttonContainer->addWidget(OptionsButton);
-    loadingButtonContainer->addWidget(OptionsButton);
+    buttonContainer->addWidget(optionsButton);
+    loadingButtonContainer->addWidget(optionsButton);
 
     buttonContainer->addLayout(loadingButtonContainer);
 
@@ -58,8 +58,8 @@ MainFragment::MainFragment() {
 }
 
 MainFragment::~MainFragment() {
-    delete PlayButton;
-    delete OptionsButton;
+    delete playButton;
+    delete optionsButton;
 }
 void MainFragment::onCreatePressed() {
     navigateTo(CREATING_TAG);
