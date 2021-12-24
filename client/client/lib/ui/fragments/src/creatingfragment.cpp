@@ -1,6 +1,5 @@
 #include "creatingfragment.h"
 #include "screensfactory.h"
-
 using namespace screens;
 
 CreatingFragment::CreatingFragment() {
@@ -53,3 +52,5 @@ CreatingFragment::~CreatingFragment() {
 void CreatingFragment::onBackPressed() {
     back();
 }
+
+#include "moc_creatingfragment.cpp"

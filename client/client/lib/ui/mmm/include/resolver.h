@@ -5,6 +5,7 @@
 
 #include "screensfactory.h"
 #include "gamefragment.h"
+#include "client.h"
 
 namespace pt = boost::property_tree;
 
@@ -17,6 +18,9 @@ namespace resolver {
     };
 
 }
+
+
+inline std::unique_ptr<net::Client> Client;
 
 class Resolver : public AbstractFragment {
     Q_OBJECT

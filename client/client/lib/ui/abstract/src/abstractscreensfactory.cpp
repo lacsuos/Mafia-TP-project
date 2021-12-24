@@ -1,4 +1,4 @@
-#include "../include/abstractscreensfactory.h"
+#include "abstractscreensfactory.h"
 
 AbstractScreensFactory::AbstractScreensFactory() {}
 

@@ -1,5 +1,5 @@
 #include "gamefragment.h"
-
+#include "screensfactory.h"
 using namespace screens;
 
 GameFragment::GameFragment() {
@@ -73,4 +73,4 @@ void GameFragment::setCustomState(const QString state) {
     StateLabel->setText(state);
 }
 
-
+#include "moc_gamefragment.cpp"

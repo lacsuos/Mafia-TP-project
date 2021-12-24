@@ -14,8 +14,8 @@ public:
 
 public slots:
     void onBackPressed();
-    void onStartPressed();
-    void onCancelPressed();
+    //void onStartPressed();
+    //void onCancelPressed();
 
 private:
     QPushButton *BackButton;

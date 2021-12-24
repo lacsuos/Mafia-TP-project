@@ -1,5 +1,5 @@
 #include "optionsfragment.h"
-
+#include "screensfactory.h"
 using namespace screens;
 
 OptionsFragment::OptionsFragment() {
@@ -52,3 +52,5 @@ OptionsFragment::~OptionsFragment() {
 void OptionsFragment::onBackPressed() {
     back();
 }
+
+#include "moc_optionsfragment.cpp"

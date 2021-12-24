@@ -5,8 +5,6 @@
 #include <QDebug>
 #include <QApplication>
 
-inline std::unique_ptr<net::Client> Client;
-
 using namespace screens;
 
 constexpr int MAX_PLAYERS = 4;
@@ -109,8 +107,8 @@ void Resolver::CheckPlayers(const std::vector<resolver::Player> &new_players) {
 }
 
 void Resolver::Run() {
-    while (Client->IsConnected()) {
-        auto m = Client->run();
+    while (Client->isConnected()) {
+        auto m = Client->getLastMsg();
 //        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;

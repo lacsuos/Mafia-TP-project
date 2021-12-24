@@ -1,5 +1,5 @@
 #include "mainfragment.h"
-
+#include "screensfactory.h"
 using namespace screens;
 
 MainFragment::MainFragment() {
@@ -67,7 +67,7 @@ void MainFragment::onCreatePressed() {
 void MainFragment::onPlayPressed() {
 
     bool ok = false;
-//    int id = QInputDialog::getInt(this, "Подключение к игре", "Введите ID игры",0,0, 2147483647, 1, &ok);
+    int id = QInputDialog::getInt(this, "Подключение к игре", "Введите ID игры",0,0, 2147483647, 1, &ok);
     if (ok/* && ...*/) {
         //connect
         navigateTo(WAITING_TAG);
@@ -79,4 +79,4 @@ void MainFragment::onOptionsPressed() {
     navigateTo(OPTIONS_TAG);
 }
 
-
+#include "moc_mainfragment.cpp"

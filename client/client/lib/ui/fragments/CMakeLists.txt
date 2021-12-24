@@ -1,3 +1,7 @@
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 add_library(fragments STATIC
         src/creatingfragment.cpp
         src/gamefragment.cpp
@@ -7,8 +11,6 @@ add_library(fragments STATIC
         src/screensfactory.cpp
         src/mainwindow.cpp
         src/fragmentnavigator.cpp
-        src/abstractfragment.cpp
-        src/abstractscreensfactory.cpp
         )
-target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets)
 target_include_directories(fragments PUBLIC include)
+target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract)

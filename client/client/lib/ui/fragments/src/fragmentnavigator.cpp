@@ -94,3 +94,5 @@ AbstractFragment* FragmentNavigator::createAndConnect(QString tag) {
     connectFragment(fragment);
     return fragment;
 }
+
+#include "moc_fragmentnavigator.cpp"

@@ -36,3 +36,5 @@ MainWindow::~MainWindow() {
     delete container;
     delete factory;
 }
+
+#include "moc_mainwindow.cpp"

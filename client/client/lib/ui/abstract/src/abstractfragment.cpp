@@ -1,4 +1,4 @@
-#include "../include/abstractfragment.h"
+#include "abstractfragment.h"
 #include <QVBoxLayout>
 
 AbstractFragment::AbstractFragment() {}
@@ -22,6 +22,4 @@ void AbstractFragment::clearList(QLayout *list) {
     }
 }
 
-void AbstractFragment::back() {
-
-}
+#include "moc_abstractfragment.cpp"
