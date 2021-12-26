@@ -3,8 +3,10 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <QMessageBox>
 
-#include "screensfactory.h"
-#include "gamefragment.h"
+//#include "screensfactory.h"
+#include "client.h"
+#include "client_impl.h"
+
 
 namespace pt = boost::property_tree;
 
@@ -17,6 +19,8 @@ namespace resolver {
     };
 
 }
+
+
 class Resolver : public AbstractFragment {
     Q_OBJECT
 public:
@@ -28,8 +32,14 @@ public:
     void DeleteAllPlayers();
     void DeletePlayer(int player_id);
     void DrawPlayer(int player_id, std::string nickname);
-
     void ShowStart();
+
+
+    void serverDisconnected();
+    // main: !!!
+    void netError();
+    void created();
+    void joined();
 
 
 private:
@@ -48,3 +58,5 @@ private:
     bool is_started;
     std::vector<resolver::Player> players;
 };
+
+

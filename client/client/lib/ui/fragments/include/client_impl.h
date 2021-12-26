@@ -2,4 +2,4 @@
 
 #include "client.h"
 
-std::unique_ptr<net::Client> Client;
+inline std::unique_ptr<net::Client> Client;

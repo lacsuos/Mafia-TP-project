@@ -1,5 +1,5 @@
 #include "resolver.h"
-#include "client_impl.h"
+#include "client.h"
 
 #include <algorithm>
 #include <QDebug>
@@ -25,6 +25,7 @@ void Resolver::ParseAnswer(pt::ptree const &answer) {
 
     if (command_type == "disconnect") {
 //        disconnect(answer);
+        emit serverDisconnected();
         return;
     }
 
@@ -59,11 +60,13 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
 
     if (status == "done") {
 //
+        emit created();
         return;
     }
 
     if (status == "fail") {
         // error
+        emit netError();
     }
 }
 
@@ -77,11 +80,12 @@ void Resolver::JoinRoomAnswer(pt::ptree const &answer) {
 
     if (status == "done") {
 //
+        emit joined();
         return;
     }
 
     if (status == "fail") {
-//
+        emit netError();
     }
 }
 
@@ -116,3 +120,5 @@ void Resolver::Run() {
         ParseAnswer(json_data);
     }
 }
+
+#include "moc_resolver.cpp" // !!!
