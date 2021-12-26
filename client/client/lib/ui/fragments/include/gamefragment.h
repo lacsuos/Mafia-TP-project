@@ -6,6 +6,14 @@
 
 #include <QPushButton>
 #include <QLabel>
+#include <QInputDialog>
+
+#include <vector>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QNetworkRequest>
+#include <QMediaPlayer>
+#include <QVideoWidget>
 
 class GameFragment: public AbstractFragment {
     Q_OBJECT
@@ -14,16 +22,25 @@ public:
     ~GameFragment();
 
 
+
 public slots:
     void onBackPressed();
     //void addPlayers();
     void setDayState();
     void setNightState();
     void setCustomState(const QString state);
-
+    void onVotePressed();
 
 private:
+
+//    std::vector<T> players;
+//    Broadcaster* webcamServer;
+//    QBVboxLayout** layout;
+//    QVideoWidget** vw;
+//    QMediaPlayer** mediaPlayer;
+
     QPushButton *backButton;
+    QPushButton *voteButton;
     QLabel *stateLabel;
 };
 

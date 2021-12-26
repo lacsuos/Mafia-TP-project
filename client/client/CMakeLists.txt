@@ -11,7 +11,10 @@ add_compile_options(-Werror -Wall -Wpedantic)
 
 set(BOOST_ROOT "D:/Programs/Boost/boost_1_78_0")
 
-find_package(Boost 1.65.1 REQUIRED COMPONENTS)
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "D:/Programs/Boost/boost_1_78_0")
+SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "D:/Programs/Boost/boost_1_78_0/lib")
+
+find_package(Boost 1.65.1 REQUIRED COMPONENTS system log thread )
 # system log thread
 find_package(Threads)
 find_package(Qt5Widgets)
