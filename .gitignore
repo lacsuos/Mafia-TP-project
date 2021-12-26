@@ -3,7 +3,7 @@ server/cmake-build-debug/
 cmake-build-debug/
 cl1/
 cl2/
-ui/
+ui/build-ui-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/
 
 client/ui
 client/webcam
