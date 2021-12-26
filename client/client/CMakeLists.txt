@@ -9,7 +9,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-Werror -Wall -Wpedantic)
 
-find_package(Boost 1.65.1 REQUIRED COMPONENTS system log thread)
+set(BOOST_ROOT "D:/Programs/Boost/boost_1_78_0")
+
+find_package(Boost 1.65.1 REQUIRED COMPONENTS)
+# system log thread
 find_package(Threads)
 find_package(Qt5Widgets)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
@@ -21,8 +24,11 @@ add_executable(client_prog main.cpp)
 
 add_subdirectory(lib)
 
-target_link_libraries(client_prog PUBLIC client_lib
+target_link_libraries(client_prog
+        PUBLIC client_lib
         PUBLIC messages
         PUBLIC ${CMAKE_THREAD_LIBS_INIT}
         PUBLIC fragments
-        PUBLIC Qt${QT_VERSION_MAJOR}::Widgets)
+        PUBLIC Qt${QT_VERSION_MAJOR}::Widgets
+        #wsoc32
+        )

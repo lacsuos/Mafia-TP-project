@@ -1,7 +1,7 @@
 #pragma once
 
 #include "myqueue.h"
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/atomic/atomic.hpp>
 #include <iostream>
