@@ -27,7 +27,7 @@ private:
     QLabel *roomID;
     QLabel *playersCounter;
     int playersCount;
-    QPushButton *startButton
+    QPushButton *startButton;
     //QPushButton *cancelButton
 };
 

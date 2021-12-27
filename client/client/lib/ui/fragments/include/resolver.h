@@ -43,7 +43,7 @@ public:
     void created(const int &idRoom);
     void joined(const int &idRoom);
     void mafiaWin();
-    void citisenWin()
+    void citizenWin();
     void winGame();
     void loseGame();
 

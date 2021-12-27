@@ -49,6 +49,7 @@ void FragmentNavigator::navigateTo(QString tag) {
         connect(mResolver, &Resolver::startGame, waiting, &WaitingFragment::onGameStarts, Qt::QueuedConnection);
     } else if (tag == GAME_TAG) {
         GameFragment* game = static_cast<GameFragment*>(newFragment);
+        connect(mResolver, &Resolver::gameIteration, game, &GameFragment::updatePlayers, Qt::QueuedConnection)
         connect(mResolver, &Resolver::winGame, game, &GameFragment::onWin, Qt::QueuedConnection);
         connect(mResolver, &Resolver::loseGame, game, &GameFragment::onLose, Qt::QueuedConnection);
         connect(mResolver, &Resolver::mafiaWin, game, &GameFragment::onMafiaWin, Qt::QueuedConnection);

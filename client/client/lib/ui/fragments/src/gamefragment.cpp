@@ -30,17 +30,13 @@ GameFragment::GameFragment() {
     buttonContainer->addWidget(voteButton);
     loadingButtonContainer->addWidget(voteButton);
 
+    isMaster = false;
+    ticks = 0;
 
     //Определить Роли!!!
 
     passButton = new QPushButton("Pass");
     passButton->setStyleSheet("color:#242424;font-size:24px");
-    if (PlayerData::role == 777) {
-        connect(voteButton, &QPushButton::clicked, this, &GameFragment::onVotePressed);
-
-        buttonContainer->addWidget(voteButton);
-        loadingButtonContainer->addWidget(voteButton);
-    }
 
 
 
@@ -48,7 +44,10 @@ GameFragment::GameFragment() {
     stateLabel = new QLabel("Начало игры");
     stateLabel->setStyleSheet("QLabel { color : grey; }");
 
+    roleLabel = new QLabel("РОЛЬ");
+
     startMainLayout->addWidget(stateLabel);
+    startMainLayout->addWidget(roleLabel);
     buttonContainer->addLayout(loadingButtonContainer);
 
     startMainLayout->addLayout(buttonContainer);
@@ -109,13 +108,13 @@ void GameFragment::setCustomState(const QString _state) {
 
 void GameFragment::onVotePressed() {
     bool ok = false;
-//    int id = QInputDialog::getInt(this, "Vote", "Enter player's ID:",0,0, 2147483647, 1, &ok);
+    int id = QInputDialog::getInt(this, "Vote", "Enter player's ID:",0,0, 2147483647, 1, &ok);
     if (ok) {
 
         if (PlayerData::isDay){
             Client->vote(id);
-        } else if (PlayerData::role == "2") {
-            Client->vote_mafia(id);
+        } else if (PlayerData::role == 2) {
+            Client->voteMafia(id);
         }
 
 
@@ -133,7 +132,7 @@ void GameFragment::onPassPressed() {
     }
 }
 
-void GameFragment::onCitisenWin() {
+void GameFragment::onCitizenWin() {
     QMessageBox msgBox;
     msgBox.setText("The City has defeated Mafia");
     msgBox.exec();
@@ -152,5 +151,17 @@ void GameFragment::onWin() {
     QMessageBox msgBox;
     msgBox.setText("Your side has won");
     msgBox.exec();
+}
+void GameFragment::updatePlayers(std::vector<resolver::Player> players) {
+    qDebug() << QString("updated: %1").arg(ticks);
+    roleLabel->setText(QString::number(PlayerData::role))
+    /*if (PlayerData::role == 777 && !isMaster) {
+        isMaster = true;
+        connect(voteButton, &QPushButton::clicked, this, &GameFragment::onVotePressed);
+
+        buttonContainer->addWidget(voteButton);
+        loadingButtonContainer->addWidget(voteButton);
+    }*/
+    ticks++;
 }
 #include "moc_gamefragment.cpp"

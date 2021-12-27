@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
         this->factory = new ScreensFactory;
         this->navigator = new FragmentNavigator(this->container, this->factory, &resolver);
 
+        PlayerData::reset();
+
         resolver_thread = std::make_unique<std::thread>([&] { resolver.Run(); });
         resolver_thread->detach();
 

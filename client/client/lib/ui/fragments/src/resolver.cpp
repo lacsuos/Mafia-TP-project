@@ -237,7 +237,7 @@ void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
             if (player.id == id) {
 
                 PlayerData::role = role;
-                PlayerData::is_alive = (alive == "ON" ? true : false);
+                PlayerData::isAlive = (alive == "ON" ? true : false);
                 PlayerData::role = role;
 
                 player.is_me = true;

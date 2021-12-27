@@ -3,7 +3,7 @@
 
 #include "abstractfragment.h"
 #include "screensfactory.h"
-
+#include "resolver.h"
 #include <QPushButton>
 #include <QLabel>
 #include <QInputDialog>
@@ -34,10 +34,11 @@ public slots:
     void updateState();
     void onPassPressed();
 
-    void onCitisenWin();
+    void onCitizenWin();
     void onMafiaWin();
     void onWin();
     void onLose();
+    void updatePlayers(std::vector<resolver::Player> players);
 
 private:
 
@@ -46,16 +47,15 @@ private:
 //    QBVboxLayout** layout;
 //    QVideoWidget** vw;
 //    QMediaPlayer** mediaPlayer;
-<<<<<<< HEAD
 
-
-=======
->>>>>>> f2f21f529267897961abf77cb3d2b104f2dfd80d
+    int ticks;
+    bool isMaster;
     bool state;
     QPushButton *backButton;
     QPushButton *voteButton;
     QPushButton *passButton;
     QLabel *stateLabel;
+    QLabel *roleLabel;
 };
 
 #endif // GAMEFRAGMENT_H

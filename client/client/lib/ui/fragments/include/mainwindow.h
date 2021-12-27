@@ -26,6 +26,7 @@ private:
 
     Resolver resolver;
 
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
