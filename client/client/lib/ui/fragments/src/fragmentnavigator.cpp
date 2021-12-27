@@ -5,12 +5,16 @@ using namespace screens;
 
 FragmentNavigator::FragmentNavigator(
         QStackedWidget *container,
-        AbstractScreensFactory *screensFactory) {
+        AbstractScreensFactory *screensFactory,
+        Resolver* resolver) : mResolver(resolver) {
 
     this->screensFactory = screensFactory;
     this->currentContainer = container;
     AbstractFragment* startFragment = getStartScreen();
-
+    MainFragment* main = static_cast<MainFragment*>(startFragment);
+    connect(mResolver, &Resolver::netError, main, &MainFragment::onNetError, Qt::QueuedConnection);
+    connect(mResolver, &Resolver::joined, main, &MainFragment::onJoined, Qt::QueuedConnection);
+    connect(mResolver, &Resolver::created, main, &MainFragment::onCreated, Qt::QueuedConnection);
     qDebug("add widget");
 
     this->stack.push_back(startFragment);
@@ -29,6 +33,15 @@ void FragmentNavigator::navigateTo(QString tag) {
     disconnectFragment(stack.back());
     connectFragment(newFragment);
     stack.push_back(newFragment);
+    //connect(mResolver, &Resolver::serverDisconnected, newFragment, &newFragment::disconnect, Qt::QueuedConnection);
+
+    if (tag == MAIN_TAG) {
+        MainFragment* main = static_cast<MainFragment*>(newFragment);
+        //connect(mResolver, &Resolver::DeletePlayer, game, &GameFragment::DeletePlayer, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::netError, main, &MainFragment::onNetError, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::joined, main, &MainFragment::onJoined, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::created, main, &MainFragment::onCreated, Qt::QueuedConnection);
+    }
 
     currentContainer->addWidget(newFragment);
     currentContainer->setCurrentWidget(newFragment);

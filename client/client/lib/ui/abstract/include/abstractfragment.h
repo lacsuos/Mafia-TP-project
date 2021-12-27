@@ -1,6 +1,8 @@
     #ifndef ABSTRACTFRAGMENT_H
 #define ABSTRACTFRAGMENT_H
 
+//#include "screensfactory.h"
+
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -15,6 +17,8 @@ signals:
 
     void newRootScreen(QString tag);
     void replace(QString tag);
+
+    //void serverDisconnected();
 
     AbstractFragment* Front();
 

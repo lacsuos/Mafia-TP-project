@@ -1,8 +1,9 @@
-   #ifndef FRAGMENTNAVIGATOR_H
+#ifndef FRAGMENTNAVIGATOR_H
 #define FRAGMENTNAVIGATOR_H
 
 #include "abstractfragment.h"
 #include "abstractscreensfactory.h"
+#include "resolver.h"
 
 #include <QStackedWidget>
 #include <list>
@@ -12,7 +13,7 @@ class FragmentNavigator: public QObject {
 
 public:
     FragmentNavigator() = delete;
-    FragmentNavigator(QStackedWidget *container, AbstractScreensFactory *screensFactory);
+    FragmentNavigator(QStackedWidget *container, AbstractScreensFactory *screensFactory, Resolver* resolver);
     ~FragmentNavigator();
     AbstractFragment* getStartScreen();
 
@@ -36,6 +37,8 @@ private:
 
     void connectFragment(AbstractFragment *fragment);
     void disconnectFragment(AbstractFragment *fragment);
+
+    Resolver* mResolver;
 };
 
 #endif // FRAGMENTNAVIGATOR_H

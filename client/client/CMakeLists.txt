@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-Werror -Wall -Wpedantic)
 
-find_package(Boost 1.65.1 REQUIRED COMPONENTS)
+find_package(Boost 1.65.1 REQUIRED COMPONENTS system log thread)
 find_package(Threads)
 find_package(Qt5Widgets)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)

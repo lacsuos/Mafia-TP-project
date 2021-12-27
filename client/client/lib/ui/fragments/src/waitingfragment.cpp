@@ -16,19 +16,21 @@ WaitingFragment::WaitingFragment() {
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
 
-    BackButton = new QPushButton("Back");
-    BackButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(BackButton, &QPushButton::clicked, this, &WaitingFragment::onBackPressed);
+    backButton = new QPushButton("Back");
+    backButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(backButton, &QPushButton::clicked, this, &WaitingFragment::onBackPressed);
 
-    ContinueButton = new QPushButton("Continue");
-    ContinueButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(ContinueButton, &QPushButton::clicked, this, &WaitingFragment::onContinuePressed);
+    /*
+    continueButton = new QPushButton("Continue");
+    continueButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(continueButton, &QPushButton::clicked, this, &WaitingFragment::onContinuePressed);
+    */
 
-    buttonContainer->addWidget(BackButton);
-    loadingButtonContainer->addWidget(BackButton);
+    buttonContainer->addWidget(backButton);
+    loadingButtonContainer->addWidget(backButton);
 
-    buttonContainer->addWidget(ContinueButton);
-    loadingButtonContainer->addWidget(BackButton);
+//    buttonContainer->addWidget(continueButton);
+//    loadingButtonContainer->addWidget(continueButton);
 
     buttonContainer->addLayout(loadingButtonContainer);
 
@@ -53,15 +55,17 @@ WaitingFragment::WaitingFragment() {
 
 
 WaitingFragment::~WaitingFragment() {
-    delete BackButton;
+    delete backButton;
+
 }
 
 void WaitingFragment::onBackPressed() {
+    Client->disconnect();
     back();
 }
 
-void WaitingFragment::onContinuePressed() {
-    navigateTo(GAME_TAG);
-}
+//void WaitingFragment::onContinuePressed() {
+//    navigateTo(GAME_TAG);
+//}
 
 #include "moc_waitingfragment.cpp"

@@ -1,5 +1,7 @@
 #include "abstractfragment.h"
 #include <QVBoxLayout>
+#include <QMessageBox>
+
 
 AbstractFragment::AbstractFragment() {}
 AbstractFragment::~AbstractFragment() {}
@@ -21,5 +23,12 @@ void AbstractFragment::clearList(QLayout *list) {
         delete child;
     }
 }
+
+//void AbstractFragment::serverDisconnected() {
+//    navigateTo("main");
+//    QMessageBox msgBox;
+//    msgBox.setText("Disconnected");
+//    msgBox.exec();
+//}
 
 #include "moc_abstractfragment.cpp"

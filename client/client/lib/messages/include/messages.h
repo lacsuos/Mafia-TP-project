@@ -34,4 +34,6 @@ public:
     static std::string nigth();
 
     static std::string vote(const int &voted_id);
+
+    static std::string vote_mafia(const int &voted_id);
 };

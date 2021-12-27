@@ -15,7 +15,7 @@ public slots:
     void onBackPressed();
 
 private:
-    QPushButton *BackButton;
+    QPushButton *backButton;
 };
 
 #endif // SETTINGSFRAGMENT_H

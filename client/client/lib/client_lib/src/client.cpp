@@ -113,4 +113,9 @@ namespace net {
         requestQ.Push(msg);
     }
 
+    void Client::vote_mafia(const int &voted_id) {
+        auto msg = MessageServer::vote_mafia(voted_id);
+        requestQ.Push(msg);
+    }
+
 }

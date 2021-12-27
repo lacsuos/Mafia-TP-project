@@ -15,26 +15,31 @@ MainFragment::MainFragment() {
     QVBoxLayout *buttonContainer = new QVBoxLayout;
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
-    CreateButton = new QPushButton("Create room");
-    CreateButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(CreateButton, &QPushButton::clicked, this, &MainFragment::onCreatePressed);
+    createButton = new QPushButton("Create room");
+    createButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(createButton, &QPushButton::clicked, this, &MainFragment::onCreatePressed);
 
-    PlayButton = new QPushButton("Play");
-    PlayButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(PlayButton, &QPushButton::clicked, this, &MainFragment::onPlayPressed);
+    playButton = new QPushButton("Play");
+    playButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(playButton, &QPushButton::clicked, this, &MainFragment::onPlayPressed);
 
-    OptionsButton = new QPushButton("Settings");
-    OptionsButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(OptionsButton, &QPushButton::clicked, this, &MainFragment::onOptionsPressed);
+    optionsButton = new QPushButton("Settings");
+    optionsButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(optionsButton, &QPushButton::clicked, this, &MainFragment::onOptionsPressed);
 
-    buttonContainer->addWidget(CreateButton);
-    loadingButtonContainer->addWidget(CreateButton);
+    statusLabel = new QLabel("-");
 
-    buttonContainer->addWidget(PlayButton);
-    loadingButtonContainer->addWidget(PlayButton);
+    buttonContainer->addWidget(statusLabel);
+    loadingButtonContainer->addWidget(statusLabel);
 
-    buttonContainer->addWidget(OptionsButton);
-    loadingButtonContainer->addWidget(OptionsButton);
+    buttonContainer->addWidget(createButton);
+    loadingButtonContainer->addWidget(createButton);
+
+    buttonContainer->addWidget(playButton);
+    loadingButtonContainer->addWidget(playButton);
+
+    buttonContainer->addWidget(optionsButton);
+    loadingButtonContainer->addWidget(optionsButton);
 
     buttonContainer->addLayout(loadingButtonContainer);
 
@@ -55,28 +60,53 @@ MainFragment::MainFragment() {
     mainVLayout->setAlignment(Qt::AlignCenter);
 
     this->setLayout(mainVLayout);
+
 }
 
 MainFragment::~MainFragment() {
-    delete PlayButton;
-    delete OptionsButton;
+    delete playButton;
+    delete optionsButton;
+    delete createButton;
+    delete statusLabel;
 }
 void MainFragment::onCreatePressed() {
-    navigateTo(CREATING_TAG);
+    statusLabel->setText("Trying to create");
+    statusLabel->setStyleSheet("color:blue");
+    Client->createGame();
 }
 void MainFragment::onPlayPressed() {
 
     bool ok = false;
-//    int id = QInputDialog::getInt(this, "Подключение к игре", "Введите ID игры",0,0, 2147483647, 1, &ok);
-    if (ok/* && ...*/) {
-        //connect
-        navigateTo(WAITING_TAG);
-    }
+    int id = QInputDialog::getInt(this, "Подключение к игре", "Введите ID игры",0,0, 2147483647, 1, &ok);
+    if (ok) {
+        Client->joinGame(id);
+        statusLabel->setText("Trying to join");
+        statusLabel->setStyleSheet("color:blue");
+        //navigateTo(WAITING_TAG);
 
+    }
 }
 
 void MainFragment::onOptionsPressed() {
     navigateTo(OPTIONS_TAG);
+}
+
+void MainFragment::onNetError() {
+    statusLabel->setText("An network error has happened");
+    statusLabel->setStyleSheet("color:red");
+}
+
+void MainFragment::onJoined() {
+    statusLabel->setText("Succeed");
+    statusLabel->setStyleSheet("color:green");
+    navigateTo(WAITING_TAG);
+}
+
+void MainFragment::onCreated() {
+    qDebug()<<"created resolved";
+    statusLabel->setText("Succeed");
+    statusLabel->setStyleSheet("color:green");
+    navigateTo(CREATING_TAG);
 }
 
 #include "moc_mainfragment.cpp"

@@ -11,6 +11,7 @@ add_library(fragments STATIC
         src/screensfactory.cpp
         src/mainwindow.cpp
         src/fragmentnavigator.cpp
+        src/resolver.cpp
         )
 target_include_directories(fragments PUBLIC include)
-target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract)
+target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract client_lib)

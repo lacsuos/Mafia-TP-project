@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "screensfactory.h"
+#include "client_impl.h"
+#include "resolver.h"
 
 #include <QScreen>
 #include <QApplication>
@@ -22,7 +24,15 @@ MainWindow::MainWindow(QWidget *parent)
         container->setObjectName("window");
 
         this->factory = new ScreensFactory;
-        this->navigator = new FragmentNavigator(this->container, this->factory);
+        this->navigator = new FragmentNavigator(this->container, this->factory, &resolver);
+
+        Client = std::make_unique<net::Client>();
+        Client->connect();
+        client_thread = std::make_unique<std::thread>([&] { Client->run(); });
+        client_thread->detach();
+
+        resolver_thread = std::make_unique<std::thread>([&] { resolver.Run(); });
+        resolver_thread->detach();
 
         this->resize(QApplication::screens().at(0)->availableGeometry().size() * 0.7);
         this->setCentralWidget(container);
@@ -32,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    Client->disconnect();
     delete navigator;
     delete container;
     delete factory;

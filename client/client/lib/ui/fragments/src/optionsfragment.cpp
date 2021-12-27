@@ -16,12 +16,12 @@ OptionsFragment::OptionsFragment() {
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
 
-    BackButton = new QPushButton("Back");
-    BackButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(BackButton, &QPushButton::clicked, this, &OptionsFragment::onBackPressed);
+    backButton = new QPushButton("Back");
+    backButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(backButton, &QPushButton::clicked, this, &OptionsFragment::onBackPressed);
 
-    buttonContainer->addWidget(BackButton);
-    loadingButtonContainer->addWidget(BackButton);
+    buttonContainer->addWidget(backButton);
+    loadingButtonContainer->addWidget(backButton);
 
     buttonContainer->addLayout(loadingButtonContainer);
 
@@ -46,7 +46,7 @@ OptionsFragment::OptionsFragment() {
 
 
 OptionsFragment::~OptionsFragment() {
-    delete BackButton;
+    delete backButton;
 }
 
 void OptionsFragment::onBackPressed() {

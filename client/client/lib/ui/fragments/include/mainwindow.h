@@ -3,6 +3,8 @@
 
 #include "screensfactory.h"
 #include "fragmentnavigator.h"
+#include "client_impl.h"
+#include "resolver.h"
 
 #include <QMainWindow>
 #include <thread>
@@ -21,6 +23,8 @@ private:
     QStackedWidget *container;
     FragmentNavigator *navigator;
     AbstractScreensFactory *factory;
+
+    Resolver resolver;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

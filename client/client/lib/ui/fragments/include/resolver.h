@@ -3,10 +3,9 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <QMessageBox>
 
-//#include "screensfactory.h"
+#include "screensfactory.h"
 #include "client.h"
 #include "client_impl.h"
-
 
 namespace pt = boost::property_tree;
 
@@ -16,8 +15,12 @@ namespace resolver {
         std::string name;
         int id;
         int role;
+        std::string ip;
+        bool is_me;
+        bool is_live;
+        bool is_sleep;
+        bool is_win;
     };
-
 }
 
 
@@ -34,26 +37,30 @@ public:
     void DrawPlayer(int player_id, std::string nickname);
     void ShowStart();
 
-
     void serverDisconnected();
-    // main: !!!
     void netError();
     void created();
     void joined();
 
-
 private:
-    void ParseAnswer(pt::ptree const &answer);
+    void parse_answer(pt::ptree const &answer);
     void base_answer(pt::ptree const &answer);
+    void base_room_answer(pt::ptree const &answer);
 
-    void CreateRoomAnswer(pt::ptree const &answer);
-    void JoinRoomAnswer(pt::ptree const &answer);
+    void create_room_answer(pt::ptree const &answer);
+    void join_room_answer(pt::ptree const &answer);
+    void pregame_answer(pt::ptree const &answer);
 
-    void CheckPlayers(const std::vector<resolver::Player> &new_players);
+    void game_vote_answer(pt::ptree const &answer);
+    void game_leave_answer(pt::ptree const &answer);
+    void game_finish_answer(pt::ptree const &answer);
+    void game_day_answer(pt::ptree const &answer);
+    void game_ping_answer(pt::ptree const &answer);
+    void game_nigth_answer(pt::ptree const &answer);
+
+    void check_players(const std::vector<resolver::Player> &new_players);
 
 private:
-    int current_turn;
-    bool first_msg;
     bool is_admin;
     bool is_started;
     std::vector<resolver::Player> players;

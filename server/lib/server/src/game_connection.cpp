@@ -251,7 +251,7 @@ namespace net {
                                                   communication));
                 }
             } else if (communication->user.get_role() == 2) {
-                if (command == "vote") {
+                if (command == "vote_mafia") {
                     boost::asio::post(context,
                                       boost::bind(&GameConnection::handle_vote_mafia, this,
                                                   communication));
@@ -301,7 +301,7 @@ namespace net {
             if (static_cast<int>(game_room.evening(votes)) == 0) {
                 // игра продолжается
                 communication->out << MessageServer::vote_accepted(id);
-                votes.clear()
+                votes.clear();
             } else {
                 // игра закончена
                 communication->out << MessageServer::finish_game();
@@ -331,7 +331,7 @@ namespace net {
         if (votes_mafia.size() == 1) {
             killed_id = game_room.night(votes_mafia);
             communication->out << MessageServer::nigth_accepted(killed_id);
-            votes_mafia.clear()
+            votes_mafia.clear();
         } else {
             communication->out << MessageClient::error(); // добавить пинг
         }
@@ -380,7 +380,7 @@ namespace net {
         }
         communication->out
                 << MessageServer::connected(who_is_alive, users_ips, role, is_alive, is_sleep,
-                                            status);
+                                            status, communication->user.get_id());
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }
@@ -412,7 +412,7 @@ namespace net {
             users_names += std::to_string(i->user.get_id());
             users_names += ";";
         }
-        communication->out << MessageServer::msg(users_ids, users_names);
+        communication->out << MessageServer::msg(users_ids, users_names, communication->user.get_id());
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
     }
 

@@ -16,12 +16,21 @@ CreatingFragment::CreatingFragment() {
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
 
-    BackButton = new QPushButton("Back");
-    BackButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(BackButton, &QPushButton::clicked, this, &CreatingFragment::onBackPressed);
+    backButton = new QPushButton("Back");
+    backButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(backButton, &QPushButton::clicked, this, &CreatingFragment::onBackPressed);
 
-    buttonContainer->addWidget(BackButton);
-    loadingButtonContainer->addWidget(BackButton);
+    buttonContainer->addWidget(backButton);
+    loadingButtonContainer->addWidget(backButton);
+
+    roomID = new QLabel("-");
+
+    buttonContainer->addWidget(roomID);
+
+    playersCount = new QLabel("0");
+
+    buttonContainer->addWidget(playersCount);
+
 
     buttonContainer->addLayout(loadingButtonContainer);
 
@@ -46,11 +55,16 @@ CreatingFragment::CreatingFragment() {
 
 
 CreatingFragment::~CreatingFragment() {
-    delete BackButton;
+    delete roomID;
+    delete playersCount;
+    delete backButton;
+    //delete cancelButton;
 }
 
 void CreatingFragment::onBackPressed() {
+    Client->disconnect();
     back();
 }
+
 
 #include "moc_creatingfragment.cpp"

@@ -5,6 +5,8 @@
 #include "screensfactory.h"
 
 #include <QPushButton>
+#include <QLabel>
+
 
 class CreatingFragment: public AbstractFragment {
     Q_OBJECT
@@ -18,10 +20,11 @@ public slots:
     //void onCancelPressed();
 
 private:
-    QPushButton *BackButton;
-    //QLabel *Players;
+    QPushButton *backButton;
+    QLabel *roomID;
+    QLabel *playersCount;
     //QPushButton *StartButton
-    //QPushButton *CancelButton
+    //QPushButton *cancelButton
 };
 
 

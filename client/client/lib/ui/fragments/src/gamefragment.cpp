@@ -16,17 +16,25 @@ GameFragment::GameFragment() {
     QHBoxLayout *loadingButtonContainer = new QHBoxLayout;
 
 
-    BackButton = new QPushButton("Back");
-    BackButton->setStyleSheet("color:#242424;font-size:24px");
-    connect(BackButton, &QPushButton::clicked, this, &GameFragment::onBackPressed);
+    backButton = new QPushButton("Back");
+    backButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(backButton, &QPushButton::clicked, this, &GameFragment::onBackPressed);
 
-    buttonContainer->addWidget(BackButton);
-    loadingButtonContainer->addWidget(BackButton);
+    buttonContainer->addWidget(backButton);
+    loadingButtonContainer->addWidget(backButton);
 
-    StateLabel = new QLabel("Начало игры");
-    StateLabel->setStyleSheet("QLabel { color : grey; }");
+    voteButton = new QPushButton("vote");
+    voteButton->setStyleSheet("color:#242424;font-size:24px");
+    connect(voteButton, &QPushButton::clicked, this, &GameFragment::onVotePressed);
 
-    startMainLayout->addWidget(StateLabel);
+    buttonContainer->addWidget(voteButton);
+    loadingButtonContainer->addWidget(voteButton);
+
+
+    stateLabel = new QLabel("Начало игры");
+    stateLabel->setStyleSheet("QLabel { color : grey; }");
+
+    startMainLayout->addWidget(stateLabel);
     buttonContainer->addLayout(loadingButtonContainer);
 
     startMainLayout->addLayout(buttonContainer);
@@ -46,11 +54,13 @@ GameFragment::GameFragment() {
     mainVLayout->setAlignment(Qt::AlignCenter);
 
     this->setLayout(mainVLayout);
+
+    //state = true;
 }
 
 
 GameFragment::~GameFragment() {
-    delete BackButton;
+    delete backButton;
 }
 
 void GameFragment::onBackPressed() {
@@ -58,19 +68,29 @@ void GameFragment::onBackPressed() {
 }
 
 void GameFragment::setDayState() {
-    StateLabel->setText("День");
-    StateLabel->setStyleSheet("QLabel { color : blue; }");
+    //state = true;
+    stateLabel->setText("День");
+    stateLabel->setStyleSheet("QLabel { color : blue; }");
 }
 
 
 void GameFragment::setNightState() {
-    StateLabel->setText("Ночь");
-    StateLabel->setStyleSheet("QLabel { color : black; }");
+    //state = false;
+    stateLabel->setText("Ночь");
+    stateLabel->setStyleSheet("QLabel { color : black; }");
 }
 
 
 void GameFragment::setCustomState(const QString state) {
-    StateLabel->setText(state);
+    stateLabel->setText(state);
 }
+void GameFragment::onVotePressed() {
+    bool ok = false;
+//    int id = QInputDialog::getInt(this, "Vote", "Enter player's ID:",0,0, 2147483647, 1, &ok);
+    if (ok) {
+        //Client->vote(id);
 
+
+    }
+}
 #include "moc_gamefragment.cpp"
