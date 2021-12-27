@@ -38,13 +38,24 @@ void FragmentNavigator::navigateTo(QString tag) {
     //connect(mResolver, &Resolver::serverDisconnected, newFragment, &newFragment::disconnect, Qt::QueuedConnection);
 
     if (tag == CREATING_TAG) {
-        MainFragment* main = static_cast<MainFragment*>(newFragment);
+        CreatingFragment* creating = static_cast<CreatingFragment*>(newFragment);
         //connect(mResolver, &Resolver::DeletePlayer, game, &GameFragment::DeletePlayer, Qt::QueuedConnection);
-        connect(mResolver, &Resolver::netError, main, &MainFragment::onNetError, Qt::QueuedConnection);
-        connect(mResolver, &Resolver::joined, main, &MainFragment::onJoined, Qt::QueuedConnection);
-        connect(mResolver, &Resolver::created, main, &MainFragment::onCreated, Qt::QueuedConnection);
-    }
+        connect(mResolver, &Resolver::netError, creating, &CreatingFragment::onNetError, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::drawPlayer, creating, &CreatingFragment::onDrawPlayer, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::deletePlayer, creating, &CreatingFragment::onDeletePlayer, Qt::QueuedConnection);
 
+    } else if (tag == WAITING_TAG) {
+        WaitingFragment* waiting = static_cast<WaitingFragment*>(newFragment);
+        connect(mResolver, &Resolver::startGame, waiting, &WaitingFragment::onGameStarts, Qt::QueuedConnection);
+    } else if (tag == GAME_TAG) {
+        GameFragment* game = static_cast<GameFragment*>(newFragment);
+        connect(mResolver, &Resolver::winGame, game, &GameFragment::onWin, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::loseGame, game, &GameFragment::onLose, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::mafiaWin, game, &GameFragment::onMafiaWin, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::citizenWin, game, &GameFragment::onCitizenWin, Qt::QueuedConnection);
+
+
+    }
     currentContainer->addWidget(newFragment);
     currentContainer->setCurrentWidget(newFragment);
 

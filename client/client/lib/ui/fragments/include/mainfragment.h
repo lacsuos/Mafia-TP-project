@@ -21,8 +21,8 @@ public slots:
     void onPlayPressed();
     void onOptionsPressed();
     void onNetError();
-    void onCreated();
-    void onJoined();
+    void onCreated(int id);
+    void onJoined(int id);
 
 private:
     QPushButton *createButton;

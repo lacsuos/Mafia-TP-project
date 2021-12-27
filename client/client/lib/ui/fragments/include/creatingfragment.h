@@ -16,14 +16,18 @@ public:
 
 public slots:
     void onBackPressed();
-    //void onStartPressed();
+    void onStartPressed();
     //void onCancelPressed();
+
+    void onDrawPlayer(int id);
+    void onDeletePlayer(int id);
 
 private:
     QPushButton *backButton;
     QLabel *roomID;
-    QLabel *playersCount;
-    //QPushButton *StartButton
+    QLabel *playersCounter;
+    int playersCount;
+    QPushButton *startButton
     //QPushButton *cancelButton
 };
 

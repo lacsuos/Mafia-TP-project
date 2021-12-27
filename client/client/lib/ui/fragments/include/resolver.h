@@ -39,7 +39,7 @@ public:
 
     void serverDisconnected();
     void netError();
-    void created();
+    void created(int id);
     void joined();
 
 private:

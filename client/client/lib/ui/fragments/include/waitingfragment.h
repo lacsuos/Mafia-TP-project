@@ -16,6 +16,7 @@ public slots:
     void onBackPressed();
     //void onContinuePressed();
     //void onDisconnectPressed();
+    void onGameStarts();
 
 private:
     QPushButton *backButton;

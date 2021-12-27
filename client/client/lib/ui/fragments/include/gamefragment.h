@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QInputDialog>
+#include <QMessageBox>
 
 #include <vector>
 #include <QWidget>
@@ -30,6 +31,13 @@ public slots:
     void setNightState();
     void setCustomState(const QString state);
     void onVotePressed();
+    void updateState();
+    void onPassPressed();
+
+    void onCitisenWin();
+    void onMafiaWin();
+    void onWin();
+    void onLose();
 
 private:
 
@@ -39,8 +47,11 @@ private:
 //    QVideoWidget** vw;
 //    QMediaPlayer** mediaPlayer;
 
+
+    bool state;
     QPushButton *backButton;
     QPushButton *voteButton;
+    QPushButton *passButton;
     QLabel *stateLabel;
 };
 

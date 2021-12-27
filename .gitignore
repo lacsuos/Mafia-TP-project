@@ -4,6 +4,9 @@ cmake-build-debug/
 cl1/
 cl2/
 
+client/build-client-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/
+ui/build-ui-Desktop_Qt_6_2_1_MinGW_64_bit-Debug/
+
 client/ui
 client/webcam
 client/webcam_ui

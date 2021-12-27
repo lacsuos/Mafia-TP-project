@@ -27,7 +27,7 @@ MainFragment::MainFragment() {
     optionsButton->setStyleSheet("color:#242424;font-size:24px");
     connect(optionsButton, &QPushButton::clicked, this, &MainFragment::onOptionsPressed);
 
-    statusLabel = new QLabel("-");
+    statusLabel = new QLabel("Welcome to Mafia");
 
     buttonContainer->addWidget(statusLabel);
     loadingButtonContainer->addWidget(statusLabel);
@@ -93,15 +93,18 @@ void MainFragment::onNetError() {
     statusLabel->setStyleSheet("color:red");
 }
 
-void MainFragment::onJoined() {
+void MainFragment::onJoined(int id) {
+    //Player::roomID = id;
     statusLabel->setText("Succeed");
     statusLabel->setStyleSheet("color:green");
     navigateTo(WAITING_TAG);
 }
 
-void MainFragment::onCreated() {
+void MainFragment::onCreated(int id) {
     statusLabel->setText("Succeed");
     statusLabel->setStyleSheet("color:green");
+    //Player::roomID = id;
+
     navigateTo(CREATING_TAG);
 }
 

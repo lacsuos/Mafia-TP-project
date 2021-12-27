@@ -23,12 +23,26 @@ GameFragment::GameFragment() {
     buttonContainer->addWidget(backButton);
     loadingButtonContainer->addWidget(backButton);
 
-    voteButton = new QPushButton("vote");
+    voteButton = new QPushButton("Vote");
     voteButton->setStyleSheet("color:#242424;font-size:24px");
     connect(voteButton, &QPushButton::clicked, this, &GameFragment::onVotePressed);
 
     buttonContainer->addWidget(voteButton);
     loadingButtonContainer->addWidget(voteButton);
+
+
+    //Определить Роли!!!
+
+    passButton = new QPushButton("Pass");
+    passButton->setStyleSheet("color:#242424;font-size:24px");
+    if (PlayerData::role == 777) {
+        connect(voteButton, &QPushButton::clicked, this, &GameFragment::onVotePressed);
+
+        buttonContainer->addWidget(voteButton);
+        loadingButtonContainer->addWidget(voteButton);
+    }
+
+
 
 
     stateLabel = new QLabel("Начало игры");
@@ -80,17 +94,62 @@ void GameFragment::setNightState() {
     stateLabel->setStyleSheet("QLabel { color : black; }");
 }
 
+void GameFragment::updateState() {
+    if (PlayerData::isDay){
+        setDayState();
+    } else {
+        setNightState();
+    }
+}
 
-void GameFragment::setCustomState(const QString state) {
-    stateLabel->setText(state);
+
+void GameFragment::setCustomState(const QString _state) {
+    stateLabel->setText(_state);
 }
 void GameFragment::onVotePressed() {
     bool ok = false;
     int id = QInputDialog::getInt(this, "Vote", "Enter player's ID:",0,0, 2147483647, 1, &ok);
     if (ok) {
-        //Client->vote(id);
+
+        if (PlayerData::isDay){
+            Client->vote(id);
+        } else if (PlayerData::role == "2") {
+            Client->vote_mafia(id);
+        }
+
 
 
     }
+}
+
+void GameFragment::onPassPressed() {
+    if (PlayerData::role == 777) {
+        if (PlayerData::isDay) {
+            Client->nigth();
+        } else {
+            Client->day();
+        }
+    }
+}
+
+void GameFragment::onCitisenWin() {
+    QMessageBox msgBox;
+    msgBox.setText("The City has defeated Mafia");
+    msgBox.exec();
+}
+void GameFragment::onMafiaWin() {
+    QMessageBox msgBox;
+    msgBox.setText("The Mafia has overcome the Law");
+    msgBox.exec();
+}
+void GameFragment::onLose() {
+    QMessageBox msgBox;
+    msgBox.setText("Your side has lost");
+    msgBox.exec();
+}
+void GameFragment::onWin() {
+    QMessageBox msgBox;
+    msgBox.setText("Your side has won");
+    msgBox.exec();
 }
 #include "moc_gamefragment.cpp"

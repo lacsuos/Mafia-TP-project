@@ -12,6 +12,8 @@ add_library(fragments STATIC
         src/mainwindow.cpp
         src/fragmentnavigator.cpp
         src/admingamefragment.cpp
+        src/resolver.cpp
+        src/playerbox.cpp
         )
 target_include_directories(fragments PUBLIC include)
 target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract client_lib resolver)

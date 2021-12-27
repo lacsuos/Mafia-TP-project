@@ -68,4 +68,8 @@ void WaitingFragment::onBackPressed() {
 //    navigateTo(GAME_TAG);
 //}
 
+void WaitingFragment::onGameStarts() {
+    navigateTo(GAME_TAG);
+}
+
 #include "moc_waitingfragment.cpp"

@@ -23,13 +23,20 @@ CreatingFragment::CreatingFragment() {
     buttonContainer->addWidget(backButton);
     loadingButtonContainer->addWidget(backButton);
 
+    startButton = new QPushButton("Start");
+    startButton->setStyleSheet("color:#242424;font-size:24px");
+    startButton->setEnabled(false);
+    buttonContainer->addWidget(startButton);
+    loadingButtonContainer->addWidget(startButton);
+
     roomID = new QLabel("-");
 
     buttonContainer->addWidget(roomID);
 
-    playersCount = new QLabel("0");
+    playersCounter = new QLabel("0");
+    playersCount = 1;
 
-    buttonContainer->addWidget(playersCount);
+    buttonContainer->addWidget(playersCounter);
 
 
     buttonContainer->addLayout(loadingButtonContainer);
@@ -56,7 +63,7 @@ CreatingFragment::CreatingFragment() {
 
 CreatingFragment::~CreatingFragment() {
     delete roomID;
-    delete playersCount;
+    delete playersCounter;
     delete backButton;
     //delete cancelButton;
 }
@@ -66,5 +73,28 @@ void CreatingFragment::onBackPressed() {
     back();
 }
 
+void CreatingFragment::onDeletePlayer(int id) {
+    playersCount--;
+    playersCounter->setText(QString::number(playersCount));
+    if (playersCount < 4) {
+        startButton->setEnabled(false);
+    }
+
+
+}
+
+void CreatingFragment::onDrawPlayer(int id) {
+    playersCount++;
+    playersCounter->setText(QString::number(playersCount));
+    if (playersCount >= 4) {
+        connect(startButton, &QPushButton::clicked, this, &CreatingFragment::onStartPressed);
+        startButton->setEnabled(true);
+    }
+}
+
+void CreatingFragment::onStartPressed() {
+    Client->startGame();
+    navigateTo(GAME_TAG);
+}
 
 #include "moc_creatingfragment.cpp"

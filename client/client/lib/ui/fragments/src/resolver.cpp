@@ -86,7 +86,7 @@ void Resolver::create_room_answer(pt::ptree const &answer) {
         if (status == "done") {
 //
             qDebug() << "Created room recieved";
-            /*emit */created();
+            /*emit */created(5);
             is_started = true;
             return;
         }
@@ -125,7 +125,7 @@ void Resolver::check_players(const std::vector<resolver::Player> &new_players) {
                                     return current.id == cit->id;
                                 });
         if (res == new_players.end()) {
-//            emit DeletePlayer(cit->position);
+//            emit deletePlayer(cit->position);
             players.erase(cit);
         }
     }
@@ -137,7 +137,7 @@ void Resolver::check_players(const std::vector<resolver::Player> &new_players) {
                                 });
         if (res == players.end()) {
             players.push_back(it);
-//            emit DrawPlayer();
+//            emit drawPlayer();
         }
     }
 }
