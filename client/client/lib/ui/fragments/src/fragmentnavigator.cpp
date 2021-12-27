@@ -12,6 +12,11 @@ FragmentNavigator::FragmentNavigator(
     this->currentContainer = container;
     AbstractFragment* startFragment = getStartScreen();
 
+    MainFragment* main = static_cast<MainFragment*>(startFragment);
+    //connect(mResolver, &Resolver::DeletePlayer, game, &GameFragment::DeletePlayer, Qt::QueuedConnection);
+    connect(mResolver, &Resolver::netError, main, &MainFragment::onNetError, Qt::QueuedConnection);
+    connect(mResolver, &Resolver::joined, main, &MainFragment::onJoined, Qt::QueuedConnection);
+    connect(mResolver, &Resolver::created, main, &MainFragment::onCreated, Qt::QueuedConnection);
     qDebug("add widget");
 
     this->stack.push_back(startFragment);
@@ -32,7 +37,7 @@ void FragmentNavigator::navigateTo(QString tag) {
     stack.push_back(newFragment);
     //connect(mResolver, &Resolver::serverDisconnected, newFragment, &newFragment::disconnect, Qt::QueuedConnection);
 
-    if (tag == MAIN_TAG) {
+    if (tag == CREATING_TAG) {
         MainFragment* main = static_cast<MainFragment*>(newFragment);
         //connect(mResolver, &Resolver::DeletePlayer, game, &GameFragment::DeletePlayer, Qt::QueuedConnection);
         connect(mResolver, &Resolver::netError, main, &MainFragment::onNetError, Qt::QueuedConnection);

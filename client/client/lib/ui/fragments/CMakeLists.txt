@@ -1,4 +1,4 @@
-set(CMAKE_AUTOUIC ON)
+    set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -11,6 +11,7 @@ add_library(fragments STATIC
         src/screensfactory.cpp
         src/mainwindow.cpp
         src/fragmentnavigator.cpp
+        src/admingamefragment.cpp
         )
 target_include_directories(fragments PUBLIC include)
 target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract client_lib resolver)

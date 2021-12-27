@@ -60,6 +60,7 @@ void Resolver::CreateRoomAnswer(pt::ptree const &answer) {
 
     if (status == "done") {
 //
+        qDebug() << "recieved created";
         emit created();
         return;
     }
