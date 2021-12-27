@@ -1,4 +1,4 @@
-    set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -14,6 +14,5 @@ add_library(fragments STATIC
         src/admingamefragment.cpp
         src/resolver.cpp
         src/playerbox.cpp
-        )
 target_include_directories(fragments PUBLIC include)
-target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract client_lib resolver)
+target_link_libraries(fragments PUBLIC Qt${QT_VERSION_MAJOR}::Widgets abstract client_lib)

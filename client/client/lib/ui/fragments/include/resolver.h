@@ -3,14 +3,14 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <QMessageBox>
 
-#include "../../../../../../temp/client/client/lib/ui/fragments/include/screensfactory.h"
+#include "screensfactory.h"
 #include "client.h"
-#include "../../../../../../temp/client/client/lib/ui/fragments/include/client_impl.h"
+#include "client_impl.h"
 
 namespace pt = boost::property_tree;
 
-namespace resolver {
 
+namespace resolver {
     struct Player {
         std::string name;
         int id;
@@ -20,9 +20,9 @@ namespace resolver {
         bool is_live;
         bool is_sleep;
         bool is_win;
+        bool is_day;
     };
 }
-
 
 class Resolver : public AbstractFragment {
     Q_OBJECT
@@ -32,15 +32,20 @@ public:
     void Run();
 
     signals:
+    void hasVoted();
     void DeleteAllPlayers();
     void DeletePlayer(int player_id);
-    void DrawPlayer(int player_id, std::string nickname);
-    void ShowStart();
+    void DrawPlayer(int player_id);
+    void gameIteration(std::vector<resolver::Player>);
 
     void serverDisconnected();
     void netError();
-    void created(int id);
-    void joined();
+    void created(const int &idRoom);
+    void joined(const int &idRoom);
+    void mafiaWin();
+    void citisenWin()
+    void winGame();
+    void loseGame();
 
 private:
     void parse_answer(pt::ptree const &answer);

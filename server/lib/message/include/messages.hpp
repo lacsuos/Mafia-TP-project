@@ -39,7 +39,8 @@ public:
 
     static std::string connected(const std::string &ids, const std::string &ips, const int &role,
                                  const bool &is_alive, const bool &is_sleep,
-                                 const std::string &status, const int &current_id);
+                                 const std::string &status, const int &current_id,
+                                 const bool &is_day);
 
     static std::string msg(const std::string &ids, const std::string &names, const int &id);
 
