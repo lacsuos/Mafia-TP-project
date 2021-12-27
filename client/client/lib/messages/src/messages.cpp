@@ -97,7 +97,7 @@ std::string MessageServer::vote_mafia(const int &voted_id) {
     parametrs.put("id", voted_id);
 
     request.put("command_type", "game");
-    request.put("command", "vote_mafia");
+    request.put("command", "voteMafia");
     request.add_child("parametrs", parametrs);
 
     return message_ptree(request);

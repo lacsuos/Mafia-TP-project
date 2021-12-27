@@ -60,6 +60,7 @@ namespace net {
         void handle_game_nigth(std::shared_ptr<Communication> communication);
 
     private:
+        boost::atomic<bool> is_day;
         boost::asio::io_context &context;
 
         std::vector<std::shared_ptr<Communication>> communications;

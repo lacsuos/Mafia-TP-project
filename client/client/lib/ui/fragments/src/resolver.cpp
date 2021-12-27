@@ -37,7 +37,6 @@ void Resolver::parse_answer(pt::ptree const &answer) {
     }
 
     if (command_type == "disconnect") {
-//        disconnect(answer);
         emit serverDisconnected();
         return;
     }
@@ -84,9 +83,10 @@ void Resolver::create_room_answer(pt::ptree const &answer) {
         }
 
         if (status == "done") {
-//
+            auto id = parametrs.get<int>("id");
             qDebug() << "Created room recieved";
-            /*emit */created();
+            emit created(id);
+            PlayerData::id = id;
             is_started = true;
             return;
         }
@@ -107,8 +107,9 @@ void Resolver::join_room_answer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
-//
-        emit joined();
+        auto id = parametrs.get<int>("id");
+        PlayerData::id = id;
+        emit joined(id);
         return;
     }
 
@@ -125,7 +126,7 @@ void Resolver::check_players(const std::vector<resolver::Player> &new_players) {
                                     return current.id == cit->id;
                                 });
         if (res == new_players.end()) {
-//            emit DeletePlayer(cit->position);
+            emit DeletePlayer(cit->id);
             players.erase(cit);
         }
     }
@@ -137,7 +138,7 @@ void Resolver::check_players(const std::vector<resolver::Player> &new_players) {
                                 });
         if (res == players.end()) {
             players.push_back(it);
-//            emit DrawPlayer();
+            emit DrawPlayer(players.back().id);
         }
     }
 }
@@ -175,17 +176,14 @@ void Resolver::base_room_answer(const boost::property_tree::ptree &answer) {
     }
 
     if (command == "finish_game") {
-        game_finish_answer(answer);
         return;
     }
 
     if (command == "day") {
-        game_day_answer(answer);
         return;
     }
 
     if (command == "nigth") {
-        game_nigth_answer(answer);
         return;
     }
 
@@ -203,35 +201,27 @@ void Resolver::base_room_answer(const boost::property_tree::ptree &answer) {
 }
 
 void Resolver::game_vote_answer(const boost::property_tree::ptree &answer) {
-
+    emit hasVoted();
 }
 
 void Resolver::game_leave_answer(const boost::property_tree::ptree &answer) {
 
 }
 
-void Resolver::game_finish_answer(const boost::property_tree::ptree &answer) {
-
-}
-
-void Resolver::game_day_answer(const boost::property_tree::ptree &answer) {
-
-}
-
-void Resolver::game_nigth_answer(const boost::property_tree::ptree &answer) {
-
-}
 
 void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
     auto parametrs = answer.get_child("parametrs");
     auto ids = parametrs.get<std::string>("ids");
     auto ips = parametrs.get<std::string>("ips");
-    auto id = parametrs.get<int>("id");
-    auto role = parametrs.get<int>("role");
-    auto alive = parametrs.get<std::string>("status_is_alive");
-    auto sleep = parametrs.get<std::string>("status_is_sleep");
-    auto status = parametrs.get<std::string>("status");
+    auto game = answer.get_child("game");
 
+    auto id = parametrs.get<int>("id");
+    auto role = game.get<int>("role");
+    auto alive = game.get<std::string>("status_is_alive");
+    auto sleep = game.get<std::string>("status_is_sleep");
+    auto status = game.get<std::string>("status");
+    auto status_iteration = game.get<std::string>("status_iteration");
+    players.clear();
     if (status == "GAMING") {
         std::vector<std::string> ids_array = split(ids);
         std::vector<std::string> ips_array = split(ips);
@@ -239,11 +229,17 @@ void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
         std::vector<resolver::Player> new_players;
         for (size_t i = 0; i < ids_array.size(); ++i) {
             resolver::Player player;
-            std::vector<std::string> temp = split(ids_array[i],'-');
+            std::vector<std::string> temp = split(ids_array[i], '-');
             player.id = std::stoi(temp[0]);
             player.is_live = (temp[1] == "ON" ? true : false);
             player.ip = ips_array[i];
+            player.is_day = (status_iteration == "day" ? true : false);
             if (player.id == id) {
+
+                PlayerData::role = role;
+                PlayerData::is_alive = (alive == "ON" ? true : false);
+                PlayerData::role = role;
+
                 player.is_me = true;
                 player.role = role;
                 player.is_live = (alive == "ON" ? true : false);
@@ -251,9 +247,9 @@ void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
             } else {
                 player.is_me = false;
             }
-            new_players.push_back(player);
+            players.push_back(player);
         }
-        check_players(new_players);
+        emit gameIteration(players);
 
     } else if (status == "CITIZEN_WIN") {
         if (role == 777) {

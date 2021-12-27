@@ -77,16 +77,17 @@ void GameFragment::setDayState() {
 void GameFragment::setNightState() {
     state = false;
     stateLabel->setText("Ночь");
-    stateLabel->setStyleSheet("QLabel { color : black; }");
+    stateLabel->setStyleSheet("QLagameIterationbel { color : black; }");
 }
 
 
-void GameFragment::setCustomState(const QString state) {
-    stateLabel->setText(state);
+void GameFragment::setCustomState(const QString _state) {
+    stateLabel->setText(_state);
 }
+
 void GameFragment::onVotePressed() {
     bool ok = false;
-    int id = QInputDialog::getInt(this, "Vote", "Enter player's ID:",0,0, 2147483647, 1, &ok);
+//    int id = QInputDialog::getInt(this, "Vote", "Enter player's ID:",0,0, 2147483647, 1, &ok);
     if (ok) {
         //Client->vote(id);
 

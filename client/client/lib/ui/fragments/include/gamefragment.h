@@ -11,9 +11,9 @@
 #include <vector>
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QNetworkRequest>
-#include <QMediaPlayer>
-#include <QVideoWidget>
+//#include <QNetworkRequest>
+//#include <QMediaPlayer>
+//#include <QVideoWidget>
 
 class GameFragment: public AbstractFragment {
     Q_OBJECT
@@ -38,7 +38,7 @@ private:
 //    QBVboxLayout** layout;
 //    QVideoWidget** vw;
 //    QMediaPlayer** mediaPlayer;
-
+    bool state;
     QPushButton *backButton;
     QPushButton *voteButton;
     QLabel *stateLabel;

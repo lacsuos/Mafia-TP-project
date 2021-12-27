@@ -22,6 +22,7 @@ namespace net {
             : game(GameRoom(communication->user.get_id())),
               is_gaming(false),
               is_remove(false),
+              is_day(true),
               context(communication->context) {
 
         communication->is_gaming.store(true);
@@ -34,7 +35,7 @@ namespace net {
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
 
-        communication->out << MessageServer::create_room_done(communication->user.get_id());
+        communication->out << MessageServer::create_room_done(game.get_id());
         async_write(communication->socket, communication->write_buffer,
                     [this, communication](bs::error_code error, size_t
                     len) {
@@ -98,7 +99,7 @@ namespace net {
         read_until(communication->socket, communication->read_buffer, std::string(MSG_END));
         pt::read_json(communication->in, communication->last_msg);
 
-        communication->out << MessageServer::join_room_done(communication->user.get_id());
+        communication->out << MessageServer::join_room_done(game.get_id());
         write(communication->socket, communication->write_buffer);
 
         boost::asio::post(context, boost::bind(&GameConnection::handle_read, this, communication));
@@ -237,10 +238,12 @@ namespace net {
 
             if (communication->user.get_role() == 777) {
                 if (command == "day") {
+                    is_day.store(true);
                     boost::asio::post(context,
                                       boost::bind(&GameConnection::handle_game_day, this,
                                                   communication));
                 } else if (command == "nigth") {
+                    is_day.store(false);
                     boost::asio::post(context,
                                       boost::bind(&GameConnection::handle_game_nigth, this,
                                                   communication));
@@ -380,7 +383,7 @@ namespace net {
         }
         communication->out
                 << MessageServer::connected(who_is_alive, users_ips, role, is_alive, is_sleep,
-                                            status, communication->user.get_id());
+                                            status, communication->user.get_id(), is_day);
         boost::asio::post(context,
                           boost::bind(&GameConnection::handle_write, this, communication));
     }

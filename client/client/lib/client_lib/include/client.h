@@ -53,7 +53,7 @@ namespace net {
 
         void vote(const int &voted_id);
 
-        void vote_mafia(const int &voted_id);
+        void voteMafia(const int &voted_id);
 
         void joinGame(const int &room_id);
 

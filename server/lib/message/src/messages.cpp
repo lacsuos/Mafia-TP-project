@@ -136,7 +136,7 @@ std::string MessageClient::error() {
 std::string
 MessageServer::connected(const std::string &ids, const std::string &ips, const int &role,
                          const bool &is_alive, const bool &is_sleep, const std::string &status,
-                         const int &current_id) {
+                         const int &current_id, const bool &is_day) {
     pt::ptree parametrs;
     pt::ptree game;
     pt::ptree request;
@@ -160,6 +160,12 @@ MessageServer::connected(const std::string &ids, const std::string &ips, const i
     }
 
     game.put("status", status);
+
+    if (is_day) {
+        game.put("status_iteration", "day");
+    } else {
+        game.put("status_iteration", "nigth");
+    }
 
     request.put("command_type", "basic_room");
     request.put("command", "game_room");
