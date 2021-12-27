@@ -83,7 +83,7 @@ namespace net {
         return answerQ.Pop();
     }
 
-    void Client::startGame() {
+    void Client::createGame() {
         auto msg = MessageClient::create_room();
         requestQ.Push(msg);
     }
@@ -92,4 +92,30 @@ namespace net {
         auto msg = MessageClient::join_room(room_id);
         requestQ.Push(msg);
     }
+
+    void Client::startGame() {
+        auto msg = MessageClient::start_game();
+        requestQ.Push(msg);
+    }
+
+    void Client::nigth() {
+        auto msg = MessageServer::day();
+        requestQ.Push(msg);
+    }
+
+    void Client::day() {
+        auto msg = MessageServer::nigth();
+        requestQ.Push(msg);
+    }
+
+    void Client::vote(const int &voted_id) {
+        auto msg = MessageServer::vote(voted_id);
+        requestQ.Push(msg);
+    }
+
+    void Client::vote_mafia(const int &voted_id) {
+        auto msg = MessageServer::vote_mafia(voted_id);
+        requestQ.Push(msg);
+    }
+
 }

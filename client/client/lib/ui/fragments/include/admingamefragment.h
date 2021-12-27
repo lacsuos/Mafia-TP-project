@@ -1,7 +1,7 @@
 #ifndef ADMINGAMEFRAGMENT_H
 #define ADMINGAMEFRAGMENT_H
 
-#include <gamefragment.h>
+#include "gamefragment.h"
 
 class AdminGameFragment : public GameFragment
 {

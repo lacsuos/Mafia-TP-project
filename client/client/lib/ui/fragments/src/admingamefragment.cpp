@@ -1,4 +1,4 @@
-#include "includeadmingamefragment.h"
+#include "admingamefragment.h"
 
 AdminGameFragment::AdminGameFragment()
 {

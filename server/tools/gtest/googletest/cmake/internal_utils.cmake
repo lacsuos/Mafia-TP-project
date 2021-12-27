@@ -312,7 +312,7 @@ endfunction()
 # Installs the specified targets and configures the associated pkgconfig files.
 function(install_project)
   if(INSTALL_GTEST)
-    install(DIRECTORY "../../../../../client/client/lib/client_lib/include/"
+    install(DIRECTORY "../../../../../client/client/lib/client_lib/include"
       DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
     # Install the project targets.
     install(TARGETS ${ARGN}

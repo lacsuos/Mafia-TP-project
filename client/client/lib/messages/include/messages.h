@@ -22,8 +22,18 @@ public:
 
     static std::string create_room();
 
-    static std::string error();
+    static std::string start_game();
 
     static std::string join_room(const int &room_id);
+};
 
+class MessageServer : public Message {
+public:
+    static std::string day();
+
+    static std::string nigth();
+
+    static std::string vote(const int &voted_id);
+
+    static std::string vote_mafia(const int &voted_id);
 };

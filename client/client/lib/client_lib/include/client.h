@@ -1,7 +1,7 @@
 #pragma once
 
 #include "myqueue.h"
-#include <boost/bind/bind.hpp>
+#include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/atomic/atomic.hpp>
 #include <iostream>
@@ -43,7 +43,17 @@ namespace net {
 
         bool isConnected();
 
+        void createGame();
+
         void startGame();
+
+        void day();
+
+        void nigth();
+
+        void vote(const int &voted_id);
+
+        void vote_mafia(const int &voted_id);
 
         void joinGame(const int &room_id);
 
