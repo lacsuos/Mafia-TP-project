@@ -34,9 +34,10 @@ public:
     signals:
     void hasVoted();
     void DeleteAllPlayers();
-    void DeletePlayer(int player_id);
-    void DrawPlayer(int player_id);
-    void gameIteration(std::vector<resolver::Player>);
+    void startGame();
+    void deletePlayer(int player_id);
+    void drawPlayer(int player_id);
+    void gameIteration(std::vector<resolver::Player> _players);
 
     void serverDisconnected();
     void netError();
@@ -58,16 +59,14 @@ private:
 
     void game_vote_answer(pt::ptree const &answer);
     void game_leave_answer(pt::ptree const &answer);
-    void game_finish_answer(pt::ptree const &answer);
-    void game_day_answer(pt::ptree const &answer);
     void game_ping_answer(pt::ptree const &answer);
-    void game_nigth_answer(pt::ptree const &answer);
 
     void check_players(const std::vector<resolver::Player> &new_players);
 
 private:
-    bool is_admin;
-    bool is_started;
+    bool isFirst;
+    bool isAdmin;
+    bool isStarted;
     std::vector<resolver::Player> players;
 };
 

@@ -7,7 +7,7 @@ class PlayerBox : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PlayerBox(QWidget *parent = nullptr, int ID);
+    explicit PlayerBox(QWidget *parent = nullptr);
 
 signals:
 

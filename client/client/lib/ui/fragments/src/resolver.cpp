@@ -22,8 +22,9 @@ static std::vector<std::string> split(const std::string &s, char delimetr = ';')
     return elems;
 }
 
-Resolver::Resolver() : is_admin(false),
-                       is_started(false) {}
+Resolver::Resolver() : isFirst(true),
+                       isAdmin(false),
+                       isStarted(false) {}
 
 void Resolver::parse_answer(pt::ptree const &answer) {
     auto command_type = answer.get<std::string>("command_type");
@@ -57,7 +58,7 @@ void Resolver::base_answer(pt::ptree const &answer) {
     auto command = answer.get<std::string>("command");
 
     if (command == "create_room") {
-        is_admin = true;
+        isAdmin = true;
         create_room_answer(answer);
         return;
     }
@@ -77,7 +78,7 @@ void Resolver::base_answer(pt::ptree const &answer) {
 void Resolver::create_room_answer(pt::ptree const &answer) {
     auto parametrs = answer.get_child("parametrs");
     auto status = parametrs.get<std::string>("status");
-    if (is_admin) {
+    if (isAdmin) {
         if (status == "in_process") {
             return;
         }
@@ -87,7 +88,7 @@ void Resolver::create_room_answer(pt::ptree const &answer) {
             qDebug() << "Created room recieved";
             emit created(id);
             PlayerData::id = id;
-            is_started = true;
+            isStarted = true;
             return;
         }
 
@@ -126,7 +127,7 @@ void Resolver::check_players(const std::vector<resolver::Player> &new_players) {
                                     return current.id == cit->id;
                                 });
         if (res == new_players.end()) {
-            emit DeletePlayer(cit->id);
+            emit deletePlayer(cit->id);
             players.erase(cit);
         }
     }
@@ -138,7 +139,7 @@ void Resolver::check_players(const std::vector<resolver::Player> &new_players) {
                                 });
         if (res == players.end()) {
             players.push_back(it);
-            emit DrawPlayer(players.back().id);
+            emit drawPlayer(players.back().id);
         }
     }
 }
@@ -193,7 +194,7 @@ void Resolver::base_room_answer(const boost::property_tree::ptree &answer) {
     }
 
     if (command == "game_room") {
-        if (is_started) {
+        if (isStarted) {
             game_ping_answer(answer);
             return;
         }
@@ -210,6 +211,10 @@ void Resolver::game_leave_answer(const boost::property_tree::ptree &answer) {
 
 
 void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
+    if (isFirst) {
+        emit startGame();
+        isFirst = false;
+    }
     auto parametrs = answer.get_child("parametrs");
     auto ids = parametrs.get<std::string>("ids");
     auto ips = parametrs.get<std::string>("ips");
@@ -269,7 +274,7 @@ void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
         if (role == 2) {
             emit winGame();
         } else if (role == 1) {
-           emit loseGame();
+            emit loseGame();
         }
     }
 }
@@ -277,7 +282,7 @@ void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
 void Resolver::Run() {
     while (Client->isConnected()) {
         auto m = Client->getLastMsg();
-//        std::cout << m;
+        std::cout << m;
         std::stringstream msg(m);
         pt::ptree json_data;
         pt::read_json(msg, json_data);

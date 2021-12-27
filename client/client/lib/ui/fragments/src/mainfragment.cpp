@@ -69,7 +69,7 @@ MainFragment::~MainFragment() {
     delete statusLabel;
 }
 void MainFragment::onCreatePressed() {
-    Client->startGame();
+    Client->createGame();
 }
 void MainFragment::onPlayPressed() {
 

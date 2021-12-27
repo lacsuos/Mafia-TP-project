@@ -152,16 +152,16 @@ void GameFragment::onWin() {
     msgBox.setText("Your side has won");
     msgBox.exec();
 }
-void GameFragment::updatePlayers(std::vector<resolver::Player> players) {
-    qDebug() << QString("updated: %1").arg(ticks);
-    roleLabel->setText(QString::number(PlayerData::role))
-    /*if (PlayerData::role == 777 && !isMaster) {
-        isMaster = true;
-        connect(voteButton, &QPushButton::clicked, this, &GameFragment::onVotePressed);
-
-        buttonContainer->addWidget(voteButton);
-        loadingButtonContainer->addWidget(voteButton);
-    }*/
-    ticks++;
-}
+//void GameFragment::updatePlayers(std::vector<resolver::Player> players) {
+//    qDebug() << QString("updated: %1").arg(ticks);
+//    roleLabel->setText(QString::number(PlayerData::role))
+//    /*if (PlayerData::role == 777 && !isMaster) {
+//        isMaster = true;
+//        connect(voteButton, &QPushButton::clicked, this, &GameFragment::onVotePressed);
+//
+//        buttonContainer->addWidget(voteButton);
+//        loadingButtonContainer->addWidget(voteButton);
+//    }*/
+//    ticks++;
+//}
 #include "moc_gamefragment.cpp"

@@ -8,6 +8,7 @@
 #include "mainfragment.h"
 #include "waitingfragment.h"
 #include "creatingfragment.h"
+#include "resolver.h"
 
 
 namespace screens {

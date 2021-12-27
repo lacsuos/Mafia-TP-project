@@ -8,4 +8,3 @@ add_library(abstract STATIC
         )
 target_include_directories(abstract PUBLIC include)
 target_link_libraries(abstract PUBLIC Qt${QT_VERSION_MAJOR}::Widgets)
-#qt_wrap_cpp(abstractfragment.h abstractfragment.cpp)

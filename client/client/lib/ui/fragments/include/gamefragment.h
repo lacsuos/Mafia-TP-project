@@ -38,7 +38,7 @@ public slots:
     void onMafiaWin();
     void onWin();
     void onLose();
-    void updatePlayers(std::vector<resolver::Player> players);
+//    void updatePlayers(std::vector<resolver::Player> players);
 
 private:
 

@@ -27,6 +27,10 @@ MainWindow::MainWindow(QWidget *parent)
         this->navigator = new FragmentNavigator(this->container, this->factory, &resolver);
 
         PlayerData::reset();
+        Client = std::make_unique<net::Client>();
+        Client->connect();
+        client_thread = std::make_unique<std::thread>([&] {Client->run();});
+        client_thread->detach();
 
         resolver_thread = std::make_unique<std::thread>([&] { resolver.Run(); });
         resolver_thread->detach();

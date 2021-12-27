@@ -39,8 +39,6 @@ void FragmentNavigator::navigateTo(QString tag) {
 
     if (tag == CREATING_TAG) {
         CreatingFragment* creating = static_cast<CreatingFragment*>(newFragment);
-        //connect(mResolver, &Resolver::DeletePlayer, game, &GameFragment::DeletePlayer, Qt::QueuedConnection);
-        connect(mResolver, &Resolver::netError, creating, &CreatingFragment::onNetError, Qt::QueuedConnection);
         connect(mResolver, &Resolver::drawPlayer, creating, &CreatingFragment::onDrawPlayer, Qt::QueuedConnection);
         connect(mResolver, &Resolver::deletePlayer, creating, &CreatingFragment::onDeletePlayer, Qt::QueuedConnection);
 
@@ -49,7 +47,7 @@ void FragmentNavigator::navigateTo(QString tag) {
         connect(mResolver, &Resolver::startGame, waiting, &WaitingFragment::onGameStarts, Qt::QueuedConnection);
     } else if (tag == GAME_TAG) {
         GameFragment* game = static_cast<GameFragment*>(newFragment);
-        connect(mResolver, &Resolver::gameIteration, game, &GameFragment::updatePlayers, Qt::QueuedConnection)
+//        connect(mResolver, &Resolver::gameIteration, game, &GameFragment::updatePlayers, Qt::QueuedConnection);
         connect(mResolver, &Resolver::winGame, game, &GameFragment::onWin, Qt::QueuedConnection);
         connect(mResolver, &Resolver::loseGame, game, &GameFragment::onLose, Qt::QueuedConnection);
         connect(mResolver, &Resolver::mafiaWin, game, &GameFragment::onMafiaWin, Qt::QueuedConnection);

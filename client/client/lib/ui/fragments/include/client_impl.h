@@ -5,19 +5,19 @@
 inline std::unique_ptr<net::Client> Client;
 
 
-struct PlayerData {
-    static int id;
-    static int roomID;
-    static int role;
-    static bool isAlive;
-    static bool isDay;
+namespace PlayerData {
+    inline int id;
+    inline int roomID;
+    inline int role;
+    inline bool isAlive;
+    inline bool isDay;
 
-    static void reset() {
+    inline static void reset() {
         id = 0;
         roomID = 0;
         role = 0;
-        isAlive = 0;
-        isDay = true;
+        isAlive = false;
+        isDay = false;
     }
-};
+}
 
