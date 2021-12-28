@@ -41,13 +41,14 @@ void FragmentNavigator::navigateTo(QString tag) {
         CreatingFragment* creating = static_cast<CreatingFragment*>(newFragment);
         connect(mResolver, &Resolver::drawPlayer, creating, &CreatingFragment::onDrawPlayer, Qt::QueuedConnection);
         connect(mResolver, &Resolver::deletePlayer, creating, &CreatingFragment::onDeletePlayer, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::startGame, creating, &CreatingFragment::onGameStarts, Qt::QueuedConnection);
 
     } else if (tag == WAITING_TAG) {
         WaitingFragment* waiting = static_cast<WaitingFragment*>(newFragment);
         connect(mResolver, &Resolver::startGame, waiting, &WaitingFragment::onGameStarts, Qt::QueuedConnection);
     } else if (tag == GAME_TAG) {
         GameFragment* game = static_cast<GameFragment*>(newFragment);
-//        connect(mResolver, &Resolver::gameIteration, game, &GameFragment::updatePlayers, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::gameIteration, game, &GameFragment::update, Qt::QueuedConnection);
         connect(mResolver, &Resolver::winGame, game, &GameFragment::onWin, Qt::QueuedConnection);
         connect(mResolver, &Resolver::loseGame, game, &GameFragment::onLose, Qt::QueuedConnection);
         connect(mResolver, &Resolver::mafiaWin, game, &GameFragment::onMafiaWin, Qt::QueuedConnection);

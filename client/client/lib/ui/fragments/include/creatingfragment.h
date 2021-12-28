@@ -6,6 +6,7 @@
 
 #include <QPushButton>
 #include <QLabel>
+#include <QMessageBox>
 
 
 class CreatingFragment: public AbstractFragment {
@@ -18,7 +19,8 @@ public slots:
     void onBackPressed();
     void onStartPressed();
     //void onCancelPressed();
-
+    //void onDisconnectPressed();
+    void onGameStarts();
     void onDrawPlayer(int id);
     void onDeletePlayer(int id);
 

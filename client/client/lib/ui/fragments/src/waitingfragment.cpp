@@ -70,6 +70,9 @@ void WaitingFragment::onBackPressed() {
 
 void WaitingFragment::onGameStarts() {
     navigateTo(GAME_TAG);
+    QMessageBox msgBox;
+    msgBox.setText("Game starts!");
+    msgBox.exec();
 }
 
 #include "moc_waitingfragment.cpp"

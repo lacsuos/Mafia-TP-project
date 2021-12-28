@@ -94,7 +94,7 @@ void MainFragment::onNetError() {
 }
 
 void MainFragment::onJoined(int id) {
-    //Player::roomID = id;
+    PlayerData::roomID = id;
     statusLabel->setText("Succeed");
     statusLabel->setStyleSheet("color:green");
     navigateTo(WAITING_TAG);
@@ -103,7 +103,7 @@ void MainFragment::onJoined(int id) {
 void MainFragment::onCreated(int id) {
     statusLabel->setText("Succeed");
     statusLabel->setStyleSheet("color:green");
-    //Player::roomID = id;
+    PlayerData::roomID = id;
 
     navigateTo(CREATING_TAG);
 }
