@@ -45,6 +45,8 @@ void FragmentNavigator::navigateTo(QString tag) {
 
     } else if (tag == WAITING_TAG) {
         WaitingFragment* waiting = static_cast<WaitingFragment*>(newFragment);
+        connect(mResolver, &Resolver::drawPlayer, waiting, &WaitingFragment::onDrawPlayer, Qt::QueuedConnection);
+        connect(mResolver, &Resolver::deletePlayer, waiting, &WaitingFragment::onDeletePlayer, Qt::QueuedConnection);
         connect(mResolver, &Resolver::startGame, waiting, &WaitingFragment::onGameStarts, Qt::QueuedConnection);
     } else if (tag == GAME_TAG) {
         GameFragment* game = static_cast<GameFragment*>(newFragment);

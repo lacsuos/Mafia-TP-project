@@ -10,6 +10,8 @@
 #include <QLabel>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QDebug>
+#include <QApplication>
 
 #include <vector>
 #include <QWidget>
@@ -23,30 +25,44 @@
 
 using namespace resolver;
 
-class GameFragment: public AbstractFragment {
-    Q_OBJECT
+class GameFragment : public AbstractFragment {
+Q_OBJECT
 public:
     GameFragment();
+
     ~GameFragment();
 
 
-
 public slots:
+
     void onBackPressed();
+
     //void addPlayers();
     void setDayState();
+
     void setNightState();
-    void setCustomState(const QString state);
+
+    void setCustomState(const QString& state);
+
     void onVotePressed();
+
     void onVote(int id);
+
     void updateState();
+
     void onPassPressed();
 
     void onCitizenWin();
+
     void onMafiaWin();
+
     void onWin();
+
     void onLose();
-    void update(std::vector<Player> _players);
+
+    void onLeave();
+
+    void update();
 
 private:
 
@@ -55,7 +71,7 @@ private:
 //    QBVboxLayout** layout;
 //    QVideoWidget** vw;
 //    QMediaPlayer** mediaPlayer;
-    QVector<PlayerBox*> playerBoxes;
+    QVector<PlayerBox *> playerBoxes;
     std::vector<Player> players;
 
     int ticks;
@@ -64,7 +80,7 @@ private:
     bool state;
     bool redraw;
 
-    QVBoxLayout *adminBox;
+    QVBoxLayout *mainVLayout;
     QHBoxLayout *grid;
     QPushButton *backButton;
     QPushButton *voteButton;
@@ -72,8 +88,9 @@ private:
     QLabel *stateLabel;
     QLabel *roleLabel;
 
-    void updatePlayers(std::vector<Player> players);
-    void addPlayer(resolver::Player player, QWidget* parent);
+    void updatePlayers(const std::vector<Player>& players);
+
+    PlayerBox* addPlayer(resolver::Player player, QWidget *parent);
 };
 
 #endif // GAMEFRAGMENT_H

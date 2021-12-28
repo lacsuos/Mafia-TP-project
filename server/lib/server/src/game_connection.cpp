@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/log/trivial.hpp>
+#include <string_view>
+#include <iostream>
 
 
 using boost::asio::async_read;
@@ -63,6 +65,8 @@ namespace net {
 
     void GameConnection::handle_error(std::shared_ptr<Communication> communication) {
         communication->out << MessageClient::error();
+        std::string answer(std::istreambuf_iterator<char>(communication->in), {});
+        BOOST_LOG_TRIVIAL(info) << answer;
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
         BOOST_LOG_TRIVIAL(info) << communication->user.get_name() << "'s request is unknown";
     }
@@ -214,6 +218,12 @@ namespace net {
                                   boost::bind(&GameConnection::handle_ping, this,
                                               communication));
             }
+            return;
+        }
+
+        if (command_type == "disconnect") {
+            boost::asio::post(context,
+                              boost::bind(&GameConnection::disconnect, this, communication));
             return;
         }
 
@@ -415,7 +425,8 @@ namespace net {
             users_names += std::to_string(i->user.get_id());
             users_names += ";";
         }
-        communication->out << MessageServer::msg(users_ids, users_names, communication->user.get_id());
+        communication->out
+                << MessageServer::msg(users_ids, users_names, communication->user.get_id());
         boost::asio::post(context, boost::bind(&GameConnection::handle_write, this, communication));
     }
 

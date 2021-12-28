@@ -2,7 +2,7 @@
 #include "screensfactory.h"
 using namespace screens;
 
-CreatingFragment::CreatingFragment() {
+CreatingFragment::CreatingFragment() : playersStr("") {
     QVBoxLayout *mainVLayout = new QVBoxLayout;
     QHBoxLayout *mainHLayout = new QHBoxLayout;
     QFrame *centerContainer = new QFrame;
@@ -29,7 +29,7 @@ CreatingFragment::CreatingFragment() {
     buttonContainer->addWidget(startButton);
     loadingButtonContainer->addWidget(startButton);
 
-    roomID = new QLabel(QString::number(PlayerData::roomID));
+    roomID = new QLabel(QString("Room ID: ") + QString::number(PlayerData::roomID));
 
     buttonContainer->addWidget(roomID);
 
@@ -86,8 +86,10 @@ void CreatingFragment::onDeletePlayer(int id) {
 
 void CreatingFragment::onDrawPlayer(int id) {
     playersCount++;
-    playersCounter->setText(QString::number(playersCount));
+    playersStr = playersStr + QString::number(id) + QString(", ");
+    playersCounter->setText(playersStr);
     if (playersCount >= 4) {
+
         connect(startButton, &QPushButton::clicked, this, &CreatingFragment::onStartPressed);
         startButton->setStyleSheet("background-color:white;");
         startButton->setEnabled(true);

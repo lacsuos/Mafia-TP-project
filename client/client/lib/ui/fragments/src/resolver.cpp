@@ -2,13 +2,10 @@
 #include "client.h"
 
 #include <algorithm>
-#include <QDebug>
 #include <QApplication>
 #include <string>
 #include <sstream>
 #include <vector>
-
-using namespace screens;
 
 constexpr int MAX_PLAYERS = 4;
 
@@ -108,6 +105,7 @@ void Resolver::join_room_answer(pt::ptree const &answer) {
     }
 
     if (status == "done") {
+        isStarted = true;
         auto id = parametrs.get<int>("id");
         PlayerData::id = id;
         emit joined(id);
@@ -194,10 +192,12 @@ void Resolver::base_room_answer(const boost::property_tree::ptree &answer) {
     }
 
     if (command == "game_room") {
-        if (isStarted) {
-            game_ping_answer(answer);
-            return;
-        }
+        game_ping_answer(answer);
+//        if (isStarted) {
+//            game_ping_answer(answer);
+//            isStarted = true;
+//            return;
+//        }
     }
 }
 
@@ -206,12 +206,13 @@ void Resolver::game_vote_answer(const boost::property_tree::ptree &answer) {
 }
 
 void Resolver::game_leave_answer(const boost::property_tree::ptree &answer) {
-
+    emit playerLeft();
 }
 
 
 void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
     if (isFirst) {
+        qDebug() << QString("game starts");
         emit startGame();
         isFirst = false;
     }
@@ -244,6 +245,8 @@ void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
                 PlayerData::role = role;
                 PlayerData::isAlive = (alive == "ON" ? true : false);
                 PlayerData::role = role;
+                PlayerData::isDay = player.is_day;
+
 
                 player.is_me = true;
                 player.role = role;
@@ -254,7 +257,8 @@ void Resolver::game_ping_answer(const boost::property_tree::ptree &answer) {
             }
             players.push_back(player);
         }
-        emit gameIteration(players);
+        resolver::savedPlayers = players;
+        emit gameIteration();
 
     } else if (status == "CITIZEN_WIN") {
         if (role == 777) {

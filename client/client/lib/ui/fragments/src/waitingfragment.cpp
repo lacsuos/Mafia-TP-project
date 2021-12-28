@@ -25,6 +25,13 @@ WaitingFragment::WaitingFragment() {
     continueButton->setStyleSheet("color:#242424;font-size:24px");
     connect(continueButton, &QPushButton::clicked, this, &WaitingFragment::onContinuePressed);
     */
+    roomID = new QLabel(QString("Room ID: ") + QString::number(PlayerData::roomID));
+
+    buttonContainer->addWidget(roomID);
+
+    playersCounter = new QLabel("");
+
+    buttonContainer->addWidget(playersCounter);
 
     buttonContainer->addWidget(backButton);
     loadingButtonContainer->addWidget(backButton);
@@ -73,6 +80,16 @@ void WaitingFragment::onGameStarts() {
     QMessageBox msgBox;
     msgBox.setText("Game starts!");
     msgBox.exec();
+}
+
+void WaitingFragment::onDeletePlayer(int id) {
+
+
+}
+
+void WaitingFragment::onDrawPlayer(int id) {
+    playersStr = playersStr + QString::number(id) + QString(", ");
+    playersCounter->setText(playersStr);
 }
 
 #include "moc_waitingfragment.cpp"

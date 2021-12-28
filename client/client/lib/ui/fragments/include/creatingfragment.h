@@ -30,6 +30,7 @@ private:
     QLabel *playersCounter;
     int playersCount;
     QPushButton *startButton;
+    QString playersStr;
     //QPushButton *cancelButton
 };
 

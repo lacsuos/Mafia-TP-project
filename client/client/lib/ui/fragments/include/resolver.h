@@ -2,13 +2,13 @@
 #include <boost/foreach.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <QMessageBox>
-
-#include "screensfactory.h"
+#include <QDebug>
+#include <abstractfragment.h>
 #include "client.h"
+#include "vector"
 #include "client_impl.h"
 
 namespace pt = boost::property_tree;
-
 
 namespace resolver {
     struct Player {
@@ -22,7 +22,10 @@ namespace resolver {
         bool is_win;
         bool is_day;
     };
+    static inline std::vector<Player> savedPlayers;
 }
+
+
 
 class Resolver : public AbstractFragment {
     Q_OBJECT
@@ -37,7 +40,8 @@ public:
     void startGame();
     void deletePlayer(int player_id);
     void drawPlayer(int player_id);
-    void gameIteration(std::vector<resolver::Player> _players);
+    void gameIteration();
+    void playerLeft();
 
     void serverDisconnected();
     void netError();

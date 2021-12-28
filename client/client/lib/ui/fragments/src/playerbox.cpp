@@ -22,8 +22,11 @@ PlayerBox::PlayerBox(QWidget *parent, Player _player) : QFrame(parent), player(_
 void PlayerBox::update(Player _player) {
     //Обновление и отключение камеры
      player = _player;
+     voteButton->setText(QString("Vote for №%1").arg(player.id));
+     qDebug() << QString("updated button for player №%1").arg(player.id);
+
      if (!player.is_live) {
-         this->setStyleSheet("background_color:=grey;");
+         this->setStyleSheet("background_color:grey;");
      }
 }
 PlayerBox::~PlayerBox() {
